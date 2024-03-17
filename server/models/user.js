@@ -19,16 +19,25 @@ const UserSchema = new mongoose.Schema(
       required: true,
       min: 5,
     },
+    picturePath: {
+      type: String,
+      default: "",
+    },
+    codeFiscale: {
+      type: String,
+      required: true,
+      // min: 11,
+      // max: 11,
+    },
     city: String,
     state: String,
     country: String,
-    occupation: String,
     phoneNumber: String,
-    transactions: Array,
+    factures: Array,
     role: {
       type: String,
       enum: ["user", "admin", "superadmin"],
-      default: "admin",
+      default: "user",
     },
   },
   { timestamps: true }

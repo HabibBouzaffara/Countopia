@@ -12,15 +12,15 @@ import salesRoutes from "./routes/sales.js";
 import multer from "multer";
 import path from "path";
 import { fileURLToPath } from "url";
-// import authRoutes from "./routes/auth.js";
-// import userRoutes from "./routes/users.js";
+import authRoutes from "./routes/auth.js";
+import userRoutes from "./routes/users.js";
 // import postRoutes from "./routes/posts.js";
-// import { register } from "./controllers/auth.js";
+import { register } from "./controllers/auth.js";
+import User from "./models/User.js";
 // import { createPost } from "./controllers/posts.js";
 // import { verifyToken } from "./middleware/auth.js";
-// import { users, posts } from "./data/index.js";
-// import User from "./models/user.js";
-// import { users } from "./data/index.js";
+import { users } from "./data/index.js";
+
 
 /* Config */
 const __filename = fileURLToPath(import.meta.url);
@@ -48,11 +48,19 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 // ROUTES WITH FILES
-// app.post("/auth/register", upload.single("picture"), register);
+app.post("/auth/register", upload.single("picture"), register);
+
+/* Routes */
+app.use("/client", clientRoutes);
+app.use("/general", generalRoutes);
+app.use("/management", managementRoutes);
+app.use("/sales", salesRoutes);
+app.use("/auth", authRoutes);
+app.use("/users", userRoutes);
 
 /* Mongoose setup */
 const PORT = process.env.PORT || 9000;
-mongoose.set("strictQuery", true);
+// mongoose.set("strictQuery", true);
 mongoose
   .connect(process.env.MONGO_URL, {
     useNewUrlParser: true,
@@ -62,16 +70,10 @@ mongoose
     app.listen(PORT, () => console.log(`Server Port: ${PORT}`));
 
     // ADD DATA ONE TIME
-    // User.insertMany(dataUser);
+    //User.insertMany(users);
   })
   .catch((error) => {
     console.log(`${error} did not connect`);
   });
 
-/* Routes */
-app.use("/client", clientRoutes);
-app.use("/general", generalRoutes);
-app.use("/management", managementRoutes);
-app.use("/sales", salesRoutes);
-// app.use("/auth", authRoutes);
-// app.use("/users", userRoutes);
+

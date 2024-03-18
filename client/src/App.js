@@ -6,6 +6,7 @@ import { useMemo } from "react";
 import { Navigate, BrowserRouter, Route, Routes } from "react-router-dom";
 import Layout from "scenes/layout";
 import Dashboard from "scenes/dashboard";
+import LoginPage from "./scenes/loginPage";
 
 function App() {
   const mode = useSelector((state) => state.global.mode);
@@ -16,10 +17,12 @@ function App() {
         <ThemeProvider theme={theme}>
           <CssBaseline />
           <Routes>
-            <Route element={<Layout />}>
-              <Route path="/" element={<Navigate to="/dashboard" replace />} />
+            <Route path="/" element={<LoginPage />} />
+            {/* <Route path="/dashboard" element={<Dashboard />} /> */}
+            { <Route path="/dashboard" element={<Layout />}>
+              {/* <Route path="/" element={<Navigate to="/dashboard" replace />} />  */}
               <Route path="/dashboard" element={<Dashboard />} />
-            </Route>
+            </Route> }
           </Routes>
         </ThemeProvider>
       </BrowserRouter>

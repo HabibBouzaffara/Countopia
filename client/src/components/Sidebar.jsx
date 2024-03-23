@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Divider,
@@ -28,10 +28,9 @@ import {
   TrendingUpOutlined,
   PieChartOutlined,
 } from "@mui/icons-material";
-import { useEffect, useState } from "react";
+
 import { useLocation, useNavigate } from "react-router-dom";
 import FlexBetween from "./FlexBetween";
-import profileImage from "assets/profileImage.png";
 
 const navItems = [
   {
@@ -99,14 +98,16 @@ const Sidebar = ({
   setIsSidebarOpen,
   isNonMobile,
 }) => {
-  const { pathname } = useLocation();
-  const [active, setActive] = useState("");
+  const{ pathname } = useLocation();
   const navigate = useNavigate();
   const theme = useTheme();
+  const [active, setActive] = useState("");
+  
+   useEffect(() => {
+     setActive(pathname.substring(1));
+   }, [pathname]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  useEffect(() => {
-    setActive(pathname.substring(1));
-  }, [pathname]);
+   if (!user) return null;
 
   return (
     <Box component="nav">
@@ -132,7 +133,7 @@ const Sidebar = ({
               <FlexBetween color={theme.palette.secondary.main}>
                 <Box display="flex" alignItems="center" gap="0.5rem">
                   <Typography variant="h4" fontWeight="bold">
-                    ECOMVISION
+                    Countopia
                   </Typography>
                 </Box>
                 {!isNonMobile && (
@@ -194,25 +195,27 @@ const Sidebar = ({
             </List>
           </Box>
 
-          {/* <Box position="" bottom="2rem" marginBottom="2rem">
+          <Box position="" bottom="2rem" marginBottom="2rem">
             <Divider />
             <FlexBetween textTransform="none" gap="1rem" m="1.5rem 2rem 0 3rem">
               <Box
                 component="img"
                 alt="profile"
-                src={profileImage}
+                src={ process.env.REACT_APP_BASE_URL+"/assets/"+ user.picturePath}
                 height="40px"
                 width="40px"
                 borderRadius="50%"
                 sx={{ objectFit: "cover" }}
               />
+              
+              
               <Box textAlign="left">
                 <Typography
                   fontWeight="bold"
                   fontSize="0.9rem"
                   sx={{ color: theme.palette.secondary[100] }}
                 >
-                  {user.name}
+                  {user.firstName}
                 </Typography>
                 <Typography
                   fontSize="0.8rem"
@@ -228,7 +231,7 @@ const Sidebar = ({
                 }}
               />
             </FlexBetween>
-          </Box> */}
+          </Box> 
         </Drawer>
       )}
     </Box>

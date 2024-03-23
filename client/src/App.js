@@ -22,6 +22,7 @@ function App() {
             <Route path="/" element={<LoginPage />} />
               <Route element={<Layout />}> 
               <Route path="/dashboard" element={isAuth? <Dashboard/>:<Navigate to="/" />} /> 
+              
               {/* <Route path="/dashboard" element={<Dashboard />} /> */}
              </Route>  
           </Routes>

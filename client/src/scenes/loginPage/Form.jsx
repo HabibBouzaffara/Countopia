@@ -83,7 +83,9 @@ const Form = () => {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(values),
+
     });
+    // console.log(loggedInResponse.body) ;
     const loggedIn = await loggedInResponse.json();
     onSubmitProps.resetForm();
     if (loggedIn) {
@@ -92,7 +94,9 @@ const Form = () => {
           user: loggedIn.user,
           token: loggedIn.token,
         })
+        
       );
+      console.log(loggedIn.user);
       navigate("/dashboard");
     }
   };

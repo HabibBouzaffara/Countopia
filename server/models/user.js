@@ -2,13 +2,13 @@ import mongoose from "mongoose";
 
 const UserSchema = new mongoose.Schema(
   {
-    firstName: {
+    name: {
       type: String,
       required: true,
       min: 2,
       max: 50,
     },
-    lastName: {
+    codeFiscale: {
       type: String,
       required: true,
       min: 2,
@@ -29,14 +29,21 @@ const UserSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
-    friends: {
-      type: Array,
-      default: [],
+    phoneNumber: {
+      type: String,
+      default: "",
     },
     location: String,
-    occupation: String,
-    viewedProfile: Number,
-    impressions: Number,
+    status: {
+      type: Boolean,
+      default: false,
+    },
+    factures: Array,
+    role: {
+      type: String,
+      enum: ["user", "admin", "superadmin"],
+      default: "user",
+    },
   },
   { timestamps: true }
 );

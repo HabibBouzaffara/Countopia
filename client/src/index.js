@@ -23,15 +23,15 @@ import { PersistGate } from "redux-persist/integration/react";
 const persistConfig = { key: "root", storage, version: 1 };
 const persistedReducer = persistReducer(persistConfig, globalReducer);
 const store = configureStore({
-  reducer: {
-    global: persistedReducer,
-    [api.reducerPath]: api.reducer,
-  },
+  reducer: 
+    persistedReducer,
+    // [api.reducerPath]: api.reducer,
+  
   middleware: (getDefaultMiddleware) => getDefaultMiddleware({
     serializableCheck: {
       ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
     },
-  }).concat(api.middleware),
+  }), //.concat(api.middleware)
 });
 
 
@@ -41,9 +41,9 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <Provider store={store}>
-      {/* <PersistGate loading={null} persistor={persistStore(store)}> */}
+      {/* <PersistGate loading={null} persistor={persistStore(store)}>  */}
       <App />
-      {/* </PersistGate> */}
+      {/* </PersistGate>  */}
     </Provider>
   </React.StrictMode>
 );

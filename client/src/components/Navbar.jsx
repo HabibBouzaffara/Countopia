@@ -67,7 +67,7 @@ const Navbar = ({ user, isSidebarOpen, setIsSidebarOpen }) => {
             <SettingsOutlined sx={{ fontSize: "25px" }} />
           </IconButton>
 
-          <FlexBetween>
+          {/* <FlexBetween>
             <Button
               onClick={handleClick}
               sx={{
@@ -114,7 +114,7 @@ const Navbar = ({ user, isSidebarOpen, setIsSidebarOpen }) => {
             >
               <MenuItem onClick={handleClose}>Log Out</MenuItem>
             </Menu>
-          </FlexBetween>
+          </FlexBetween> */}
         </FlexBetween>
       </Toolbar>
     </AppBar>

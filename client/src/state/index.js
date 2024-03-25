@@ -5,7 +5,7 @@ const initialState = {
   user: null,
   token: null,
   posts: [],
-  //userId: "63701cc1f03239d40b00003e",
+  //userId: "65f9a2109ed8ea7fee2bfe00",
 };
 
 export const globalSlice = createSlice({
@@ -59,4 +59,3 @@ export default globalSlice.reducer;
 // export const { setMode } = globalSlice.actions;
 
 // export default globalSlice.reducer;
-

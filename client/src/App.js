@@ -20,15 +20,12 @@ function App() {
           <CssBaseline />
           <Routes>
             {/* <Route path="/" element={<LoginPage />} /> */}
-            
             <Route path="/" element={<LoginPage />} />
-            <Route element={<Layout />}>
-              <Route
-                path="/dashboard"
-                element={isAuth ? <Dashboard /> : <Navigate to="/" />}
-              />
+              <Route element={<Layout />}> 
+              <Route path="/dashboard" element={isAuth? <Dashboard/>:<Navigate to="/" />} /> 
+              
               {/* <Route path="/dashboard" element={<Dashboard />} /> */}
-            </Route>
+             </Route>  
           </Routes>
         </ThemeProvider>
       </BrowserRouter>

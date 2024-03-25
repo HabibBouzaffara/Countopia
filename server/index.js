@@ -6,7 +6,7 @@ import dotenv from "dotenv";
 import helmet from "helmet";
 import morgan from "morgan";
 import clientRoutes from "./routes/client.js";
-import generalRoutes from "./routes/general.js";
+// import generalRoutes from "./routes/general.js";
 import managementRoutes from "./routes/management.js";
 import salesRoutes from "./routes/sales.js";
 import multer from "multer";
@@ -52,7 +52,7 @@ app.post("/auth/register", upload.single("picture"), register);
 
 /* Routes */
 app.use("/client", clientRoutes);
-app.use("/general", generalRoutes);
+// app.use("/general", generalRoutes);
 app.use("/management", managementRoutes);
 app.use("/sales", salesRoutes);
 app.use("/auth", authRoutes);
@@ -60,7 +60,7 @@ app.use("/users", userRoutes);
 
 /* Mongoose setup */
 const PORT = process.env.PORT || 9000;
-// mongoose.set("strictQuery", true);
+mongoose.set("strictQuery", true);
 mongoose
   .connect(process.env.MONGO_URL, {
     useNewUrlParser: true,

@@ -17,12 +17,12 @@ import Dropzone from "react-dropzone";
 import FlexBetween from "components/FlexBetween";
 
 const registerSchema = yup.object().shape({
-  firstName: yup.string().required("required"),
-  lastName: yup.string().required("required"),
+  name: yup.string().required("required"),
+  codeFiscale: yup.string().required("required"),
   email: yup.string().email("invalid email").required("required"),
   password: yup.string().required("required"),
   location: yup.string().required("required"),
-  occupation: yup.string().required("required"),
+  phoneNumber: yup.string().required("required"),
   picture: yup.string().required("required"),
 });
 
@@ -32,13 +32,15 @@ const loginSchema = yup.object().shape({
 });
 
 const initialValuesRegister = {
-  firstName: "",
-  lastName: "",
+  name: "",
+  codeFiscale: "",
   email: "",
   password: "",
+  phoneNumber: "",
   location: "",
-  occupation: "",
+  status: "",
   picture: "",
+  role: "user",
 };
 
 const initialValuesLogin = {
@@ -83,7 +85,9 @@ const Form = () => {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(values),
+
     });
+    // console.log(loggedInResponse.body) ;
     const loggedIn = await loggedInResponse.json();
     onSubmitProps.resetForm();
     if (loggedIn) {
@@ -92,7 +96,9 @@ const Form = () => {
           user: loggedIn.user,
           token: loggedIn.token,
         })
+        
       );
+      console.log(loggedIn.user);
       navigate("/dashboard");
     }
   };
@@ -130,25 +136,25 @@ const Form = () => {
             {isRegister && (
               <>
                 <TextField
-                  label="First Name"
+                  label="Company Name"
                   onBlur={handleBlur}
                   onChange={handleChange}
                   value={values.firstName}
-                  name="firstName"
+                  name="name"
                   error={
-                    Boolean(touched.firstName) && Boolean(errors.firstName)
+                    Boolean(touched.name) && Boolean(errors.name)
                   }
                   helperText={touched.firstName && errors.firstName}
                   sx={{ gridColumn: "span 2" }}
                 />
                 <TextField
-                  label="Last Name"
+                  label="Tac Code"
                   onBlur={handleBlur}
                   onChange={handleChange}
-                  value={values.lastName}
-                  name="lastName"
-                  error={Boolean(touched.lastName) && Boolean(errors.lastName)}
-                  helperText={touched.lastName && errors.lastName}
+                  value={values.codeFiscale}
+                  name="codeFiscale"
+                  error={Boolean(touched.codeFiscale) && Boolean(errors.codeFiscale)}
+                  helperText={touched.codeFiscale && errors.codeFiscale}
                   sx={{ gridColumn: "span 2" }}
                 />
                 <TextField
@@ -161,18 +167,18 @@ const Form = () => {
                   helperText={touched.location && errors.location}
                   sx={{ gridColumn: "span 4" }}
                 />
-                <TextField
-                  label="Occupation"
+                 <TextField
+                  label="Phone Number : "
                   onBlur={handleBlur}
                   onChange={handleChange}
-                  value={values.occupation}
-                  name="occupation"
+                  value={values.phoneNumber}
+                  name="phoneNumber"
                   error={
-                    Boolean(touched.occupation) && Boolean(errors.occupation)
+                    Boolean(touched.phoneNumber) && Boolean(errors.phoneNumber)
                   }
-                  helperText={touched.occupation && errors.occupation}
+                  helperText={touched.phoneNumber && errors.phoneNumber}
                   sx={{ gridColumn: "span 4" }}
-                />
+                /> 
                 <Box
                   gridColumn="span 4"
                   border={`1px solid ${palette.neutral.medium}`}
@@ -195,7 +201,7 @@ const Form = () => {
                       >
                         <input {...getInputProps()} />
                         {!values.picture ? (
-                          <p>Add Picture Here</p>
+                          <p>Add Company Logo Here</p>
                         ) : (
                           <FlexBetween>
                             <Typography>{values.picture.name}</Typography>

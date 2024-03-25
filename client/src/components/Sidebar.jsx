@@ -169,6 +169,7 @@ const Sidebar = ({
                           active === lcText
                             ? theme.palette.primary[600]
                             : theme.palette.secondary[100],
+                        borderRadius: "0 0.5rem 0.5rem 0",
                       }}
                     >
                       <ListItemIcon
@@ -193,7 +194,7 @@ const Sidebar = ({
             </List>
           </Box>
 
-          {/* <Box position="absolute" bottom="2rem">
+          {/* <Box position="" bottom="2rem" marginBottom="2rem">
             <Divider />
             <FlexBetween textTransform="none" gap="1rem" m="1.5rem 2rem 0 3rem">
               <Box

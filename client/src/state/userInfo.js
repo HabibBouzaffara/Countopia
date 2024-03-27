@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 
 const UserInfo = () => {
   const [user, setUser ] = useState(null);
-
   // const state = useSelector((state) => state);
   const userId = useSelector((state) => state.user._id);
   const token = useSelector((state) => state.token);

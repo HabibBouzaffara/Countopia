@@ -16,10 +16,12 @@ import authRoutes from "./routes/auth.js";
 import userRoutes from "./routes/users.js";
 // import postRoutes from "./routes/posts.js";
 import { register } from "./controllers/auth.js";
-import User from "./models/User.js";
+import User from "./models/user.js";
 // import { createPost } from "./controllers/posts.js";
 // import { verifyToken } from "./middleware/auth.js";
-import { users } from "./data/index.js";
+import { admins, clients, users } from "./data/index.js";
+import Client from "./models/Client.js";
+import Admin from "./models/admin.js";
 
 
 /* Config */
@@ -70,7 +72,10 @@ mongoose
     app.listen(PORT, () => console.log(`Server Port: ${PORT}`));
 
     // ADD DATA ONE TIME
-    //User.insertMany(users);
+   //User.insertMany(users);
+   //Client.insertMany(clients);
+   //Admin.insertMany(admins); 
+  //  users.updateMany({ role: 'user' }, { role: 'client' });
   })
   .catch((error) => {
     console.log(`${error} did not connect`);

@@ -1,7 +1,7 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import User from "../models/user.js";
-import Client from "../models/Client.js";
+import Client from "../models/client.js";
 import Admin from "../models/admin.js";
 
 /* REGISTER USER */

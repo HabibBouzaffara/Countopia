@@ -1,0 +1,161 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+
+/* navbar */
+
+.landing-page-text-container {
+  height: 179vh;
+  max-width: 100%;
+  width: 100%;
+}
+.purple-1 {
+  width: 100%;
+  height: 1340px;
+  background: linear-gradient(240deg, #323db3 12.52%, #7558c8 95.97%);
+  overflow: hidden;
+}
+
+.lading-page-navbar {
+
+  display: flex;
+  height: 100px;
+  align-items: center;
+  justify-content: space-between;
+}
+.landing-page-navbar-button {
+  display: flex;
+  align-items: center;
+  color: white;
+  font-family: poppins;
+  font-size: 14px;
+  margin-right: 60px;
+}
+.landing-page-navbar-button div[class="landing-page-navbar-link"] {
+  margin-right: 30px;
+}
+
+.landing-page-navbar-navigate-signup {
+  margin-right: 13px;
+  padding: 10px 20px;
+  border-radius: 20px;
+  width: 100px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid white;
+  cursor: pointer;
+}
+.landing-page-navbar-navigate-signin {
+  padding: 10px 20px;
+  border-radius: 20px;
+  width: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: white;
+  cursor: pointer;
+  color: #7558c8;
+}
+.landing-page-navbar-logo {
+  font-family: "Poppins";
+  font-style: normal;
+  font-weight: 900;
+  font-size: 40px;
+  text-align: center;
+  margin-left: 60px;
+  color: #ffffff;
+}
+
+/* buttons [expert , assistant] */
+.landing-page-buttons-container-1 {
+  margin-top: 5%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.landing-page-buttons-container-1 div {
+  background-color: white;
+  color: #7558c8;
+  margin: 0px 20px;
+  padding: 5px;
+  border-radius: 10px;
+  width: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.landing-page-slogan {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 50px;
+}
+.landing-page-slogan-text {
+  font-family: "Poppins";
+  font-style: normal;
+  font-weight: 900;
+  font-size: 70px;
+  text-align: center;
+  margin-left: 60px;
+  color: #ffffff;
+}
+.landing-page-getstarted-btn {
+  width: 100%;
+  margin-top: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.landing-page-getstarted-btn-text {
+  background-color: white;
+  color: #7558c8;
+  margin: 0px 20px;
+  padding: 10px;
+  border-radius: 30px;
+  width: 150px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.landing-page-waves {
+  display: flex;
+  justify-content: center; /* Center content horizontally */
+  align-items: center; /* Center content vertically */
+  overflow: hidden;
+  height: 45vh;
+  margin-top: -10vh; /* Adjust this value to move the waves higher */
+  margin-right: 0vw; /* Adjust this value to move the waves to the left */
+}
+
+
+
+ 
+  
+
+.landing-page-images {
+  top: 75vh;
+  left: 50%;
+  position: absolute;
+  transform: translateX(-50%);
+}
+
+/* Styles for screens with a maximum width of 600px */
+@media screen and (max-width: 1300px) {
+  .landing-page-images {
+    top: 90vh;
+    left: 22%;
+    position: absolute;
+  }
+  .landing-page-images img {
+    width: 700px;
+    height: auto;
+  }
+}

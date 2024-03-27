@@ -7,6 +7,7 @@ import { Navigate, BrowserRouter, Route, Routes } from "react-router-dom";
 import Layout from "scenes/layout";
 import Dashboard from "scenes/dashboard";
 import LoginPage from "./scenes/loginPage";
+import LandingPage from "scenes/landing.Page/LandingPage";
 import state from "state";
 
 
@@ -23,8 +24,9 @@ function App() {
           <CssBaseline />
           <Routes>
             {/* <Route path="/" element={<LoginPage />} /> */}
-            <Route path="/" element={isAuth? <Navigate to="/dashboard" />:<LoginPage />} />
-               <Route element={isAuth?<Layout />:<Navigate to="/" />}> 
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/auth" element={isAuth? <Navigate to="/dashboard" />:<LoginPage />} />
+               <Route element={isAuth?<Layout />:<Navigate to="/auth" />}> 
                 <Route path="/dashboard" element={<Dashboard />} /> 
               {/* <Route path="/dashboard" element={<Dashboard />} /> */}
               </Route>   

@@ -20,7 +20,7 @@ import User from "./models/user.js";
 // import { createPost } from "./controllers/posts.js";
 // import { verifyToken } from "./middleware/auth.js";
 import { admins, clients, users } from "./data/index.js";
-import Client from "./models/Client.js";
+import Client from "./models/client.js";
 import Admin from "./models/admin.js";
 
 

@@ -7,11 +7,11 @@ const ClientSchema = new mongoose.Schema(
     },
     companyName:{ 
       type: String,
-      required: false,
+      required: true,
     },
     codeFiscale: {
       type: String,
-      required: false,
+      required: true,
       min: 2,
       max: 50,
     },

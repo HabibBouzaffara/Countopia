@@ -18,8 +18,8 @@ import FlexBetween from "components/FlexBetween";
 
 const registerSchema = yup.object().shape({
   name: yup.string().required("required"),
-  companyName: yup.string(),
-  codeFiscale: yup.string(),
+  companyName: yup.string().required("required"),
+  codeFiscale: yup.string().required("required"),
   email: yup.string().email("invalid email").required("required"),
   password: yup.string().required("required"),
   location: yup.string().required("required"),

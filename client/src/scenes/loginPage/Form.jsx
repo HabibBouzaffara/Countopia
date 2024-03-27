@@ -18,7 +18,8 @@ import FlexBetween from "components/FlexBetween";
 
 const registerSchema = yup.object().shape({
   name: yup.string().required("required"),
-  codeFiscale: yup.string().required("required"),
+  companyName: yup.string(),
+  codeFiscale: yup.string(),
   email: yup.string().email("invalid email").required("required"),
   password: yup.string().required("required"),
   location: yup.string().required("required"),
@@ -33,6 +34,7 @@ const loginSchema = yup.object().shape({
 
 const initialValuesRegister = {
   name: "",
+  companyName: "",
   codeFiscale: "",
   email: "",
   password: "",
@@ -40,7 +42,7 @@ const initialValuesRegister = {
   location: "",
   status: "",
   picture: "",
-  role: "user",
+  role: "client",
 };
 
 const initialValuesLogin = {
@@ -136,25 +138,27 @@ const Form = () => {
             {isRegister && (
               <>
                 <TextField
-                  label="Company Name"
+                  label="Name"
                   onBlur={handleBlur}
                   onChange={handleChange}
-                  value={values.firstName}
+                  value={values.name}
                   name="name"
                   error={
                     Boolean(touched.name) && Boolean(errors.name)
                   }
-                  helperText={touched.firstName && errors.firstName}
+                  helperText={touched.name && errors.name}
                   sx={{ gridColumn: "span 2" }}
                 />
                 <TextField
-                  label="Tac Code"
+                  label="Company Name"
                   onBlur={handleBlur}
                   onChange={handleChange}
-                  value={values.codeFiscale}
-                  name="codeFiscale"
-                  error={Boolean(touched.codeFiscale) && Boolean(errors.codeFiscale)}
-                  helperText={touched.codeFiscale && errors.codeFiscale}
+                  value={values.companyName}
+                  name="companyName"
+                  error={
+                    Boolean(touched.companyName) && Boolean(errors.companyName)
+                  }
+                  helperText={touched.companyName && errors.companyName}
                   sx={{ gridColumn: "span 2" }}
                 />
                 <TextField
@@ -165,7 +169,17 @@ const Form = () => {
                   name="location"
                   error={Boolean(touched.location) && Boolean(errors.location)}
                   helperText={touched.location && errors.location}
-                  sx={{ gridColumn: "span 4" }}
+                  sx={{ gridColumn: "span 2" }}
+                />
+                <TextField
+                  label="Tax Code"
+                  onBlur={handleBlur}
+                  onChange={handleChange}
+                  value={values.codeFiscale}
+                  name="codeFiscale"
+                  error={Boolean(touched.codeFiscale) && Boolean(errors.codeFiscale)}
+                  helperText={touched.codeFiscale && errors.codeFiscale}
+                  sx={{ gridColumn: "span 2" }}
                 />
                  <TextField
                   label="Phone Number : "

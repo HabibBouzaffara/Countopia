@@ -1,18 +1,22 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import User from "../models/User.js";
+import User from "../models/user.js";
+import Client from "../models/Client.js";
+import Admin from "../models/admin.js";
 
 /* REGISTER USER */
 export const register = async (req, res) => {
   try {
     const {
       name,
+      companyName,
       codeFiscale,
       email,
       password,
       phoneNumber,
       picturePath,
       factures,
+      clients,
       location,
       status,
       role,
@@ -23,17 +27,35 @@ export const register = async (req, res) => {
 
     const newUser = new User({
       name,
+      companyName,
       codeFiscale,
       email,
       password: passwordHash,
       phoneNumber,
       picturePath,
       factures,
+      clients,
       location,
       status,
       role,
     });
     const savedUser = await newUser.save();
+
+    if(savedUser.role=="client"){
+      const newClient = new Client({
+      clientId: savedUser._id, // Reference to the newly saved user
+      companyName,
+      codeFiscale,
+      factures,
+      });
+      await newClient.save();
+    }else if (savedUser.role=="admin"){
+      const newAdmin = new Admin({
+      adminId: savedUser._id, // Reference to the newly saved user
+      clients,
+    });
+    await newAdmin.save();
+    }
     res.status(201).json(savedUser);
   } catch (err) {
     res.status(500).json({ error: err.message });

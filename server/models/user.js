@@ -8,12 +8,6 @@ const UserSchema = new mongoose.Schema(
       min: 2,
       max: 50,
     },
-    codeFiscale: {
-      type: String,
-      required: true,
-      min: 2,
-      max: 50,
-    },
     email: {
       type: String,
       required: true,
@@ -38,11 +32,10 @@ const UserSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    factures: Array,
     role: {
       type: String,
-      enum: ["user", "admin", "superadmin"],
-      default: "user",
+      enum: ["client", "admin", "superadmin"],
+      default:"admin",
     },
   },
   { timestamps: true }

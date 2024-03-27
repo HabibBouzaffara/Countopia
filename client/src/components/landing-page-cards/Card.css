@@ -1,0 +1,26 @@
+.landing-page-card {
+  width: 350px;
+  display: flex;
+  box-shadow: inset 0 0 0 1px rgb(0 0 0 / 10%), 0 4px 6px -1px rgb(0 0 0 / 10%);
+  border-radius: 20px;
+  height: 450px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  
+  margin-bottom: 20px;
+  padding: 20px;
+}
+.landing-page-card-img {
+  width: 200px;
+  height: 200px;
+}
+.card-text {
+  margin-top: 20px;
+}
+.card-title {
+  color: #324473;
+  font-size: larger;
+  font-weight: 600;
+}

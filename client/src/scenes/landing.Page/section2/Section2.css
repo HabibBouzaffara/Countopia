@@ -1,0 +1,96 @@
+.section2-intro {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: poppins;
+  font-size: 30px;
+  color: #9d8dfe;
+  font-weight: 700;
+  height: 10vh;
+  /* border: 1px solid red; */
+}
+
+.landing-page-tech-logos {
+  width: 100%;
+  background: white;
+  height: 12vh;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  overflow: hidden;
+}
+
+.landing-page-tech-logo-img {
+  width: 170px;
+}
+
+.landing-page-aboutus {
+  background-image: url("../../../assests/hello.svg");
+  background-size: cover;
+  height: 130vh;
+  flex-direction: column;
+  display: flex;
+  
+}
+.landing-page-aboutus-text1 {
+  font-family: poppins;
+  font-size: 50px;
+  color: #9d8dfe;
+  font-weight: 800;
+  margin-top: 7%;
+  text-align: left;
+  padding-left: 120px;
+  
+}
+.landing-page-aboutus-text2 {
+  font-family: poppins;
+  width: 50%;
+  font-size: 20px;
+  color: rgb(0, 0, 0);
+  font-weight: 300;
+  text-align: left;
+  margin-top: 3%;
+  padding-left: 120px;
+  
+  
+}
+.landing-page-aboutus-text3 {
+  font-family: poppins;
+  font-size: 50px;
+  color: #9d8dfe;
+  font-weight: 800;
+  margin-top: 15%;
+  text-align: right;
+  padding-right: 120px;
+  
+}
+.landing-page-aboutus-text4 {
+  font-family: poppins;
+  width: 50%;
+  font-size: 20px;
+  color: rgb(0, 0, 0);
+  font-weight: 300;
+  text-align: right;
+  margin-top: 3%;
+  padding-right: 120px;
+  margin-left: 740px;
+  
+}
+
+
+.landing-page-features-section-title {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: poppins;
+  font-size: 35px;
+  color: #9d8dfe;
+  font-weight: 700;
+  height: 10vh;
+}
+.landing-page-features-section-cards {
+  display: flex;
+  justify-content: space-around;
+}

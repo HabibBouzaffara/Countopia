@@ -1,0 +1,17 @@
+.landing-page-footer-title {
+  font-size: large;
+  font-weight: 500;
+  font-family: poppins;
+  margin-bottom: 30px;
+  color: aliceblue;
+}
+.landing-page-footer-card-container {
+  display: flex;
+  flex-direction: column;
+  width: 40%;
+  
+}
+.landing-page-footer-link {
+  font-family: poppins;
+  color: aliceblue;
+}

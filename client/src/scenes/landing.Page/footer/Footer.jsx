@@ -1,14 +1,14 @@
 import React from "react";
 import FooterCards from "components/footer-cards/FooterCards";
-import facebook from "../../../assests/facebook.svg";
-import instagram from "../../../assests/instagram.svg";
-import whatsapp from "../../../assests/whatsapp.svg";
+import facebook from "../../../assets/facebook.svg";
+import instagram from "../../../assets/instagram.svg";
+import whatsapp from "../../../assets/whatsapp.svg";
 import "./Footer.css";
 import { useNavigate } from "react-router-dom";
 export default function Footer() {
   const navigate = useNavigate();
   return (
-    <div className="landing-page-footer-container">
+    <div className="landing-page-footer-container" >
       <div className="landing-page-footer-logo-nav">
         <div className="landing-page-navbar-logo">Countopia</div>
         <div className="landing-page-footer-nav">

@@ -1,14 +1,14 @@
 import React from "react";
 import "./Section2.css";
 import Card from "components/landing-page-cards/Card";
-import tech1 from "../../../assests/tech1.svg";
-import tech2 from "../../../assests/tech2.svg";
-import tech3 from "../../../assests/tech3.svg";
-import tech4 from "../../../assests/tech4.svg";
-import tech5 from "../../../assests/tech5.svg";
-import card from "../../../assests/card1.svg";
-import card2 from "../../../assests/card2.svg";
-import card3 from "../../../assests/card3.svg";
+import tech1 from "../../../assets/tech1.svg";
+import tech2 from "../../../assets/tech2.svg";
+import tech3 from "../../../assets/tech3.svg";
+import tech4 from "../../../assets/tech4.svg";
+import tech5 from "../../../assets/tech5.svg";
+import card from "../../../assets/card1.svg";
+import card2 from "../../../assets/card2.svg";
+import card3 from "../../../assets/card3.svg";
 
 export default function Section2() {
   return (

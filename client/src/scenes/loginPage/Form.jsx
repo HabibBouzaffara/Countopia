@@ -18,7 +18,6 @@ import FlexBetween from "components/FlexBetween";
 
 const registerSchema = yup.object().shape({
   name: yup.string().required("required"),
-  companyName: yup.string().required("required"),
   codeFiscale: yup.string().required("required"),
   email: yup.string().email("invalid email").required("required"),
   password: yup.string().required("required"),
@@ -153,22 +152,12 @@ const Form = () => {
                   label="Company Name"
                   onBlur={handleBlur}
                   onChange={handleChange}
-                  value={values.companyName}
+                  value={values.name}
                   name="companyName"
                   error={
                     Boolean(touched.companyName) && Boolean(errors.companyName)
                   }
                   helperText={touched.companyName && errors.companyName}
-                  sx={{ gridColumn: "span 2" }}
-                />
-                <TextField
-                  label="Location"
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                  value={values.location}
-                  name="location"
-                  error={Boolean(touched.location) && Boolean(errors.location)}
-                  helperText={touched.location && errors.location}
                   sx={{ gridColumn: "span 2" }}
                 />
                 <TextField
@@ -181,6 +170,7 @@ const Form = () => {
                   helperText={touched.codeFiscale && errors.codeFiscale}
                   sx={{ gridColumn: "span 2" }}
                 />
+                
                  <TextField
                   label="Phone Number : "
                   onBlur={handleBlur}

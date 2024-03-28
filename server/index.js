@@ -15,13 +15,14 @@ import { fileURLToPath } from "url";
 import authRoutes from "./routes/auth.js";
 import userRoutes from "./routes/users.js";
 // import postRoutes from "./routes/posts.js";
-import { register } from "./controllers/auth.js";
+import { register, verifyEmail } from "./controllers/auth.js";
 import User from "./models/user.js";
 // import { createPost } from "./controllers/posts.js";
 // import { verifyToken } from "./middleware/auth.js";
 import { admins, clients, users } from "./data/index.js";
 import Client from "./models/client.js";
 import Admin from "./models/admin.js";
+import verificationRoutes from "./routes/verification.js";
 
 
 /* Config */
@@ -51,6 +52,7 @@ const upload = multer({ storage });
 
 // ROUTES WITH FILES
 app.post("/auth/register", upload.single("picture"), register);
+app.post("/verify-email", verifyEmail );
 
 /* Routes */
 app.use("/client", clientRoutes);
@@ -59,6 +61,7 @@ app.use("/management", managementRoutes);
 app.use("/sales", salesRoutes);
 app.use("/auth", authRoutes);
 app.use("/users", userRoutes);
+app.use("/verify-email", verificationRoutes );
 
 /* Mongoose setup */
 const PORT = process.env.PORT || 9000;

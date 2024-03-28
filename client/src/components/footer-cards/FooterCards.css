@@ -3,7 +3,7 @@
   font-weight: 500;
   font-family: poppins;
   margin-bottom: 30px;
-  color: aliceblue;
+  color: rgb(255, 255, 255);
 }
 .landing-page-footer-card-container {
   display: flex;
@@ -13,5 +13,5 @@
 }
 .landing-page-footer-link {
   font-family: poppins;
-  color: aliceblue;
+  color: rgb(255, 255, 255);
 }

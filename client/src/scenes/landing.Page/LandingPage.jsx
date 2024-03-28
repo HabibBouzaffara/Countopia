@@ -1,15 +1,20 @@
 import React from "react";
 import "./LandingPage.css";
 import Section2 from "./section2/Section2";
-import mainimg from "../../assests/main.svg";
-import waves from "../../assests/waves.svg";
+import mainimg from "../../assets/main.svg";
+import waves from "../../assets/waves.svg";
 import Footer from "./footer/Footer";
 import { useNavigate } from "react-router-dom";
+import {Box} from "@mui/material";
 export default function LandingPage() {
   const navigate = useNavigate();
 
   return (
-    <>
+    <Box
+      width="95%"
+      margin="2rem"
+      paddingBottom="20px"
+      >
       <div className="landing-page-text-container">
         <div className="purple-1">
           <div className="lading-page-navbar">
@@ -57,6 +62,6 @@ export default function LandingPage() {
       </div>
       <Section2 />
       <Footer />
-    </>
+    </Box>
   );
 }

@@ -104,6 +104,7 @@ export const verifyEmail = async (req, res) => {
           userId,
           otp
       } = req.body
+      
       if (!userId || !otp) return res.status(400).json({
           msg: "Invalid request, missing parameters!"
       });

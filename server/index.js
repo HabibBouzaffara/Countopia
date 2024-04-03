@@ -79,6 +79,7 @@ mongoose
    //Client.insertMany(clients);
    //Admin.insertMany(admins); 
   //  users.updateMany({ role: 'user' }, { role: 'client' });
+  
   })
   .catch((error) => {
     console.log(`${error} did not connect`);

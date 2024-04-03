@@ -221,7 +221,7 @@ const Sidebar = ({
                   fontSize="0.8rem"
                   sx={{ color: theme.palette.secondary[200] }}
                 >
-                  {user.codeFiscale}
+                  {(user.role==="admin") ?"Admin":( (user.role==="superadmin")?"Superadmin":"Client")}
                 </Typography>
               </Box>
               <SettingsOutlined

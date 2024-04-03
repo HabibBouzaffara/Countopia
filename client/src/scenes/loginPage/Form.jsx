@@ -27,11 +27,14 @@ import VisibilityOff from "@mui/icons-material/VisibilityOff";
 
 import signIn from "../../assets/signIn.svg";
 import signUp from "../../assets/signUp.svg";
-import verify from "../../assets/tech1.svg";
+import verify from "../../assets/verify.svg";
+import verified from "../../assets/verified.svg";
+import section2 from "../../assets/section2.svg";
+import ReactInputVerificationCode from "react-input-verification-code";
 
 const registerSchema = yup.object().shape({
   name: yup.string().required("required"),
-  codeFiscale: yup.string().required("required"),
+  codeFiscale: yup.string(),
   email: yup.string().email("invalid email").required("required"),
   password: yup.string().required("required"),
   location: yup.string().required("required"),
@@ -83,6 +86,7 @@ const Form = () => {
   const isLogin = pageType === "login";
   const isRegister = pageType === "register";
   const isVerify = pageType === "verify";
+  const isVerified = pageType === "verified";
   // const [rememberMe, setRememberMe] = useState(false);
 
   const register = async (values, onSubmitProps) => {
@@ -121,7 +125,7 @@ const Form = () => {
     const verification = await verificationCode.json();
 
     if (verification) {
-      setPageType("login");
+      setPageType("verified");
     }
   };
 
@@ -144,7 +148,7 @@ const Form = () => {
           token: loggedIn.token,
         })
       );
-      console.log(loggedIn.user);
+      // console.log(loggedIn.user);
       navigate("/dashboard");
     }
   };
@@ -161,6 +165,7 @@ const Form = () => {
     }
     if (isRegister) await register(values, onSubmitProps);
     if (isVerify) await verifyEmail(values.otp, onSubmitProps, savedUserId);
+    if (isVerified) navigate("/");
   };
   const [showPassword, setShowPassword] = useState(false);
 
@@ -181,10 +186,10 @@ const Form = () => {
       width="95%"
       borderRadius="4rem"
       backgroundColor="#BFB5FF"
-      marginLeft="2.5rem"
+      margin="2.5rem"
       marginTop="20px" // Adjusted marginTop to move the purple box closer to the top
       flex="1"
-      position="fixed"
+      position="relative"
     >
       <Box
         display="flex"
@@ -195,6 +200,7 @@ const Form = () => {
         width="97%"
         borderRadius="4rem"
         backgroundColor="white"
+        position="relative"
       >
         <Box
           flex="1"
@@ -203,8 +209,10 @@ const Form = () => {
           alignItems="center"
           borderRight="1px solid #BFB5FF"
           maxWidth="50%"
+          position="relative"
+          justifyItems={"center"}
         >
-          {isLogin && (
+          {isLogin && isNonMobileScreens && (
             <img
               src={signIn}
               alt=""
@@ -216,7 +224,7 @@ const Form = () => {
               }}
             />
           )}
-          {isRegister && (
+          {isRegister && isNonMobileScreens &&(
             <img
               src={signUp}
               alt=""
@@ -228,7 +236,7 @@ const Form = () => {
               }}
             />
           )}
-          {isVerify && (
+          {isVerify && isNonMobileScreens &&(
             <img
               src={verify}
               alt=""
@@ -240,6 +248,19 @@ const Form = () => {
               }}
             />
           )}
+          {isVerified && isNonMobileScreens &&(
+            <img
+              src={verified}
+              alt=""
+              style={{
+                maxWidth: "100%",
+                maxHeight: "100%",
+                width: "auto",
+                height: "auto",
+              }}
+            />
+          )}
+
         </Box>
 
         <Box
@@ -249,6 +270,7 @@ const Form = () => {
           backgroundColor="white"
           height="99%"
           overflow="auto"
+          position="relative"
         >
           {/* Text above the form */}
           {isLogin ? (
@@ -257,10 +279,14 @@ const Form = () => {
               color="#BFB5FF"
               gutterBottom
               align="center"
+              alignItems="center"
+              justifyContent="center"
+              textAlign="center"
+              marginTop="20%"
               marginBottom="3rem"
               fontFamily="Poppins"
               fontWeight="900"
-              marginTop="110px"
+              // marginTop="110px"
             >
               Sign In To Countopia
             </Typography>
@@ -276,19 +302,33 @@ const Form = () => {
             >
               Sign Up To Countopia
             </Typography>
-          ) : (
+          ) :isVerify ? (
             <Typography
               variant="h2"
               color="#BFB5FF"
               gutterBottom
               align="center"
               marginBottom="3rem"
+              marginTop="25%"
               fontFamily="Poppins"
               fontWeight="900"
             >
               Verify Your Email
             </Typography>
-          )}
+          ):isVerified ? (
+            <Typography
+              variant="h2"
+              color="#BFB5FF"
+              gutterBottom
+              align="center"
+              marginBottom="3rem"
+              marginTop="25%"
+              fontFamily="Poppins"
+              fontWeight="900"
+            >
+              Thanks for signing up !
+            </Typography>
+          ): null}
 
           {/* Form component */}
           <Formik
@@ -301,7 +341,7 @@ const Form = () => {
                 : initialValuesRegisterVerify
             }
             validationSchema={
-              isLogin ? loginSchema : isRegister ? registerSchema : verifySchema
+              isLogin ? loginSchema : isRegister ? registerSchema :isVerify? verifySchema: null
             }
           >
             {({
@@ -468,19 +508,47 @@ const Form = () => {
                       />
                     </>
                   )}
+                  </Box>
                   {isVerify && (
-                    <TextField
-                      label="codeverify"
-                      onBlur={handleBlur}
-                      onChange={handleChange}
-                      value={values.otp}
-                      name="otp"
-                      error={Boolean(touched.otp) && Boolean(errors.otp)}
-                      helperText={touched.otp && errors.otp}
-                      sx={{ gridColumn: "span 4" }}
-                    />
+                    <div style={ {display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", alignContent: "center"}}>
+                      <ReactInputVerificationCode
+                        value={values.otp}
+                        onChange={(e) => setFieldValue("otp", e)}
+                        autoFocus={true}
+                        length={4}
+                        placeholder=""
+                        onComplete={(e) => setFieldValue("otp", e)}
+                        onCompleted={(e) => setFieldValue("otp", e)}
+                        style={{ display:"center",textAlign:"center" }}
+                      />
+                      </div>
+
                   )}
-                </Box>
+                  
+                
+                {isVerified &&(
+                    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", alignContent: "center" }}>
+                    <Typography
+                      variant="h4"
+                      color="black"
+                      marginBottom="40px"
+                      align="center"
+                      fontFamily="Poppins"
+                      fontWeight="200"
+                    >
+                      An approval email will be sent to you in less than 24H !
+                    </Typography>
+                    <img
+                      src={section2}
+                      alt=""
+                      style={{
+                        margin: "20px",
+                        // Your styles for the image
+                      }}
+                    />
+                  </div>
+                  
+                  )}
                 {isLogin && !isVerify && (
                   <>
                     <FormControlLabel
@@ -523,14 +591,16 @@ const Form = () => {
                       },
                     }}
                   >
-                    {isLogin ? "Sign In" :isRegister? "Sign Up": "Verify"}
+                    {isLogin ? "Sign In" :isRegister? "Sign Up":isVerify? "Verify": "Go to home page"} 
                   </Button>
                   <Typography
                     onClick={() => {
                       setPageType(
-                        isLogin ? "register" : isRegister ? "verify" : "login"
+                        isLogin ? "register" : isRegister ? "login" : null //change to ? "verify": "register" to test verify page
                       );
                       resetForm();
+                      isVerified && navigate("/");
+                      
                     }}
                     sx={{
                       textDecoration: "underline",
@@ -541,9 +611,13 @@ const Form = () => {
                       },
                     }}
                   >
-                    {isLogin
+                    {isLogin 
                       ? "Don't have an account? Sign Up here."
-                      : "Already have an account? Login here."}
+                      :isRegister
+                      ? "Already have an account? Login here."
+                      :null
+                      }
+                    
                   </Typography>
                 </Box>
               </form>

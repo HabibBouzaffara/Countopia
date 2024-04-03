@@ -11,6 +11,9 @@ export default function LandingPage() {
 
   return (
     <Box
+      className="landing-page-container"
+      >
+    <Box
       width="95%"
       margin="2rem"
       paddingBottom="20px"
@@ -62,6 +65,7 @@ export default function LandingPage() {
       </div>
       <Section2 />
       <Footer />
+    </Box>
     </Box>
   );
 }

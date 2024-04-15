@@ -23,6 +23,14 @@ export const register = async (req, res) => {
       status,
       role,
     } = req.body;
+    
+    const userCheck = await User.findOne({ email: email });
+    if (userCheck) return res.status(400).json({ msg: "User already exists" });
+
+    if (!name || !companyName || !codeFiscale || !email || !password || !phoneNumber || !location) {
+      return res.status(400).json({ msg: "All fields are required" });
+    }
+    
 
     const salt = await bcrypt.genSalt();
     const passwordHash = await bcrypt.hash(password, salt);
@@ -41,6 +49,8 @@ export const register = async (req, res) => {
       status,
       role,
     });
+
+
 
     const savedUser = await newUser.save();
 
@@ -88,6 +98,7 @@ export const login = async (req, res) => {
     const { email, password } = req.body;
     const user = await User.findOne({ email: email });
     if (!user) return res.status(400).json({ msg: "User does not exist. " });
+    if(!user.status) return res.status(400).json({ msg: "User not verified. " });
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) return res.status(400).json({ msg: "Invalid credentials. " });
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
@@ -150,4 +161,3 @@ export const verifyEmail = async (req, res) => {
   }
  
 };
-

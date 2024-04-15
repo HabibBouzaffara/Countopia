@@ -6,9 +6,9 @@ import tech2 from "../../../assets/tech2.svg";
 import tech3 from "../../../assets/tech3.svg";
 import tech4 from "../../../assets/tech4.svg";
 import tech5 from "../../../assets/tech5.svg";
-import card from "../../../assets/card1.svg";
-import card2 from "../../../assets/card2.svg";
-import card3 from "../../../assets/card3.svg";
+import card from "../../../assets/card1.png";
+import card2 from "../../../assets/card2.png";
+import card3 from "../../../assets/card3.png";
 
 export default function Section2() {
   return (

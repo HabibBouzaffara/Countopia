@@ -8,7 +8,9 @@ import {
   useTheme,
   FormControlLabel,
   Checkbox,
+  Snackbar,
 } from "@mui/material";
+import MuiAlert from '@mui/material/Alert';
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import { Formik } from "formik";
 import * as yup from "yup";
@@ -34,7 +36,8 @@ import ReactInputVerificationCode from "react-input-verification-code";
 
 const registerSchema = yup.object().shape({
   name: yup.string().required("required"),
-  codeFiscale: yup.string(),
+  companyName: yup.string().required("required"),
+  codeFiscale: yup.string().required("required"),
   email: yup.string().email("invalid email").required("required"),
   password: yup.string().required("required"),
   location: yup.string().required("required"),
@@ -79,6 +82,8 @@ const Form = () => {
   const [savedUserId, setSavedUserId] = useState("");
   const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
   const [pageType, setPageType] = useState("login");
+  const [openAlert, setOpenAlert] = useState(false);
+  const [alertMessage, setAlertMessage] = useState('');
   const { palette } = useTheme();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -90,13 +95,13 @@ const Form = () => {
   // const [rememberMe, setRememberMe] = useState(false);
 
   const register = async (values, onSubmitProps) => {
-    // this allows us to send form info with image
+    
     const formData = new FormData();
     for (let value in values) {
       formData.append(value, values[value]);
     }
     formData.append("picturePath", values.picture.name);
-
+    try{
     const savedUserResponse = await fetch(
       process.env.REACT_APP_BASE_URL + "/auth/register",
       {
@@ -105,6 +110,13 @@ const Form = () => {
       }
     );
     const savedUser = await savedUserResponse.json();
+
+    if (!savedUserResponse.ok) {
+      // Handle server error
+      setAlertMessage(savedUser.msg || 'Error occurred during login');
+      setOpenAlert(true);
+      return;
+    }
     onSubmitProps.resetForm();
 
     if (savedUser) {
@@ -112,8 +124,13 @@ const Form = () => {
       console.log(savedUser._id);
       setSavedUserId(savedUser._id);
     }
+    }catch(error){
+      setAlertMessage(error.msg || 'An error occurred. Please try again later.');
+      setOpenAlert(true);
+    }
   };
   const verifyEmail = async (otp, onSubmitProps, userId) => {
+    try{
     const verificationCode = await fetch(
       process.env.REACT_APP_BASE_URL + "/verify-email",
       {
@@ -124,49 +141,97 @@ const Form = () => {
     );
     const verification = await verificationCode.json();
 
+    if (!verificationCode.ok) {
+      // Handle server error
+      setAlertMessage(verification.msg || 'Error occurred during login');
+      setOpenAlert(true);
+      return;
+    }
+  
     if (verification) {
       setPageType("verified");
-    }
+    } 
+          
+  }catch(error){
+    setAlertMessage('An error occurred. Please try again later.');
+    setOpenAlert(true);
+  }
   };
 
   const login = async (values, onSubmitProps) => {
-    const loggedInResponse = await fetch(
-      process.env.REACT_APP_BASE_URL + "/auth/login",
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(values),
+      try {
+        const loggedInResponse = await fetch(
+          process.env.REACT_APP_BASE_URL + '/auth/login',
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(values),
+          }
+        );
+  
+        const loggedIn = await loggedInResponse.json();
+        if (!loggedInResponse.ok) {
+          // Handle server error
+          setAlertMessage(loggedIn.msg || 'Error occurred during login');
+          setOpenAlert(true);
+          return;
+        }
+        onSubmitProps.resetForm();
+  
+        if (loggedIn) {
+          dispatch(
+            setLogin({
+              user: loggedIn.user,
+              token: loggedIn.token,
+            })
+          );
+          navigate('/dashboard');
+        }
+      } catch (error) {
+        // Handle other errors (e.g., network error)
+        setAlertMessage('An error occurred. Please try again later.');
+        setOpenAlert(true);
       }
-    );
-    // console.log(loggedInResponse.body) ;
-    const loggedIn = await loggedInResponse.json();
-    onSubmitProps.resetForm();
-    if (loggedIn) {
-      dispatch(
-        setLogin({
-          user: loggedIn.user,
-          token: loggedIn.token,
-        })
-      );
-      // console.log(loggedIn.user);
-      navigate("/dashboard");
-    }
+    
   };
+    const handleCloseAlert = (event, reason) => {
+      if (reason === 'clickaway') {
+        return;
+      }
+      setOpenAlert(false);
+    };
 
-  const handleFormSubmit = async (values, onSubmitProps) => {
-    if (isLogin) {
-      // If Remember Me is checked, save the email in localStorage
-      if (values.rememberMe) {
-        localStorage.setItem("rememberedEmail", values.email);
-      } else {
-        localStorage.removeItem("rememberedEmail");
+  
+
+    const handleFormSubmit = async (values, onSubmitProps) => {
+      try {
+        if (isLogin) {
+          // If Remember Me is checked, save the email in localStorage
+          if (values.rememberMe) {
+            localStorage.setItem("rememberedEmail", values.email);
+          } else {
+            localStorage.removeItem("rememberedEmail");
+          }
+          await login(values, onSubmitProps);
+        } else if (isRegister) {
+          if (!values.name || !values.companyName || !values.codeFiscale || !values.email || !values.password || !values.location || !values.phoneNumber || !values.picture) {
+            throw new Error("All fields are required");
+          }
+          await register(values, onSubmitProps);
+        } else if (isVerify) {
+          if (!values.otp) {
+            throw new Error("OTP is required");
+          }
+          await verifyEmail(values.otp, onSubmitProps, savedUserId);
+        } else if (isVerified) {
+          navigate("/");
+        }
+      } catch (error) {
+        setAlertMessage(error.message);
+        setOpenAlert(true);
       }
-      await login(values, onSubmitProps);
-    }
-    if (isRegister) await register(values, onSubmitProps);
-    if (isVerify) await verifyEmail(values.otp, onSubmitProps, savedUserId);
-    if (isVerified) navigate("/");
-  };
+    };
+    
   const [showPassword, setShowPassword] = useState(false);
 
   const handleClickShowPassword = () => {
@@ -593,6 +658,22 @@ const Form = () => {
                   >
                     {isLogin ? "Sign In" :isRegister? "Sign Up":isVerify? "Verify": "Go to home page"} 
                   </Button>
+                      <Snackbar
+                        open={openAlert}
+                        autoHideDuration={4000}
+                        onClose={handleCloseAlert}
+                        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+                        sx={{ paddingBottom: '15px' }}
+                      >
+                        <MuiAlert
+                          elevation={6}
+                          variant="standard"
+                          severity="error"
+                          onClose={handleCloseAlert}
+                        >
+                         {alertMessage}
+                        </MuiAlert>
+                      </Snackbar>
                   <Typography
                     onClick={() => {
                       setPageType(

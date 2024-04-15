@@ -54,6 +54,7 @@ const upload = multer({ storage });
 app.post("/auth/register", upload.single("picture"), register);
 app.post("/verify-email", verifyEmail );
 
+
 /* Routes */
 app.use("/client", clientRoutes);
 // app.use("/general", generalRoutes);
@@ -62,6 +63,7 @@ app.use("/sales", salesRoutes);
 app.use("/auth", authRoutes);
 app.use("/users", userRoutes);
 app.use("/verify-email", verificationRoutes );
+
 
 /* Mongoose setup */
 const PORT = process.env.PORT || 9000;

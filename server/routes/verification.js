@@ -1,5 +1,5 @@
 import express from "express";
-import { verifyEmail } from "../controllers/auth.js";
+import {verifyEmail } from "../controllers/auth.js";
 
 const router = express.Router();
 

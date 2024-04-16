@@ -109,6 +109,16 @@ export const login = async (req, res) => {
   }
 };
 
+export const setLogout = async (req, res) => {
+  try {
+    const {_id} = req.body;
+    await User.findByIdAndUpdate(_id, { refreshToken: "" });
+    res.status(200).json({ msg: "Logged out successfully" });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+}
+
 export const verifyEmail = async (req, res) => {
   try {
       const {

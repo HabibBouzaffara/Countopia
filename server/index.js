@@ -15,7 +15,7 @@ import { fileURLToPath } from "url";
 import authRoutes from "./routes/auth.js";
 import userRoutes from "./routes/users.js";
 // import postRoutes from "./routes/posts.js";
-import { register, verifyEmail } from "./controllers/auth.js";
+import { register, setLogout, verifyEmail } from "./controllers/auth.js";
 import User from "./models/user.js";
 // import { createPost } from "./controllers/posts.js";
 // import { verifyToken } from "./middleware/auth.js";
@@ -23,7 +23,9 @@ import { admins, clients, users } from "./data/index.js";
 import Client from "./models/client.js";
 import Admin from "./models/admin.js";
 import verificationRoutes from "./routes/verification.js";
-
+import profileRoutes from "./routes/profile.js";
+import { modifyProfile } from "./controllers/profile.js";
+import setLogoutRoutes from "./routes/logout.js";
 
 /* Config */
 const __filename = fileURLToPath(import.meta.url);
@@ -53,6 +55,8 @@ const upload = multer({ storage });
 // ROUTES WITH FILES
 app.post("/auth/register", upload.single("picture"), register);
 app.post("/verify-email", verifyEmail );
+app.patch("/profile",modifyProfile)
+app.post("/setLogout",setLogout)
 
 
 /* Routes */
@@ -63,6 +67,8 @@ app.use("/sales", salesRoutes);
 app.use("/auth", authRoutes);
 app.use("/users", userRoutes);
 app.use("/verify-email", verificationRoutes );
+app.use("/profile",profileRoutes)
+app.use("/setLogout",setLogoutRoutes)
 
 
 /* Mongoose setup */

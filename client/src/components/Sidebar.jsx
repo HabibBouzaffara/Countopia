@@ -38,6 +38,10 @@ const navItems = [
     icon: <HomeOutlined />,
   },
   {
+    text: "Profile",
+    icon: <SettingsOutlined />,
+  },
+  {
     text: "Client Facing",
     icon: null,
   },
@@ -110,7 +114,7 @@ const Sidebar = ({
    if (!user) return null;
 
   return (
-    <Box component="nav">
+    <Box component="nav" backgroundColor="white">
       {isSidebarOpen && (
         <Drawer
           open={isSidebarOpen}
@@ -120,8 +124,7 @@ const Sidebar = ({
           sx={{
             width: drawerWidth,
             "& .MuiDrawer-paper": {
-              color: theme.palette.secondary[200],
-              backgroundColor: theme.palette.background.alt,
+              
               boxSixing: "border-box",
               borderWidth: isNonMobile ? 0 : "2px",
               width: drawerWidth,
@@ -130,8 +133,8 @@ const Sidebar = ({
         >
           <Box width="100%">
             <Box m="1.5rem 2rem 2rem 3rem">
-              <FlexBetween color={theme.palette.secondary.main}>
-                <Box display="flex" alignItems="center" gap="0.5rem">
+              <FlexBetween color="#9D8DFE">
+                <Box marginLeft="1.5rem" display="flex" alignItems="center" gap="0.5rem">
                   <Typography variant="h4" fontWeight="bold">
                     Countopia
                   </Typography>
@@ -147,7 +150,7 @@ const Sidebar = ({
               {navItems.map(({ text, icon }) => {
                 if (!icon) {
                   return (
-                    <Typography key={text} sx={{ m: "2.25rem 0 1rem 3rem" }}>
+                    <Typography key={text} sx={{ m: "2.25rem 0 1rem 3rem",color: "#C7C7C7" }}>
                       {text}
                     </Typography>
                   );
@@ -164,7 +167,7 @@ const Sidebar = ({
                       sx={{
                         backgroundColor:
                           active === lcText
-                            ? theme.palette.secondary[300]
+                            ? "rgba(157, 141, 254, 0.7)"
                             : "transparent",
                         color:
                           active === lcText
@@ -178,7 +181,7 @@ const Sidebar = ({
                           ml: "2rem",
                           color:
                             active === lcText
-                              ? theme.palette.primary[600]
+                              ? "#323DB3"
                               : theme.palette.secondary[200],
                         }}
                       >

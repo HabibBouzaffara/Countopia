@@ -4,10 +4,10 @@ import User from "../models/user.js";
 
 export const modifyProfile = async (req, res) => {
     try {
-        const { _id, oldPassword, newPassword,name,email,location,phoneNumber } = req.body;
+        const { _id, oldPassword, newPassword,name,email,location,phoneNumber,picturePath } = req.body;
         if ((oldPassword && !newPassword) || (!oldPassword && newPassword))
             return res.status(400).json({ msg: "Both old and new password are required to reset the password" });
-        if(!name && !email && !location && !phoneNumber && !oldPassword && !newPassword)
+        if(!name && !email && !location && !phoneNumber && !oldPassword && !newPassword && !picturePath)
             return res.status(400).json({ msg: "Nothing to update !" });
         const user = await User.findOne({ _id });
         if (!user)
@@ -37,10 +37,27 @@ export const modifyProfile = async (req, res) => {
         if (phoneNumber) {
             await User.updateOne({ _id }, { phoneNumber: phoneNumber });
         }
+        if (picturePath) {
+            await User.updateOne({ _id }, { picturePath: picturePath });
+        }
         await user.save();
         return res.status(200).json({ msg: "Profile updated successfully" });
             
         
+    } catch (err) {
+        return res.status(500).json({ error: err.message });
+    }
+}
+
+
+export const deletePicture = async (req, res) => {
+    try {
+        const { _id } = req.body;
+        const user = await User.findOne({ _id });
+        if (!user)
+            return res.status(400).json({ msg: "User not found" });
+        await User.updateOne({ _id }, { picturePath: "default.png" });
+        return res.status(200).json({ msg: "Profile picture deleted successfully" });
     } catch (err) {
         return res.status(500).json({ error: err.message });
     }

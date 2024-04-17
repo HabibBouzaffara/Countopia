@@ -24,8 +24,9 @@ import Client from "./models/client.js";
 import Admin from "./models/admin.js";
 import verificationRoutes from "./routes/verification.js";
 import profileRoutes from "./routes/profile.js";
-import { modifyProfile } from "./controllers/profile.js";
+import { deletePicture, modifyProfile } from "./controllers/profile.js";
 import setLogoutRoutes from "./routes/logout.js";
+import picRoutes from "./routes/deletePic.js";
 
 /* Config */
 const __filename = fileURLToPath(import.meta.url);
@@ -55,8 +56,9 @@ const upload = multer({ storage });
 // ROUTES WITH FILES
 app.post("/auth/register", upload.single("picture"), register);
 app.post("/verify-email", verifyEmail );
-app.patch("/profile",modifyProfile)
+app.patch("/profile",upload.single("picture"),modifyProfile)
 app.post("/setLogout",setLogout)
+app.patch("/delete-picture",deletePicture)
 
 
 /* Routes */
@@ -67,8 +69,9 @@ app.use("/sales", salesRoutes);
 app.use("/auth", authRoutes);
 app.use("/users", userRoutes);
 app.use("/verify-email", verificationRoutes );
-app.use("/profile",profileRoutes)
+// app.use("/profile",profileRoutes)
 app.use("/setLogout",setLogoutRoutes)
+app.use("/delete-picture", picRoutes);
 
 
 /* Mongoose setup */

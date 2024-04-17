@@ -10,7 +10,7 @@ import Profile from "scenes/profile";
 import LoginPage from "./scenes/loginPage";
 import LandingPage from "scenes/landing.Page/LandingPage";
 import state from "state";
-
+import Admins from "scenes/adminsManagement";
 
 function App() {
   const mode = useSelector((state) => state.mode);
@@ -26,12 +26,16 @@ function App() {
           <Routes>
             {/* <Route path="/" element={<LoginPage />} /> */}
             <Route path="/" element={<LandingPage />} />
-            <Route path="/auth" element={isAuth? <Navigate to="/profile" />:<LoginPage />} />
-               <Route element={isAuth?<Layout />:<Navigate to="/auth" />}> 
-                <Route path="/profile" element={<Profile />} /> 
-                <Route path="/dashboard" element={<Dashboard />} />
+            <Route
+              path="/auth"
+              element={isAuth ? <Navigate to="/profile" /> : <LoginPage />}
+            />
+            <Route element={isAuth ? <Layout /> : <Navigate to="/auth" />}>
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/admins" element={<Admins />} />
               {/* <Route path="/dashboard" element={<Dashboard />} /> */}
-              </Route>   
+            </Route>
           </Routes>
         </ThemeProvider>
       </BrowserRouter>

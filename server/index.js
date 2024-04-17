@@ -26,6 +26,8 @@ import verificationRoutes from "./routes/verification.js";
 import profileRoutes from "./routes/profile.js";
 import { deletePicture, modifyProfile } from "./controllers/profile.js";
 import setLogoutRoutes from "./routes/logout.js";
+import { getAdmins } from "./controllers/admins.js";
+import adminsRoutes from "./routes/admins.js";
 import picRoutes from "./routes/deletePic.js";
 
 /* Config */
@@ -55,10 +57,10 @@ const upload = multer({ storage });
 
 // ROUTES WITH FILES
 app.post("/auth/register", upload.single("picture"), register);
-app.post("/verify-email", verifyEmail );
-app.patch("/profile",upload.single("picture"),modifyProfile)
-app.post("/setLogout",setLogout)
-app.patch("/delete-picture",deletePicture)
+app.post("/verify-email", verifyEmail);
+app.patch("/profile",upload.single("picture"), modifyProfile);
+app.post("/setLogout", setLogout);
+app.get("/admins", getAdmins);app.patch("/delete-picture",deletePicture)
 
 
 /* Routes */
@@ -68,10 +70,10 @@ app.use("/management", managementRoutes);
 app.use("/sales", salesRoutes);
 app.use("/auth", authRoutes);
 app.use("/users", userRoutes);
-app.use("/verify-email", verificationRoutes );
-// app.use("/profile",profileRoutes)
-app.use("/setLogout",setLogoutRoutes)
-app.use("/delete-picture", picRoutes);
+app.use("/verify-email", verificationRoutes);
+// app.use("/profile", profileRoutes);
+app.use("/setLogout", setLogoutRoutes);
+app.use("/admins", adminsRoutes);app.use("/delete-picture", picRoutes);
 
 
 /* Mongoose setup */
@@ -86,11 +88,10 @@ mongoose
     app.listen(PORT, () => console.log(`Server Port: ${PORT}`));
 
     // ADD DATA ONE TIME
-   //User.insertMany(users);
-   //Client.insertMany(clients);
-   //Admin.insertMany(admins); 
-  //  users.updateMany({ role: 'user' }, { role: 'client' });
-  
+    //User.insertMany(users);
+    //Client.insertMany(clients);
+    //Admin.insertMany(admins);
+    //  users.updateMany({ role: 'user' }, { role: 'client' });
   })
   .catch((error) => {
     console.log(`${error} did not connect`);

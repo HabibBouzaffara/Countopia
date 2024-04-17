@@ -17,16 +17,12 @@ import {
   ChevronLeft,
   ChevronRightOutlined,
   HomeOutlined,
-  ShoppingCartOutlined,
   Groups2Outlined,
   ReceiptLongOutlined,
-  PublicOutlined,
   PointOfSaleOutlined,
-  TodayOutlined,
   CalendarMonthOutlined,
   AdminPanelSettingsOutlined,
   TrendingUpOutlined,
-  PieChartOutlined,
 } from "@mui/icons-material";
 
 import { useLocation, useNavigate } from "react-router-dom";
@@ -45,10 +41,7 @@ const navItems = [
     text: "Client Facing",
     icon: null,
   },
-  {
-    text: "Products",
-    icon: <ShoppingCartOutlined />,
-  },
+
   {
     text: "Customers",
     icon: <Groups2Outlined />,
@@ -57,10 +50,7 @@ const navItems = [
     text: "Transactions",
     icon: <ReceiptLongOutlined />,
   },
-  {
-    text: "Geography",
-    icon: <PublicOutlined />,
-  },
+
   {
     text: "Sales",
     icon: null,
@@ -70,23 +60,16 @@ const navItems = [
     icon: <PointOfSaleOutlined />,
   },
   {
-    text: "Daily",
-    icon: <TodayOutlined />,
-  },
-  {
     text: "Monthly",
     icon: <CalendarMonthOutlined />,
   },
-  {
-    text: "Breakdown",
-    icon: <PieChartOutlined />,
-  },
+
   {
     text: "Management",
     icon: null,
   },
   {
-    text: "Admin",
+    text: "Admins",
     icon: <AdminPanelSettingsOutlined />,
   },
   {
@@ -102,16 +85,16 @@ const Sidebar = ({
   setIsSidebarOpen,
   isNonMobile,
 }) => {
-  const{ pathname } = useLocation();
+  const { pathname } = useLocation();
   const navigate = useNavigate();
   const theme = useTheme();
   const [active, setActive] = useState("");
-  
-   useEffect(() => {
-     setActive(pathname.substring(1));
-   }, [pathname]); // eslint-disable-line react-hooks/exhaustive-deps
 
-   if (!user) return null;
+  useEffect(() => {
+    setActive(pathname.substring(1));
+  }, [pathname]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  if (!user) return null;
 
   return (
     <Box component="nav" backgroundColor="white">
@@ -124,7 +107,6 @@ const Sidebar = ({
           sx={{
             width: drawerWidth,
             "& .MuiDrawer-paper": {
-              
               boxSixing: "border-box",
               borderWidth: isNonMobile ? 0 : "2px",
               width: drawerWidth,
@@ -134,7 +116,12 @@ const Sidebar = ({
           <Box width="100%">
             <Box m="1.5rem 2rem 2rem 3rem">
               <FlexBetween color="#9D8DFE">
-                <Box marginLeft="1.5rem" display="flex" alignItems="center" gap="0.5rem">
+                <Box
+                  marginLeft="1.5rem"
+                  display="flex"
+                  alignItems="center"
+                  gap="0.5rem"
+                >
                   <Typography variant="h4" fontWeight="bold">
                     Countopia
                   </Typography>
@@ -150,7 +137,10 @@ const Sidebar = ({
               {navItems.map(({ text, icon }) => {
                 if (!icon) {
                   return (
-                    <Typography key={text} sx={{ m: "2.25rem 0 1rem 3rem",color: "#C7C7C7" }}>
+                    <Typography
+                      key={text}
+                      sx={{ m: "2.25rem 0 1rem 3rem", color: "#C7C7C7" }}
+                    >
                       {text}
                     </Typography>
                   );
@@ -204,14 +194,15 @@ const Sidebar = ({
               <Box
                 component="img"
                 alt="profile"
-                src={ process.env.REACT_APP_BASE_URL+"/assets/"+ user.picturePath}
+                src={
+                  process.env.REACT_APP_BASE_URL + "/assets/" + user.picturePath
+                }
                 height="40px"
                 width="40px"
                 borderRadius="50%"
                 sx={{ objectFit: "cover" }}
               />
-              
-              
+
               <Box textAlign="left">
                 <Typography
                   fontWeight="bold"
@@ -224,7 +215,11 @@ const Sidebar = ({
                   fontSize="0.8rem"
                   sx={{ color: theme.palette.secondary[200] }}
                 >
-                  {(user.role==="admin") ?"Admin":( (user.role==="superadmin")?"Superadmin":"Client")}
+                  {user.role === "admin"
+                    ? "Admin"
+                    : user.role === "superadmin"
+                    ? "Superadmin"
+                    : "Client"}
                 </Typography>
               </Box>
               <SettingsOutlined
@@ -234,7 +229,7 @@ const Sidebar = ({
                 }}
               />
             </FlexBetween>
-          </Box> 
+          </Box>
         </Drawer>
       )}
     </Box>

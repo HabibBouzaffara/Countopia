@@ -27,9 +27,16 @@ export const register = async (req, res) => {
     const userCheck = await User.findOne({ email: email });
     if (userCheck) return res.status(400).json({ msg: "User already exists" });
 
-    if (!name || !companyName || !codeFiscale || !email || !password || !phoneNumber || !location) {
-      return res.status(400).json({ msg: "All fields are required" });
+    if(role==="client"){
+      if (!name || !companyName || !codeFiscale || !email || !password || !phoneNumber || !location) {
+        return res.status(400).json({ msg: "All fields are required" });
+      }
+    }else if(role==="admin"){
+      if (!name || !email || !password || !phoneNumber || !location) {
+        return res.status(400).json({ msg: "All fields are required" });
+      }
     }
+    
     
 
     const salt = await bcrypt.genSalt();

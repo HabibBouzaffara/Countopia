@@ -58,7 +58,7 @@ export default function AdminCard({ user }) {
               width: "150px",
               height: "40px",
               marginRight: "20px",
-              marginTop: "-70px",
+              marginBottom: "70px",
             }}
           >
             <PersonAddAltOutlinedIcon
@@ -72,9 +72,8 @@ export default function AdminCard({ user }) {
               borderRadius: "20px",
               border: "1px solid #A6A6A6",
               backgroundColor: "white",
-              marginTop: "-70px",
+              marginBottom: "70px",
               height: "40px",
-              width: "20px",
             }}
           >
             <PersonRemoveOutlinedIcon

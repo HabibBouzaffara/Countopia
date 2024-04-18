@@ -22,8 +22,7 @@ import {
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
-
-const Navbar = ({user, isSidebarOpen, setIsSidebarOpen }) => {
+const Navbar = ({ user, isSidebarOpen, setIsSidebarOpen }) => {
   const dispatch = useDispatch();
   const theme = useTheme();
   const [anchorEl, setAnchorEl] = useState(null);
@@ -32,7 +31,7 @@ const Navbar = ({user, isSidebarOpen, setIsSidebarOpen }) => {
   const handleClose = () => setAnchorEl(null);
   const navigate = useNavigate();
 
-  const handleLogout = async() => {
+  const handleLogout = async () => {
     try {
       await fetch(`${process.env.REACT_APP_BASE_URL}/setLogout`, {
         method: "POST",
@@ -44,13 +43,18 @@ const Navbar = ({user, isSidebarOpen, setIsSidebarOpen }) => {
     } catch (err) {
       console.log(err);
     }
-  }
+  };
 
   if (!user) return null;
   return (
     <AppBar
       position="static"
-      sx={{ background: "none", boxShadow: "none", mb: "1.5rem",backgroundColor:"white" }}
+      sx={{
+        background: "none",
+        boxShadow: "none",
+        mb: "1.5rem",
+        backgroundColor: "white",
+      }}
     >
       <Toolbar sx={{ justifyContent: "space-between" }}>
         {/* LEFT SIDE */}
@@ -79,10 +83,10 @@ const Navbar = ({user, isSidebarOpen, setIsSidebarOpen }) => {
               <LightModeOutlined sx={{ fontSize: "25px" }} />
             )}
           </IconButton> */}
-          <IconButton
-            
-          >
-            <SettingsOutlined sx={{ fontSize: "25px", color: theme.palette.secondary[300] }} />
+          <IconButton>
+            <SettingsOutlined
+              sx={{ fontSize: "25px", color: theme.palette.secondary[300] }}
+            />
           </IconButton>
 
           <FlexBetween>
@@ -99,7 +103,9 @@ const Navbar = ({user, isSidebarOpen, setIsSidebarOpen }) => {
               <Box
                 component="img"
                 alt="profile"
-                src={process.env.REACT_APP_BASE_URL+"/assets/"+ user.picturePath}
+                src={
+                  process.env.REACT_APP_BASE_URL + "/assets/" + user.picturePath
+                }
                 height="32px"
                 width="32px"
                 borderRadius="50%"
@@ -117,7 +123,11 @@ const Navbar = ({user, isSidebarOpen, setIsSidebarOpen }) => {
                   fontSize="0.75rem"
                   sx={{ color: theme.palette.secondary[200] }}
                 >
-                  {(user.role==="admin") ?"Admin":( (user.role==="superadmin")?"Superadmin":"Client")}
+                  {user.role === "admin"
+                    ? "Admin"
+                    : user.role === "superadmin"
+                    ? "Superadmin"
+                    : "Client"}
                 </Typography>
               </Box>
               <ArrowDropDownOutlined
@@ -130,9 +140,21 @@ const Navbar = ({user, isSidebarOpen, setIsSidebarOpen }) => {
               onClose={handleClose}
               anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
             >
-              <MenuItem sx={{width: "80px",height:"30px",alignItems:"center",justifyContent:"center" }} onClick={handleClose}><Button sx={{color:"black",}} onClick={handleLogout}>Log out</Button></MenuItem>
+              <MenuItem
+                sx={{
+                  width: "80px",
+                  height: "30px",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+                onClick={handleClose}
+              >
+                <Button sx={{ color: "black" }} onClick={handleLogout}>
+                  Log out
+                </Button>
+              </MenuItem>
             </Menu>
-          </FlexBetween> 
+          </FlexBetween>
         </FlexBetween>
       </Toolbar>
     </AppBar>

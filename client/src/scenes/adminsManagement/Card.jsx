@@ -1,9 +1,12 @@
 import { Box, Button } from "@mui/material";
-import React from "react"; // Assuming you are using Material-UI
+import React ,{useState} from "react"; 
 import PersonAddAltOutlinedIcon from "@mui/icons-material/PersonAddAltOutlined";
 import PersonRemoveOutlinedIcon from "@mui/icons-material/PersonRemoveOutlined";
+import DeleteConfirmationDialog from "./DeleteConfirmationDialog";
 
 const AdminCard = ({ user, refreshPage }) => {
+  const[openConfirmationDialog, setOpenConfirmationDialog] = useState(false);
+  
   const handleRemoveUser = async () => {
     try {
       const response = await fetch(process.env.REACT_APP_BASE_URL + "/admin", {
@@ -14,15 +17,25 @@ const AdminCard = ({ user, refreshPage }) => {
       if (!response.ok) {
         throw new Error("Failed to remove admin");
       }
+      
       refreshPage();
     } catch (err) {
       console.log(err);
     }
   };
   const handleRemoveClick = async () => {
-    // Call the onRemove function passed as a prop with the user object
-    await handleRemoveUser();
+    
+    setOpenConfirmationDialog(true);
   };
+  const handleConfirmDelete = async () => {
+    await handleRemoveUser();
+    setOpenConfirmationDialog(false);
+  };
+
+  const handleCancelDelete =  () => {
+    setOpenConfirmationDialog(false);
+  };
+  
   return (
     <Box
       width={"100%"}
@@ -104,7 +117,13 @@ const AdminCard = ({ user, refreshPage }) => {
               fontWeight={"normal"}
             ></PersonRemoveOutlinedIcon>
           </Button>
+          <DeleteConfirmationDialog
+        isOpen={openConfirmationDialog}
+        onConfirm={handleConfirmDelete}
+        onCancel={handleCancelDelete}
+      />
         </Box>
+        
       </Box>
 
       <Box

@@ -32,49 +32,57 @@ const navItems = [
   {
     text: "Dashboard",
     icon: <HomeOutlined />,
+    role: ["client", "admin", "superadmin"],
   },
   {
     text: "Profile",
     icon: <SettingsOutlined />,
+    role: ["client", "admin", "superadmin"],
   },
   {
     text: "Client Facing",
     icon: null,
+    role: ["client", "admin", "superadmin"],
   },
-
   {
-    text: "Customers",
+    text: "Clients",
     icon: <Groups2Outlined />,
+    role: ["client", "admin", "superadmin"],
   },
   {
     text: "Transactions",
     icon: <ReceiptLongOutlined />,
+    role: ["client", "admin", "superadmin"],
   },
-
   {
     text: "Sales",
     icon: null,
+    role: ["client", "admin", "superadmin"],
   },
   {
     text: "Overview",
     icon: <PointOfSaleOutlined />,
+    role: ["client", "admin", "superadmin"],
   },
   {
     text: "Monthly",
     icon: <CalendarMonthOutlined />,
+    role: ["client", "admin", "superadmin"],
   },
-
   {
     text: "Management",
     icon: null,
+    role: ["admin", "superadmin"],
   },
   {
     text: "Admins",
     icon: <AdminPanelSettingsOutlined />,
+    role: ["superadmin"],
   },
   {
     text: "Performance",
     icon: <TrendingUpOutlined />,
+    role: ["client", "admin", "superadmin"],
   },
 ];
 
@@ -93,6 +101,10 @@ const Sidebar = ({
   useEffect(() => {
     setActive(pathname.substring(1));
   }, [pathname]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const filteredNavItems = navItems.filter(({ role }) =>
+    role.includes(user.role)
+  );
 
   if (!user) return null;
 
@@ -134,7 +146,7 @@ const Sidebar = ({
               </FlexBetween>
             </Box>
             <List>
-              {navItems.map(({ text, icon }) => {
+              {filteredNavItems.map(({ text, icon }) => {
                 if (!icon) {
                   return (
                     <Typography

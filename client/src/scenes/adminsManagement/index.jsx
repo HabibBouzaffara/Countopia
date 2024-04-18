@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import AdminCard from "./Card";
-import { Box, Button, Typography } from "@mui/material";
-import PersonAddAltOutlinedIcon from "@mui/icons-material/PersonAddAltOutlined";
+import { Box, Typography } from "@mui/material"; // Removed unnecessary Button import
 
 const Admins = () => {
   const [user, setUser] = useState(null);
@@ -23,6 +22,9 @@ const Admins = () => {
   useEffect(() => {
     getAdmins();
   }, []);
+  const refreshPage = async () => {
+    await getAdmins();
+  };
   if (!user) return null;
 
   console.log(user);
@@ -43,27 +45,14 @@ const Admins = () => {
       >
         Admins
       </Typography>
-      {/* <Button
-        display={"flex-end"}
-        justifyContent={"space-between"}
-        variant="contained"
-        style={{
-          fontWeight: "normal",
-          borderRadius: "20px",
-          backgroundColor: "#BFB5FF",
-          width: "150px",
-          height: "40px",
-        }}
-      >
-        <PersonAddAltOutlinedIcon
-          style={{ marginRight: "10px", fontWeight: "normal" }}
-        />
-        Assign Client
-      </Button> */}
       <div style={{ paddingBottom: "30px" }}>
         {user.map((user, index) => (
           <Box marginRight={"50px"} marginLeft={"40px"}>
-            <AdminCard key={index} user={user}></AdminCard>
+            <AdminCard
+              key={index}
+              user={user}
+              refreshPage={refreshPage}
+            ></AdminCard>
           </Box>
         ))}
       </div>

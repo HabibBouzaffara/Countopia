@@ -6,6 +6,7 @@ import dotenv from "dotenv";
 import helmet from "helmet";
 import morgan from "morgan";
 import clientRoutes from "./routes/client.js";
+
 // import generalRoutes from "./routes/general.js";
 import managementRoutes from "./routes/management.js";
 import salesRoutes from "./routes/sales.js";
@@ -28,6 +29,8 @@ import { modifyProfile } from "./controllers/profile.js";
 import setLogoutRoutes from "./routes/logout.js";
 import { getAdmins } from "./controllers/admins.js";
 import adminsRoutes from "./routes/admins.js";
+import { deleteAdmin } from "./controllers/management.js";
+import deleteAdminRoutes from "./routes/management.js";
 
 /* Config */
 const __filename = fileURLToPath(import.meta.url);
@@ -60,6 +63,7 @@ app.post("/verify-email", verifyEmail);
 app.patch("/profile", modifyProfile);
 app.post("/setLogout", setLogout);
 app.get("/admins", getAdmins);
+app.delete("/admin", deleteAdmin);
 
 /* Routes */
 app.use("/client", clientRoutes);
@@ -72,6 +76,7 @@ app.use("/verify-email", verificationRoutes);
 app.use("/profile", profileRoutes);
 app.use("/setLogout", setLogoutRoutes);
 app.use("/admins", adminsRoutes);
+app.use("/admin", deleteAdminRoutes);
 
 /* Mongoose setup */
 const PORT = process.env.PORT || 9000;

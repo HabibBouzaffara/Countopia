@@ -71,6 +71,9 @@ const Admins = () => {
   useEffect(() => {
     getAdmins();
   }, []);
+  const refreshPage = async () => {
+    await getAdmins();
+  };
   if (!user) return null;
 
    console.log(user);
@@ -110,7 +113,11 @@ const Admins = () => {
       <div style={{ paddingBottom: "30px" }}>
         {user.map((user, index) => (
           <Box marginRight={"50px"} marginLeft={"40px"}>
-            <AdminCard key={index} user={user}></AdminCard>
+            <AdminCard
+              key={index}
+              user={user}
+              refreshPage={refreshPage}
+            ></AdminCard>
           </Box>
         ))}
       </div>

@@ -3,7 +3,26 @@ import React from "react"; // Assuming you are using Material-UI
 import PersonAddAltOutlinedIcon from "@mui/icons-material/PersonAddAltOutlined";
 import PersonRemoveOutlinedIcon from "@mui/icons-material/PersonRemoveOutlined";
 
-export default function AdminCard({ user }) {
+const AdminCard = ({ user, refreshPage }) => {
+  const handleRemoveUser = async () => {
+    try {
+      const response = await fetch(process.env.REACT_APP_BASE_URL + "/admin", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ _id: user._id }),
+      });
+      if (!response.ok) {
+        throw new Error("Failed to remove admin");
+      }
+      refreshPage();
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  const handleRemoveClick = async () => {
+    // Call the onRemove function passed as a prop with the user object
+    await handleRemoveUser();
+  };
   return (
     <Box
       width={"100%"}
@@ -67,6 +86,7 @@ export default function AdminCard({ user }) {
             Assign Client
           </Button>
           <Button
+            onClick={handleRemoveClick}
             variant="contained"
             style={{
               borderRadius: "20px",
@@ -122,4 +142,5 @@ export default function AdminCard({ user }) {
       </Box>
     </Box>
   );
-}
+};
+export default AdminCard;

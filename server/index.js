@@ -32,6 +32,8 @@ import adminsRoutes from "./routes/admins.js";
 import picRoutes from "./routes/deletePic.js";
 import { deleteAdmin } from "./controllers/management.js";
 import deleteAdminRoutes from "./routes/management.js";
+import { getClients } from "./controllers/clients.js";
+import clientsRoutes from "./routes/clients.js";
 
 /* Config */
 const __filename = fileURLToPath(import.meta.url);
@@ -63,8 +65,9 @@ app.post("/auth/register", upload.single("picture"), register);
 app.post("/verify-email", verifyEmail);
 app.patch("/profile",upload.single("picture"), modifyProfile);
 app.post("/setLogout", setLogout);
-app.get("/admins", getAdmins);app.patch("/delete-picture",deletePicture)
-
+app.get("/admins", getAdmins);
+app.patch("/delete-picture",deletePicture)
+app.get("/clients", getClients);
 app.delete("/admin", deleteAdmin);
 
 /* Routes */
@@ -80,7 +83,7 @@ app.use("/setLogout", setLogoutRoutes);
 app.use("/admins", adminsRoutes);app.use("/delete-picture", picRoutes);
 
 app.use("/admin", deleteAdminRoutes);
-
+app.use("/clients", clientsRoutes);
 /* Mongoose setup */
 const PORT = process.env.PORT || 9000;
 mongoose.set("strictQuery", true);

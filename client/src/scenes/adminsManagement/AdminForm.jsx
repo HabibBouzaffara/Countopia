@@ -19,8 +19,13 @@ const AdminForm = ({ open, handleClose, handleSubmit }) => {
     },
     onSubmit: (values) => {
       handleSubmit(values);
+      formik.resetForm();
     },
   });
+  const handleCancel = () => {
+    formik.resetForm(); // Reset the form
+    handleClose(); // Close the dialog
+  };
 
   return (
     <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm" PaperProps={{
@@ -30,13 +35,13 @@ const AdminForm = ({ open, handleClose, handleSubmit }) => {
       }}>
       <DialogTitle sx={{ textAlign: "center", fontWeight: "bold",color: "#BFB5FF", fontSize: "20px" }}>
         Create New Admin
-        <IconButton aria-label="close" onClick={handleClose} sx={{ position: 'absolute', right: 8, top: 8 }}>
+        <IconButton aria-label="close" onClick={handleCancel} sx={{ position: 'absolute', right: 8, top: 8 }}>
           <CloseIcon sx={{ color: "#BFB5FF",border: "1px solid #BFB5FF", borderRadius: "50%" }} />
         </IconButton>
       </DialogTitle>
       <DialogContent>
         {/* Form fields */}
-        <form onSubmit={formik.handleSubmit}>
+        <form onSubmit={formik.handleSubmit} onClose={handleClose}>
           <Grid container spacing={2}>
             <Grid item xs={6}>
               <TextField
@@ -142,7 +147,7 @@ const AdminForm = ({ open, handleClose, handleSubmit }) => {
           <Grid item xs={12}>
 
           <DialogActions sx={{ display: "flex", justifyContent: "flex-end" }}>
-            <Button onClick={handleClose} color="error" variant="outlined" sx={{ borderRadius: "15px",width:"100px" }}>
+            <Button onClick={handleCancel} color="error" variant="outlined" sx={{ borderRadius: "15px",width:"100px" }}>
               Cancel
             </Button>
             <Button type="submit" color="primary"  sx={{ backgroundColor: "#BFB5FF",borderRadius: "15px",width:"100px"}}>

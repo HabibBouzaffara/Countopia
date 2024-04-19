@@ -3,9 +3,11 @@ import React ,{useState} from "react";
 import PersonAddAltOutlinedIcon from "@mui/icons-material/PersonAddAltOutlined";
 import PersonRemoveOutlinedIcon from "@mui/icons-material/PersonRemoveOutlined";
 import DeleteConfirmationDialog from "./DeleteConfirmationDialog";
+import AssignClientDialog from "./AssignClientDialog";
 
 const AdminCard = ({ user, refreshPage }) => {
   const[openConfirmationDialog, setOpenConfirmationDialog] = useState(false);
+  const[openAssignClient, setOpenAssignClient] = useState(false);
   
   const handleRemoveUser = async () => {
     try {
@@ -35,6 +37,16 @@ const AdminCard = ({ user, refreshPage }) => {
   const handleCancelDelete =  () => {
     setOpenConfirmationDialog(false);
   };
+
+  const handleAssignClick = async () => {
+    setOpenAssignClient(true);
+  }
+
+  const handleConfirmAssign = async () => {
+    setOpenAssignClient(false);
+  }
+
+
   
   return (
     <Box
@@ -83,6 +95,7 @@ const AdminCard = ({ user, refreshPage }) => {
         <Box>
           <Button
             variant="contained"
+            onClick={handleAssignClick}
             style={{
               fontWeight: "normal",
               borderRadius: "20px",
@@ -98,6 +111,11 @@ const AdminCard = ({ user, refreshPage }) => {
             />
             Assign Client
           </Button>
+          <AssignClientDialog
+            admin={user}
+            isOpen={openAssignClient}
+            onClose={handleConfirmAssign}
+          />
           <Button
             onClick={handleRemoveClick}
             variant="contained"

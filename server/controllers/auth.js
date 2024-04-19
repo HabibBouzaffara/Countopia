@@ -69,18 +69,8 @@ export const register = async (req, res) => {
         codeFiscale,
         factures,
       });
-      await newClient.save();
-    } else if (savedUser.role === "admin") {
-      const newAdmin = new Admin({
-        adminId: savedUser._id, // Reference to the newly saved user
-        clients,
-      });
-      await newAdmin.save();
-    }
-
-    // Generate OTP and save verification token
-    const OTP = generateOTP();
-    const newVerificationToken = new verificationToken({
+      const OTP = generateOTP();
+      const newVerificationToken = new verificationToken({
       owner: savedUser._id, // Assuming you have a field to store user's ID in verificationToken
       token: OTP
     });
@@ -93,6 +83,17 @@ export const register = async (req, res) => {
       subject: "Account Verification",
       html: generateVerificationEmailHTML(savedUser.name, OTP),
     })
+      await newClient.save();
+    } else if (savedUser.role === "admin") {
+      const newAdmin = new Admin({
+        adminId: savedUser._id, // Reference to the newly saved user
+        clients,
+      });
+      await newAdmin.save();
+    }
+
+    // Generate OTP and save verification token
+    
     res.status(201).json(savedUser);
   } catch (err) {
     res.status(500).json({ error: err.message });

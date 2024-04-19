@@ -1,12 +1,19 @@
 import React, { useEffect, useState } from "react";
 import AdminCard from "./Card";
-import { Box, Button, Typography } from "@mui/material";
+import { Box, Button, Snackbar, Typography } from "@mui/material";
 import PersonAddAltOutlinedIcon from "@mui/icons-material/PersonAddAltOutlined";
 import AdminForm from "./AdminForm";
+import UserInfo from "state/userInfo";
+import WarningAmberOutlinedIcon from '@mui/icons-material/WarningAmberOutlined';
+import MuiAlert from '@mui/material/Alert';
 
 const Admins = () => {
+  const [openAlert, setOpenAlert] = useState(false);
+  const [alertMessage, setAlertMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState(false);
   const [user, setUser] = useState(null);
   const [open, setOpen] = useState(false); // State to control the dialog visibility
+  const superadmin=UserInfo();
 
 
   const handleOpen = () => {
@@ -32,16 +39,18 @@ const Admins = () => {
         body: formData,
       }
     );
-    const savedUser = await savedUserResponse.json();
+    const data = await savedUserResponse.json();
+      if (!savedUserResponse.ok) {
+        setAlertMessage(data.msg);
+        setErrorMessage(true)
+        setOpenAlert(true);
+      } else {
+        setAlertMessage(data.msg || ' Admin Created successfully');
+        setErrorMessage(false)
+        setOpenAlert(true);
+        
+      }
 
-    if (!savedUserResponse.ok) {
-      // Handle server error
-      console.log(savedUser);
-      return;
-    }
-    if (savedUser) {
-      console.log(savedUser._id);
-    }
     }catch(error){
       console.log(error);
     }
@@ -73,10 +82,33 @@ const Admins = () => {
   }, []);
   const refreshPage = async () => {
     await getAdmins();
+    setAlertMessage(' Admin Deleted successfully');
+    setErrorMessage(false)
+    setOpenAlert(true);
   };
+
+  const handleCloseAlert = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setOpenAlert(false);
+  };
+
   if (!user) return null;
 
-   console.log(user);
+  if (superadmin && superadmin.role) {
+    if (superadmin.role !== "superadmin") return (
+    
+    <Box textAlign="center" mt={12}>
+    <WarningAmberOutlinedIcon sx={{ fontSize: 300, color: "rgba(255, 0, 0, 0.6)" }} />
+    <Typography variant="h1" gutterBottom style={{ color: "rgba(255, 0, 0, 0.7)", fontWeight: "bold" }}>
+      Access Denied
+    </Typography>
+    <Typography variant="h2" style={{ color: "rgba(255, 0, 0, 0.6)" }}>
+      This page is only visible to superadmins.
+    </Typography>
+  </Box>);
+  }
 
   return (
     <>
@@ -111,10 +143,9 @@ const Admins = () => {
 
   </div>
       <div style={{ paddingBottom: "30px" }}>
-        {user.map((user, index) => (
-          <Box marginRight={"50px"} marginLeft={"40px"}>
-            <AdminCard
-              key={index}
+        {user.map((user) => (
+          <Box key={user._id} marginRight={"50px"} marginLeft={"40px"}>
+            <AdminCard       
               user={user}
               refreshPage={refreshPage}
             ></AdminCard>
@@ -122,6 +153,22 @@ const Admins = () => {
         ))}
       </div>
       <AdminForm open={open} handleClose={handleClose} handleSubmit={handleSubmit} />
+      <Snackbar
+            open={openAlert}
+            autoHideDuration={4000}
+            onClose={handleCloseAlert}
+            anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+            sx={{ paddingBottom: '15px' }}
+          >
+            <MuiAlert
+              elevation={6}
+              variant="standard"
+              severity={errorMessage ? 'error' : 'success'}
+              onClose={handleCloseAlert}
+            >
+              {alertMessage}
+            </MuiAlert>
+          </Snackbar>
     </>
   );
 };

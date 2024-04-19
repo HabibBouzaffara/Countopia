@@ -1,9 +1,11 @@
-import { Box, Button, Snackbar, TextField, Typography, Input } from "@mui/material";
+import { Box, Button, TextField, Typography, Input } from "@mui/material";
 import { Formik } from "formik";
 import React, { useState } from "react";
 import UserInfo from "state/userInfo";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
-import MuiAlert from '@mui/material/Alert';
+import DeleteConfirmationDialog from "./DeleteConfirmationDialog";
+import FileUploadOutlinedIcon from '@mui/icons-material/FileUploadOutlined';
+import CustomSnackbar from "scenes/CustomSnackBar";
 
 const initValues = {
   _id: "",
@@ -22,6 +24,10 @@ const Profile = () => {
   const [alertMessage, setAlertMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState(false);
   const [selectedPicture, setSelectedPicture] = useState(null); // State to store selected picture
+  const[openConfirmationDialog, setOpenConfirmationDialog] = useState(false);
+  const [message,setMessage] = useState('');
+  const [modifyValues, setModifyValues] = useState(initValues);
+  const [modifyOnSubmitProps, setModifyOnSubmitProps] = useState(null);
   const user = UserInfo();
 
   
@@ -50,7 +56,7 @@ const Profile = () => {
         setTimeout(() => {
           window.location.reload();
           
-        }, 4500);
+        }, 4250);
       }
       onSubmitProps.resetForm();
     } catch (err) {
@@ -87,17 +93,9 @@ const Profile = () => {
     }
   }
 
-  const handleDeletePicture =async () => {
-    try {
-      await deletePicture();
-    } catch (err) {
-      console.log(err);
-      alert(err.msg || 'Error occurred while deleting picture flewn');
-    }
-    
-  }
-  const handleSubmit = async (values, onSubmitProps) => {
-    try {
+  const handleModify = async (values, onSubmitProps) => {
+    if(message === "save"){
+      try {
       values._id = user._id
       values.picture = selectedPicture;
       if (!values.newPassword && !values.confirmPassword && !values.oldPassword && !values.name && !values.email && !values.location && !values.phoneNumber && !values.picture) {
@@ -113,7 +111,48 @@ const Profile = () => {
       setErrorMessage(true)
       setOpenAlert(true);
     }
+    }else if(message === "delete"){
+      try{
+        await deletePicture();
+      }catch(err){
+        console.log(err);
+      }
+    }
+    
   }
+ /*delete */
+  const handleRemoveClick = async () => {
+    setMessage("delete");
+    setOpenConfirmationDialog(true);
+  };
+  const handleConfirmDelete = async () => {
+    try{
+      await deletePicture();
+    setOpenConfirmationDialog(false);
+    }catch(err){
+      console.log(err);
+    }
+    
+  };
+
+  const handleCancelDelete =  () => {
+    setOpenConfirmationDialog(false);
+  };
+  /*modify */
+  const handleSubmit = async (values, onSubmitProps) => {
+    setModifyValues(values);
+    setModifyOnSubmitProps(onSubmitProps);
+    setMessage("save");
+    setOpenConfirmationDialog(true);
+  };
+  const handleConfirmModify = async () => {
+    await handleModify(modifyValues,modifyOnSubmitProps);
+    setOpenConfirmationDialog(false);
+  };
+
+  const handleCancelModify =  () => {
+    setOpenConfirmationDialog(false);
+  };
 
   const handleCloseAlert = (event, reason) => {
     if (reason === 'clickaway') {
@@ -129,6 +168,13 @@ const Profile = () => {
   if (!user) return null;
   return (
     <Box overflow={"hidden"}>
+      <CustomSnackbar
+        open={openAlert}
+        autoHideDuration={4000}
+        onClose={handleCloseAlert}
+        errorMessage={errorMessage}
+        alertMessage={alertMessage}
+      />
       <Typography
         variant="h2"
         sx={{
@@ -239,14 +285,15 @@ const Profile = () => {
                   }}
                   onClick={() => document.getElementById('picture-upload').click()}
                 >
-                  Change Picture
+                  <FileUploadOutlinedIcon sx={{ marginRight: "5px" }} />
+                  Upload Picture
                 </Button>
 
                 <Button
                   variant="outlined"
                   color="error"
                   type="button"
-                  onClick={handleDeletePicture}
+                  onClick={handleRemoveClick}
                   style={{
                     padding: "10px 20px",
                     borderRadius: "50px",
@@ -264,6 +311,12 @@ const Profile = () => {
                     Delete
                   </Typography>
                 </Button>
+                <DeleteConfirmationDialog
+        isOpen={openConfirmationDialog}
+        data={message}
+        onConfirm={handleConfirmDelete}
+        onCancel={handleCancelDelete}
+      />
               </Box>
               {/* End of picture upload section */}
 
@@ -327,10 +380,18 @@ const Profile = () => {
                     color: "white",
                     borderRadius: "20px",
                     marginRight: "10px",
+                    width: "100px",
+                    
                   }}
                 >
-                  Save
+                  Modify
                 </Button>
+                <DeleteConfirmationDialog
+        isOpen={openConfirmationDialog}
+        data={message}
+        onConfirm={handleConfirmModify}
+        onCancel={handleCancelModify}
+      />
                 <Button
                   type="reset"
                   onClick={resetForm}
@@ -339,6 +400,7 @@ const Profile = () => {
                     color: "#BFB5FF",
                     borderRadius: "20px",
                     border: "1px solid #BFB5FF",
+                    width: "100px",
                   }}
                 >
                   Cancel
@@ -398,6 +460,7 @@ const Profile = () => {
         <div style={{ display: "flex", flexDirection: "column",alignItems: "end" }}>
           <TextField
             id="old-password"
+            type="password"
             name="oldPassword"
             label="Old Password"
             variant="outlined"
@@ -408,6 +471,7 @@ const Profile = () => {
           />
           <TextField
             id="new-password"
+            type="password"
             name="newPassword"
             label="New Password"
             variant="outlined"
@@ -419,6 +483,7 @@ const Profile = () => {
           <TextField
             id="confirm-password"
             name="confirmPassword"
+            type="password"
             label="Confirm Password"
             variant="outlined"
             value={values.confirmPassword}
@@ -458,22 +523,7 @@ const Profile = () => {
           >
             Cancel
           </Button>
-          <Snackbar
-            open={openAlert}
-            autoHideDuration={4000}
-            onClose={handleCloseAlert}
-            anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-            sx={{ paddingBottom: '15px' }}
-          >
-            <MuiAlert
-              elevation={6}
-              variant="standard"
-              severity={errorMessage ? 'error' : 'success'}
-              onClose={handleCloseAlert}
-            >
-              {alertMessage}
-            </MuiAlert>
-          </Snackbar>
+          
         </div>
       </form>
     )}

@@ -5,33 +5,32 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 import helmet from "helmet";
 import morgan from "morgan";
-import clientRoutes from "./routes/client.js";
 
 // import generalRoutes from "./routes/general.js";
-import managementRoutes from "./routes/management.js";
+import managementRoutes from "./routes/adminManagement.js";
 import salesRoutes from "./routes/sales.js";
 import multer from "multer";
 import path from "path";
 import { fileURLToPath } from "url";
-import authRoutes from "./routes/auth.js";
+// import {authRoutes,setLogoutRoutes,verificationRoutes} from "./routes/auth.js";
 import userRoutes from "./routes/users.js";
 // import postRoutes from "./routes/posts.js";
-import { register, setLogout, verifyEmail } from "./controllers/auth.js";
+import { login, register, setLogout, verifyEmail } from "./controllers/auth.js";
 import User from "./models/user.js";
 // import { createPost } from "./controllers/posts.js";
 // import { verifyToken } from "./middleware/auth.js";
 import { admins, clients, users } from "./data/index.js";
 import Client from "./models/client.js";
 import Admin from "./models/admin.js";
-import verificationRoutes from "./routes/verification.js";
 import profileRoutes from "./routes/profile.js";
 import { deletePicture, modifyProfile } from "./controllers/profile.js";
-import setLogoutRoutes from "./routes/logout.js";
-import { getAdmins } from "./controllers/admins.js";
-import adminsRoutes from "./routes/admins.js";
-import picRoutes from "./routes/deletePic.js";
-import { deleteAdmin } from "./controllers/management.js";
-import deleteAdminRoutes from "./routes/management.js";
+import {
+  deleteAdmin,
+  assignClient,
+  getClients,
+  getAdmins,
+} from "./controllers/adminManagement.js";
+// import {deleteAdminRoutes,clientsRoutes,clientAssignRoutes,adminsRoutes} from "./routes/adminManagement.js";
 import { getClients } from "./controllers/clients.js";
 import clientsRoutes from "./routes/clients.js";
 
@@ -62,25 +61,30 @@ const upload = multer({ storage });
 
 // ROUTES WITH FILES
 app.post("/auth/register", upload.single("picture"), register);
+app.post("/auth/login", login);
 app.post("/verify-email", verifyEmail);
-app.patch("/profile",upload.single("picture"), modifyProfile);
+app.patch("/profile", upload.single("picture"), modifyProfile);
 app.post("/setLogout", setLogout);
 app.get("/admins", getAdmins);
-app.patch("/delete-picture",deletePicture)
+app.patch("/delete-picture", deletePicture);
 app.get("/clients", getClients);
 app.delete("/admin", deleteAdmin);
+app.patch("/clients-assign", assignClient);
 
 /* Routes */
-app.use("/client", clientRoutes);
-// app.use("/general", generalRoutes);
 app.use("/management", managementRoutes);
-app.use("/sales", salesRoutes);
-app.use("/auth", authRoutes);
 app.use("/users", userRoutes);
-app.use("/verify-email", verificationRoutes);
+// app.use("/client", clientRoutes);
+// app.use("/general", generalRoutes);
+// app.use("/sales", salesRoutes);
+// app.use("/auth", authRoutes);
+// app.use("/verify-email", verificationRoutes);
+// app.use("/setLogout", setLogoutRoutes);
+// app.use("/admins", adminsRoutes);
 // app.use("/profile", profileRoutes);
 app.use("/setLogout", setLogoutRoutes);
-app.use("/admins", adminsRoutes);app.use("/delete-picture", picRoutes);
+app.use("/admins", adminsRoutes);
+app.use("/delete-picture", picRoutes);
 
 app.use("/admin", deleteAdminRoutes);
 app.use("/clients", clientsRoutes);

@@ -82,6 +82,9 @@ const Admins = () => {
   }, []);
   const refreshPage = async () => {
     await getAdmins();
+    setAlertMessage(' Admin Deleted successfully');
+    setErrorMessage(false)
+    setOpenAlert(true);
   };
 
   const handleCloseAlert = (event, reason) => {
@@ -140,10 +143,9 @@ const Admins = () => {
 
   </div>
       <div style={{ paddingBottom: "30px" }}>
-        {user.map((user, index) => (
-          <Box marginRight={"50px"} marginLeft={"40px"}>
-            <AdminCard
-              key={index}
+        {user.map((user) => (
+          <Box key={user._id} marginRight={"50px"} marginLeft={"40px"}>
+            <AdminCard       
               user={user}
               refreshPage={refreshPage}
             ></AdminCard>

@@ -27,6 +27,7 @@ import {
 
 import { useLocation, useNavigate } from "react-router-dom";
 import FlexBetween from "./FlexBetween";
+import CircularProgress from '@mui/material/CircularProgress';
 
 const navItems = [
   {
@@ -106,7 +107,7 @@ const Sidebar = ({
     role.includes(user.role)
   );
 
-  if (!user) return null;
+  if (!user) return <CircularProgress/>;
 
   return (
     <Box component="nav" backgroundColor="white">

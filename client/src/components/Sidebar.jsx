@@ -22,7 +22,7 @@ import {
   PointOfSaleOutlined,
   CalendarMonthOutlined,
   AdminPanelSettingsOutlined,
-  TrendingUpOutlined,
+  
 } from "@mui/icons-material";
 
 import { useLocation, useNavigate } from "react-router-dom";
@@ -43,11 +43,6 @@ const navItems = [
   {
     text: "Client Facing",
     icon: null,
-    role: ["client", "admin", "superadmin"],
-  },
-  {
-    text: "Clients",
-    icon: <Groups2Outlined />,
     role: ["client", "admin", "superadmin"],
   },
   {
@@ -81,9 +76,9 @@ const navItems = [
     role: ["superadmin"],
   },
   {
-    text: "Performance",
-    icon: <TrendingUpOutlined />,
-    role: ["client", "admin", "superadmin"],
+    text: "Clients",
+    icon: <Groups2Outlined />,
+    role: ["superadmin"],
   },
 ];
 

@@ -6,7 +6,10 @@ export const deleteAdmin = async (req, res) => {
     const { _id } = req.body;
     const admin = await User.findById(_id);
     if (!admin) return res.status(404).json({ msg: "Admin not found" });
-
+    await User.updateMany(
+      { _id: { $in: admin.clients } }, // Find clients with IDs in the admin's clients list
+      { $pull: { assigned: _id } } // Pull the admin ID from the assigned list
+    );
     await User.findByIdAndDelete(_id);
     await Admin.findOneAndDelete({ adminId: _id });
     return res.status(200).json({ msg: "Admin deleted successfully" });
@@ -24,14 +27,31 @@ export const getAdmins = async (req, res) => {
   }
 };
 
-export const getClients = async (req, res) => {
+export const adminClientsStats = async (req, res) => {
+  try {
+    const { _id } = req.query;
+    const admin = await User.findById(_id);
+    if (!admin) return res.status(404).json({ msg: "Admin not found" });
+
+    const clients = await User.find({ _id: { $in: admin.clients } });
+    const activeClients = clients.filter((client) => client.service==="ongoing").length;
+    const pendingClients = clients.filter((client) => client.service==="pending").length;
+    
+    
+    res.status(200).json({ activeClients , pendingClients});
+  } catch (err) {
+    res.status(404).json({ message: err.message });
+  }
+}
+
+export const getAssignClients = async (req, res) => {
   try {
     const { adminId } = req.query;
-    const admin = await Admin.findOne({ adminId: adminId }).populate('clients'); // Populate the 'clients' field
+    const admin = await User.findOne({ _id: adminId }); // Populate the 'clients' field
     if (!admin) {
       return res.status(404).json({ message: "Admin not found" });
     }
-    const allClients = await User.find({ role: "client" });
+    const allClients = await User.find({ role: "client", approved: true });
 
     res.status(200).json({ admin: admin, client:allClients });
   } catch (err) {
@@ -40,18 +60,32 @@ export const getClients = async (req, res) => {
 };
 
 export const assignClient = async (req, res) => {
-    console.log(req.body);
-    try {
-      const { adminId, clientsId } = req.body;
-      // console.log(adminId, clientsId);
-      const admin = await Admin.findOneAndUpdate(
-        { adminId: adminId },
-        { $set: { clients: { $each: clientsId }} },
-        { new: true }
-      );
+  console.log(req.body);
+  try {
+    const { adminId, clientsId } = req.body;
 
-      res.status(200).json({ msg: "Client assigned successfully"  });
-    } catch (err) {
-      res.status(500).json({ error: err.message });
-    }
+    // Update the admin's clients attribute with the clientsId array
+    await User.findByIdAndUpdate(
+      adminId,
+      { $set: { clients: clientsId.length > 0 ? clientsId : [] } },
+      { new: true }
+    );
+
+    // Update the assigned array of the clientsId users
+    await User.updateMany(
+      { _id: { $in: clientsId }, assigned: { $ne: adminId } },
+      {  assigned: adminId  }
+    );
+
+    // Remove adminId from the assigned array of clients not in clientsId
+    await User.updateMany(
+      { _id: { $nin: clientsId }, assigned: adminId },
+      { $pull: { assigned: adminId } }
+    );
+
+    res.status(200).json({ msg: "Client assigned successfully" });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
+}
+

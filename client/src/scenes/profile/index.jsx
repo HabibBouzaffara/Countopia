@@ -56,7 +56,7 @@ const Profile = () => {
         setTimeout(() => {
           window.location.reload();
           
-        }, 4250);
+        }, 3000);
       }
       onSubmitProps.resetForm();
     } catch (err) {
@@ -83,7 +83,7 @@ const Profile = () => {
         setTimeout(() => {
           window.location.reload();
           
-        }, 4500);
+        }, 3000);
       }
     } catch (err) {
       console.log(err);
@@ -170,7 +170,7 @@ const Profile = () => {
     <Box overflow={"hidden"}>
       <CustomSnackbar
         open={openAlert}
-        autoHideDuration={4000}
+        autoHideDuration={3000}
         onClose={handleCloseAlert}
         errorMessage={errorMessage}
         alertMessage={alertMessage}

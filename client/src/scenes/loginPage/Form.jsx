@@ -69,6 +69,9 @@ const initialValuesRegister = {
   location: "",
   status: "",
   picture: "",
+  approved: false,
+  assigned: [],
+  service: "pending",
   role: "client",
 };
 

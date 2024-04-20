@@ -1,14 +1,23 @@
-Push1:
-addded dependecies for auth:
-/server/package.json :
-bcrypt
-gridfs-stream
-jsonwebtoken
-multer
-multer-gridfs-storage
+SuperAdmin account:
+habib.bouzaffara@ieee.org
+habib123456
 
-push2: 
-db connection 
-back connect to front
-problem: server/models/user.js : can't name file with maj (User.js)
->>>>>>>>> Temporary merge branch 2
+Admin Account:
+hedylaa@gmail.com
+hadil123456
+
+Theme Fix: uncomment navbar change theme icon and activate it once then comment it again to
+
+Bugs: 
+Theme
+create admin
+
+Stuff to do :
+fix theme
+hide password in modify profile
+alerte when deleting admin and assign admin 
+dialog when delete client from waiting list 
+alerte when deleting / approving client
+activate search 
+show message when dialog boxes is empty/clients,admins tables are empty
+Optimize more the fetching

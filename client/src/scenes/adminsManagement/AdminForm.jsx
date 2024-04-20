@@ -11,15 +11,21 @@ const AdminForm = ({ open, handleClose, handleSubmit }) => {
       name: "",
       phoneNumber: "",
       location: "",
-      picture: null, // Store the file object in the state
+      picture: "", // Store the file object in the state
       email: "",
       password: "",
       status: true,
+      approved: true,
+      assigned: [],
       role: "admin",
     },
     onSubmit: (values) => {
-      handleSubmit(values);
-      formik.resetForm();
+      try {
+        handleSubmit(values);
+        formik.resetForm();
+      } catch (err) {
+        console.log(err);
+      }
     },
   });
   const handleCancel = () => {

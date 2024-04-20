@@ -30,7 +30,12 @@ const Admins = () => {
     for (let value in values) {
       formData.append(value, values[value]);
     }
-    formData.append("picturePath", values.picture.name);
+    try{
+      formData.append("picturePath", values.picture.name);
+    }catch(error){
+      console.log(error);
+    }
+    
     try{
     const savedUserResponse = await fetch(
       process.env.REACT_APP_BASE_URL + "/auth/register",
@@ -80,12 +85,6 @@ const Admins = () => {
   useEffect(() => {
     getAdmins();
   }, []);
-  const refreshPage = async () => {
-    await getAdmins();
-    setAlertMessage(' Admin Deleted successfully');
-    setErrorMessage(false)
-    setOpenAlert(true);
-  };
 
   const handleCloseAlert = (event, reason) => {
     if (reason === 'clickaway') {
@@ -147,7 +146,8 @@ const Admins = () => {
           <Box key={user._id} marginRight={"50px"} marginLeft={"40px"}>
             <AdminCard       
               user={user}
-              refreshPage={refreshPage}
+              deletedAdmin={getAdmins}
+              clientAssigned={getAdmins}
             ></AdminCard>
           </Box>
         ))}

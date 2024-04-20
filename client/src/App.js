@@ -11,6 +11,7 @@ import LoginPage from "./scenes/loginPage";
 import LandingPage from "scenes/landing.Page/LandingPage";
 import state from "state";
 import Admins from "scenes/adminsManagement";
+import Clients from "scenes/clientsManagement";
 
 function App() {
   const mode = useSelector((state) => state.mode);
@@ -34,6 +35,7 @@ function App() {
               <Route path="/profile" element={<Profile />} />
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/admins" element={<Admins />} />
+              <Route path="/clients" element={<Clients />} />
               {/* <Route path="/dashboard" element={<Dashboard />} /> */}
             </Route>
           </Routes>

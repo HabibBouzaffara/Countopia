@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
-import CustomizedTables from "./ClientsTable"; 
 import { Button, Typography, Divider, InputBase, IconButton } from "@mui/material";
 import HourglassTopOutlinedIcon from '@mui/icons-material/HourglassTopOutlined';
 import SearchIcon from '@mui/icons-material/Search';
 import { styled } from '@mui/material/styles';
 import FlexBetween from "components/FlexBetween";
 import WaitingClients from "./WaitingClientsDialog";
+import SuperadminClientsTable from "./SuperadminClientsTable";
+import AdminClientsTable from "./AdminClientsTable";
 
 const Search = styled('div')({
   position: 'relative',
@@ -18,8 +19,8 @@ const Search = styled('div')({
   width: '300px', // Adjust width as needed
 });
 
-const Clients = () => {
-  const [user, setUser] = useState(null);
+const Clients = ({user}) => {
+  const [clients, setClients] = useState(null);
   const [open, setOpen] = useState(false);
 
 
@@ -33,15 +34,20 @@ const Clients = () => {
 
   const getAllClients = async () => {
     try {
-      const clients = await fetch(process.env.REACT_APP_BASE_URL + "/clients", {
+      const url = new URL(process.env.REACT_APP_BASE_URL + "/clients");
+      // Add user._id and user.role as query parameters
+      url.searchParams.append("userId", user?._id);
+      url.searchParams.append("role", user?.role);
+
+      const clientsResponse = await fetch(url, {
         method: "GET",
         headers: { "Content-Type": "application/json" },
       });
-      const data = await clients.json();
-      if (!clients.ok) {
+      const data = await clientsResponse.json();
+      if (!clientsResponse.ok) {
         throw new Error(data.msg);
       }
-      setUser(data);
+      setClients(data);
     } catch (err) {
       console.log(err);
     }
@@ -50,7 +56,6 @@ const Clients = () => {
   useEffect(() => {
     getAllClients();
   }, []);
-
 
   return (
     <>
@@ -65,7 +70,7 @@ const Clients = () => {
         >
           Clients 
         </Typography>
-        <Button
+        {user.role === "superadmin" &&<Button
           variant="contained"
           onClick={handleOpen}
           style={{
@@ -81,7 +86,7 @@ const Clients = () => {
             style={{ marginRight: "10px", fontWeight: "normal" }}
           />
           Waiting List
-        </Button>
+        </Button>}
       </div>
       <Typography variant="body1" sx={{ marginLeft: "50px",marginTop: "10px",color: "#A6A6A6" }}>
       View All Your Clients Informations.
@@ -108,9 +113,10 @@ const Clients = () => {
       </div>
       
       <div style={{ height: "500px", overflow: "auto",marginTop: "10px"}}>
-        {user && <CustomizedTables userData={user.filter(user => user.approved)} />}
+        {clients && user.role === "superadmin" && <SuperadminClientsTable userData={clients.filter(clients => clients.approved)} handleChange={getAllClients} />}
+        {clients && user.role === "admin" && <AdminClientsTable clientsData={clients} handleChange={getAllClients} />}
       </div>
-      {user && <WaitingClients userData={user.filter(user => user.approved === false)} open={open} handleClose={handleClose} handleChange={getAllClients} />}
+      {clients && user.role === "superadmin" && <WaitingClients userData={clients.filter(clients => clients.approved === false)} open={open} handleClose={handleClose} handleChange={getAllClients} />}
     </>
   );
 };

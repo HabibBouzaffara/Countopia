@@ -17,10 +17,30 @@ export const getAdminNames = async (req, res) => {
 };
 export const getClients = async (req, res) => {
   try {
-    const clients = await User.find({ role: "client" });
-    res.status(200).json(clients);
+    const { role, userId } = req.query;
+
+    if (role === "superadmin") {
+      // For superadmin, return all users with role "client"
+      const clients = await User.find({ role: "client" });
+      res.status(200).json(clients);
+    } else if (role === "admin") {
+      // For admin, return clients associated with the admin user
+      const adminUser = await User.findById(userId);
+      if (!adminUser) {
+        return res.status(404).json({ message: "Admin user not found" });
+      }
+      // Check if the admin user has clients
+      if (!adminUser.clients || adminUser.clients.length === 0) {
+        return res.status(200).json([]);
+      }
+      // Fetch the clients associated with the admin user
+      const clients = await User.find({ _id: { $in: adminUser.clients } });
+      res.status(200).json(clients);
+    } else {
+      res.status(400).json({ message: "Invalid role provided" });
+    }
   } catch (err) {
-    res.status(404).json({ message: err.message });
+    res.status(500).json({ message: err.message });
   }
 };
 
@@ -53,11 +73,11 @@ export const approveClient = async (req, res) => {
   
 }
 
-export const deleteClient = async (req, res) => {
+export const updateService = async (req, res) => {
   try {
-    const { _id } = req.body;
-    await User.findByIdAndDelete(_id);
-    res.status(200).json({ msg: "Client deleted successfully" });
+    const {_id, service } = req.body;
+    await User.updateOne({ _id }, { $set: { service: service } });
+    res.status(200).json({ msg: "Service updated successfully" });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

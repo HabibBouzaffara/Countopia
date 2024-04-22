@@ -7,13 +7,12 @@ import UserInfo from "state/userInfo";
 import WarningAmberOutlinedIcon from '@mui/icons-material/WarningAmberOutlined';
 import MuiAlert from '@mui/material/Alert';
 
-const Admins = () => {
+const Admins = ({superadmin}) => {
   const [openAlert, setOpenAlert] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState(false);
   const [user, setUser] = useState(null);
   const [open, setOpen] = useState(false); // State to control the dialog visibility
-  const superadmin=UserInfo();
 
 
   const handleOpen = () => {

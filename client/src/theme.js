@@ -1,3 +1,5 @@
+import { BorderColor } from "@mui/icons-material";
+
 // color design tokens export
 export const tokensDark = {
   grey: {
@@ -66,7 +68,7 @@ export const themeSettings = (mode) => {
       mode: mode,
       ...(mode === "dark"
         ? {
-            // palette values for dark mode
+            // Palette values for dark mode
             primary: {
               ...tokensDark.primary,
               main: tokensDark.primary[400],
@@ -84,9 +86,13 @@ export const themeSettings = (mode) => {
               default: tokensDark.primary[600],
               alt: tokensDark.primary[500],
             },
+            text: {
+              primary: "#000000", // Set text color to black in dark mode
+              secondary: "#000000", // Set secondary text color to white in dark mode
+            },
           }
         : {
-            // palette values for light mode
+            // Palette values for light mode
             primary: {
               ...tokensLight.primary,
               main: tokensDark.grey[50],
@@ -104,8 +110,10 @@ export const themeSettings = (mode) => {
             background: {
               default: tokensDark.grey[0],
               alt: tokensDark.grey[50],
-              
-              
+            },
+            text: {
+              primary: "#000000", // Set text color to black in light mode if needed
+              secondary: "#000000", // Set secondary text color to black in light mode if needed
             },
           }),
     },
@@ -135,6 +143,18 @@ export const themeSettings = (mode) => {
       h6: {
         fontFamily: ["poppins", "poppins"].join(","),
         fontSize: 14,
+      },
+    },
+    components: {
+      MuiTextField: {
+        styleOverrides: {
+          root: {
+            backgroundColor: "#ffffff",
+            borderRadius: 25,
+            border:mode === "dark" ? "1px solid #d3d4de" : undefined,
+            color: "#000000",
+          },
+        },
       },
     },
   };

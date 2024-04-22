@@ -50,7 +50,7 @@ const WaitingListManagement = ({ userData,handleChange }) => {
   
   const handleDelete = async (_id) => {
     try {
-      const response = await fetch(`${process.env.REACT_APP_BASE_URL}/clients`, {
+      const response = await fetch(`${process.env.REACT_APP_BASE_URL}/clients?action=reject`, {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ _id })
@@ -109,7 +109,7 @@ const WaitingListManagement = ({ userData,handleChange }) => {
                   onClick={() => handleDelete(user._id)} 
                   sx={{ borderRadius: "20px" }}
                 >
-                  Delete
+                  Reject
                 </Button>
               </StyledTableCell>
             </StyledTableRow>

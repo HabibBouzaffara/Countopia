@@ -39,10 +39,10 @@ const registerSchema = yup.object().shape({
   companyName: yup.string().required("required"),
   codeFiscale: yup.string().required("required"),
   email: yup.string().email("invalid email").required("required"),
-  password: yup.string().required("required"),
+  password: yup.string().required("required").min(6, "min 6 characters"),
   location: yup.string().required("required"),
   phoneNumber: yup.string().required("required"),
-  picture: yup.string().required("required"),
+  picture: yup.string(),
 });
 
 const loginSchema = yup.object().shape({
@@ -506,9 +506,14 @@ const Form = () => {
                         <Dropzone
                           acceptedFiles=".jpg,.jpeg,.png"
                           multiple={false}
-                          onDrop={(acceptedFiles) =>
+                          onDrop={(acceptedFiles) =>{
+                            const file =acceptedFiles[0];
+                            if(file && file.size > 200000){
+                              alert("Image size should not exceed 200KB");
+                              return;
+                            }                 
                             setFieldValue("picture", acceptedFiles[0])
-                          }
+                          }}
                         >
                           {({ getRootProps, getInputProps }) => (
                             <Box

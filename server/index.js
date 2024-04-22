@@ -24,11 +24,12 @@ import Client from "./models/client.js";
 import Admin from "./models/admin.js";
 import profileRoutes from "./routes/profile.js";
 import { deletePicture, modifyProfile } from "./controllers/profile.js";
-import { deleteAdmin ,assignClient,getAdmins, getAssignClients, adminClientsStats} from "./controllers/adminManagement.js";
+import { assignClient,getAdmins, getAssignClients, adminClientsStats} from "./controllers/adminManagement.js";
 
 import clientAssignRoutes from "./routes/adminManagement.js";
-import {approveClient, deleteClient, getAdminNames, getClients} from "./controllers/clientsManagement.js";
+import {approveClient, getAdminNames, getClients, updateService} from "./controllers/clientsManagement.js";
 import clientsRoutes from "./routes/clientsManagement.js";
+import { deleteUser } from "./controllers/users.js";
 
 
 /* Config */
@@ -60,20 +61,22 @@ const upload = multer({ storage });
 app.post("/auth/register", upload.single("picture"), register);
 app.post("/auth/login", login);
 app.post("/verify-email", verifyEmail);
-app.patch("/profile",upload.single("picture"), modifyProfile);
 app.post("/setLogout", setLogout);
-app.get("/admins", getAdmins);
+
+app.patch("/profile",upload.single("picture"), modifyProfile);
 app.patch("/delete-picture",deletePicture);
 
+app.get("/admins", getAdmins);
+app.delete("/admin", deleteUser);
 app.get("/admin-clients-stats",adminClientsStats);
+app.patch("/clients-assign", assignClient);
 app.get("/clients-assign",getAssignClients);
+
 app.get("/clients",getClients);
 app.post("/adminName",getAdminNames);
 app.patch("/clients", approveClient);
-app.delete("/clients", deleteClient);
-
-app.delete("/admin", deleteAdmin);
-app.patch("/clients-assign", assignClient);
+app.delete("/clients", deleteUser);
+app.patch("/service",updateService)
 
 
 /* Routes */
@@ -91,6 +94,7 @@ app.use("/users", userRoutes);
 // app.use("/admin", deleteAdminRoutes);
 app.use("/clients", clientsRoutes);
 app.use("/adminName", clientsRoutes);
+app.use("/service", clientsRoutes);
 // app.use("/clients-assign", clientAssignRoutes);
 // app.use("/admin-clients-stats", clientAssignRoutes);
 

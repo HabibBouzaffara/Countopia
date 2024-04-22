@@ -4,6 +4,7 @@ import PersonAddAltOutlinedIcon from "@mui/icons-material/PersonAddAltOutlined";
 import PersonRemoveOutlinedIcon from "@mui/icons-material/PersonRemoveOutlined";
 import DeleteConfirmationDialog from "./DeleteConfirmationDialog";
 import AssignClientDialog from "./AssignClientDialog";
+import UserPicture from "components/UserPicture";
 
 const AdminCard = ({ user, deletedAdmin, clientAssigned }) => {
   const [dialogs, setDialogs] = useState({ confirmation: false, assignClient: false });
@@ -101,11 +102,7 @@ const AdminCard = ({ user, deletedAdmin, clientAssigned }) => {
       >
         {/* Picture and user info in one column */}
         <Box display={"flex"} alignItems={"center"}>
-          <img
-            src={process.env.REACT_APP_BASE_URL + "/assets/" + user.picturePath}
-            alt="User"
-            style={{ width: "120px", height: "120px", borderRadius: "50%" }}
-          />
+          <UserPicture name={user.name} picturePath={user.picturePath} sx={{ width: "120px", height: "120px" }} />
           <Box marginLeft={"50px"}>
             <p style={{ fontWeight: "bold", color: "rgba(0, 0, 0, 0.6)" }}>
               {user.name}

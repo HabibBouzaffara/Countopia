@@ -9,7 +9,7 @@ body,
   height: 100%;
   width: 100%;
   font-family: "poppins", "poppins";
-  
+  background-color: #EEF2F6; 
 }
 
 ::-webkit-scrollbar {

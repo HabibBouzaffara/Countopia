@@ -9,35 +9,38 @@ import Dashboard from "scenes/dashboard";
 import Profile from "scenes/profile";
 import LoginPage from "./scenes/loginPage";
 import LandingPage from "scenes/landing.Page/LandingPage";
-import state from "state";
 import Admins from "scenes/adminsManagement";
 import Clients from "scenes/clientsManagement";
+import UserInfo from "state/userInfo";
 
 function App() {
   const mode = useSelector((state) => state.mode);
   const theme = useMemo(() => createTheme(themeSettings(mode)), [mode]);
   const isAuth = Boolean(useSelector((state) => state.token));
-  console.log(isAuth);
-  console.log(state.token);
+  const user = UserInfo(); // Call UserInfo component to fetch user data
+
   return (
     <div className="app">
       <BrowserRouter>
-        <ThemeProvider theme={theme}>
+        <ThemeProvider theme={theme} >
           <CssBaseline />
           <Routes>
-            {/* <Route path="/" element={<LoginPage />} /> */}
             <Route path="/" element={<LandingPage />} />
             <Route
               path="/auth"
-              element={isAuth ? <Navigate to="/profile" /> : <LoginPage />}
+              element={isAuth  ? <Navigate to="/profile" /> : <LoginPage />}
             />
-            <Route element={isAuth ? <Layout /> : <Navigate to="/auth" />}>
-              <Route path="/profile" element={<Profile />} />
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/admins" element={<Admins />} />
-              <Route path="/clients" element={<Clients />} />
-              {/* <Route path="/dashboard" element={<Dashboard />} /> */}
-            </Route>
+            {/* Check if user is authenticated before rendering layout */}
+            {isAuth && user ? (
+              <Route element={<Layout user={user} />}>
+                <Route path="/profile" element={<Profile user={user} />} />
+                <Route path="/dashboard" element={<Dashboard  />} />
+                {user.role==="superadmin" && <Route path="/admins" element={<Admins superadmin={user} />} />}
+                {(user.role==="superadmin" || user.role==="admin") && <Route path="/clients" element={<Clients user={user} />} />}
+              </Route>
+            ) : (
+              <Route path="/auth" element={<LoginPage />}/>
+            )}
           </Routes>
         </ThemeProvider>
       </BrowserRouter>

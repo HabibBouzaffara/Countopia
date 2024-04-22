@@ -2,28 +2,42 @@ import React from "react";
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField, Grid, IconButton, Typography, Box } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import Dropzone from "react-dropzone";
-import { useFormik } from "formik";
+import { Formik } from "formik";
 import AddToPhotosOutlinedIcon from '@mui/icons-material/AddToPhotosOutlined';
+import * as yup from "yup";
+
+const initialValues= {
+  name: "",
+  phoneNumber: "",
+  location: "",
+  picture: "", // Store the file object in the state
+  email: "",
+  password: "",
+  status: true,
+  approved: true,
+  assigned: [],
+  role: "admin",
+};
+
+const registerSchema = yup.object().shape({
+  name: yup.string().required("required"),
+  email: yup.string().email("invalid email").required("required"),
+  password: yup.string().required("required").min(6, "min 6 characters"),
+  location: yup.string().required("required"),
+  phoneNumber: yup.string().required("required"),
+  picture: yup.string(),
+})
 
 const AdminForm = ({ open, handleClose, handleSubmit }) => {
-  const formik = useFormik({
-    initialValues: {
-      name: "",
-      phoneNumber: "",
-      location: "",
-      picture: null, // Store the file object in the state
-      email: "",
-      password: "",
-      status: true,
-      role: "admin",
-    },
-    onSubmit: (values) => {
-      handleSubmit(values);
-      formik.resetForm();
-    },
-  });
+  const onSubmit= (values,onSubmitProps) => {
+      try {
+        handleSubmit(values);
+        onSubmitProps.resetForm();
+      } catch (err) {
+        console.log(err);
+      }
+    };
   const handleCancel = () => {
-    formik.resetForm(); // Reset the form
     handleClose(); // Close the dialog
   };
 
@@ -41,19 +55,24 @@ const AdminForm = ({ open, handleClose, handleSubmit }) => {
       </DialogTitle>
       <DialogContent>
         {/* Form fields */}
-        <form onSubmit={formik.handleSubmit} onClose={handleClose}>
+        <Formik initialValues={initialValues} onSubmit={onSubmit} validationSchema={registerSchema}>
+          {({ values, handleChange, handleSubmit,setFieldValue,resetForm,errors, touched,handleBlur }) => (
+
+        <form onSubmit={handleSubmit} onClose={handleClose}>
           <Grid container spacing={2}>
             <Grid item xs={6}>
-              <TextField
-                autoFocus
+              <TextField               
                 margin="dense"
                 id="name"
                 name="name"
                 label="Name"
                 type="text"
                 fullWidth
-                value={formik.values.name}
-                onChange={formik.handleChange}
+                value={values.name}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                error={Boolean(touched.name) && Boolean(errors.name)}
+                helperText={ touched.name && errors.name}
                 InputProps={{ style: { borderRadius: "20px" } }}
               />
             </Grid>
@@ -65,8 +84,11 @@ const AdminForm = ({ open, handleClose, handleSubmit }) => {
                 label="Phone Number"
                 type="text"
                 fullWidth
-                value={formik.values.phoneNumber}
-                onChange={formik.handleChange}
+                value={values.phoneNumber}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                error={Boolean(touched.phoneNumber) && Boolean(errors.phoneNumber)}
+                helperText={touched.phoneNumber && errors.phoneNumber}
                 InputProps={{ style: { borderRadius: "20px" } }}
               />
             </Grid>
@@ -78,8 +100,11 @@ const AdminForm = ({ open, handleClose, handleSubmit }) => {
                 label="Location"
                 type="text"
                 fullWidth
-                value={formik.values.location}
-                onChange={formik.handleChange}
+                value={values.location}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                error={Boolean(touched.location) && Boolean(errors.location)}
+                helperText={touched.location && errors.location}
                 InputProps={{ style: { borderRadius: "20px" } }}
               />
             </Grid>
@@ -87,9 +112,15 @@ const AdminForm = ({ open, handleClose, handleSubmit }) => {
               <Dropzone
                 acceptedFiles=".jpg,.jpeg,.png"
                 multiple={false}
-                onDrop={(acceptedFiles) =>
-                  formik.setFieldValue("picture", acceptedFiles[0])
-                }
+                maxSize={200000}
+                onDrop={(acceptedFiles) =>{
+                  const file =acceptedFiles[0];
+                  if(file && file.size > 200000){
+                    alert("Image size should not exceed 200KB");
+                    return;
+                  }                 
+                  setFieldValue("picture", acceptedFiles[0])
+                }}
               >
                 {({ getRootProps, getInputProps }) => (
                   <Box
@@ -103,15 +134,16 @@ const AdminForm = ({ open, handleClose, handleSubmit }) => {
                     height="53px"
                     marginTop={"8px"}
                     sx={{ "&:hover": { cursor: "pointer" } }}
+
                   >
                     <input {...getInputProps()} />
-                    {!formik.values.picture ? (
+                    {!values.picture ? (
                         <>
                     <AddToPhotosOutlinedIcon/>
                       <Typography margin={"0 10px"}>  Add Company Logo Here</Typography>
                     </>
                     ) : (
-                      <Typography>{formik.values.picture.name}</Typography>
+                      <Typography>{values.picture.name}</Typography>
                     )}
                   </Box>
                 )}
@@ -125,8 +157,11 @@ const AdminForm = ({ open, handleClose, handleSubmit }) => {
                 label="Email Address"
                 type="email"
                 fullWidth
-                value={formik.values.email}
-                onChange={formik.handleChange}
+                value={values.email}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                error={Boolean(touched.email) && Boolean(errors.email)}
+                helperText={touched.email && errors.email}
                 InputProps={{ style: { borderRadius: "20px" } }}
               />
             </Grid>
@@ -138,8 +173,11 @@ const AdminForm = ({ open, handleClose, handleSubmit }) => {
                 label="Password"
                 type="password"
                 fullWidth
-                value={formik.values.password}
-                onChange={formik.handleChange}
+                value={values.password}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                error={Boolean(touched.password) && Boolean(errors.password)}
+                helperText={touched.password && errors.password}
                 InputProps={{ style: { borderRadius: "20px" } }}
               />
             </Grid>
@@ -147,7 +185,7 @@ const AdminForm = ({ open, handleClose, handleSubmit }) => {
           <Grid item xs={12}>
 
           <DialogActions sx={{ display: "flex", justifyContent: "flex-end" }}>
-            <Button onClick={handleCancel} color="error" variant="outlined" sx={{ borderRadius: "15px",width:"100px" }}>
+            <Button onClick={() => {resetForm(); handleClose();} } color="error" variant="outlined" sx={{ borderRadius: "15px",width:"100px" }}>
               Cancel
             </Button>
             <Button type="submit" color="primary"  sx={{ backgroundColor: "#BFB5FF",borderRadius: "15px",width:"100px"}}>
@@ -156,6 +194,8 @@ const AdminForm = ({ open, handleClose, handleSubmit }) => {
           </DialogActions>
           </Grid>
         </form>
+        )}
+        </Formik>
       </DialogContent>
     </Dialog>
   );

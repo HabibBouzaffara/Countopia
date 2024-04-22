@@ -7,13 +7,12 @@ import UserInfo from "state/userInfo";
 import WarningAmberOutlinedIcon from '@mui/icons-material/WarningAmberOutlined';
 import MuiAlert from '@mui/material/Alert';
 
-const Admins = () => {
+const Admins = ({superadmin}) => {
   const [openAlert, setOpenAlert] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState(false);
   const [user, setUser] = useState(null);
   const [open, setOpen] = useState(false); // State to control the dialog visibility
-  const superadmin=UserInfo();
 
 
   const handleOpen = () => {
@@ -30,7 +29,12 @@ const Admins = () => {
     for (let value in values) {
       formData.append(value, values[value]);
     }
-    formData.append("picturePath", values.picture.name);
+    try{
+      formData.append("picturePath", values.picture.name);
+    }catch(error){
+      console.log(error);
+    }
+    
     try{
     const savedUserResponse = await fetch(
       process.env.REACT_APP_BASE_URL + "/auth/register",
@@ -80,12 +84,6 @@ const Admins = () => {
   useEffect(() => {
     getAdmins();
   }, []);
-  const refreshPage = async () => {
-    await getAdmins();
-    setAlertMessage(' Admin Deleted successfully');
-    setErrorMessage(false)
-    setOpenAlert(true);
-  };
 
   const handleCloseAlert = (event, reason) => {
     if (reason === 'clickaway') {
@@ -147,7 +145,8 @@ const Admins = () => {
           <Box key={user._id} marginRight={"50px"} marginLeft={"40px"}>
             <AdminCard       
               user={user}
-              refreshPage={refreshPage}
+              deletedAdmin={getAdmins}
+              clientAssigned={getAdmins}
             ></AdminCard>
           </Box>
         ))}

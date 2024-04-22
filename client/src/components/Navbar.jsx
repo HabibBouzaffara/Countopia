@@ -4,10 +4,12 @@ import {
   Search,
   SettingsOutlined,
   ArrowDropDownOutlined,
+  LightModeOutlined,
+  DarkModeOutlined,
 } from "@mui/icons-material";
 import FlexBetween from "components/FlexBetween";
 import { useDispatch } from "react-redux";
-import { setLogout } from "state";
+import { setLogout, setMode } from "state";
 import {
   AppBar,
   Box,
@@ -19,8 +21,10 @@ import {
   Toolbar,
   Typography,
   useTheme,
+  CircularProgress,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import UserPicture from "./UserPicture";
 
 const Navbar = ({ user, isSidebarOpen, setIsSidebarOpen }) => {
   const dispatch = useDispatch();
@@ -29,10 +33,12 @@ const Navbar = ({ user, isSidebarOpen, setIsSidebarOpen }) => {
   const isOpen = Boolean(anchorEl);
   const handleClick = (event) => setAnchorEl(event.currentTarget);
   const handleClose = () => setAnchorEl(null);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleLogout = async () => {
     try {
+      setLoading(true);
       await fetch(`${process.env.REACT_APP_BASE_URL}/setLogout`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -42,6 +48,8 @@ const Navbar = ({ user, isSidebarOpen, setIsSidebarOpen }) => {
       navigate("/");
     } catch (err) {
       console.log(err);
+    }finally {
+      setLoading(false);
     }
   };
 
@@ -59,18 +67,18 @@ const Navbar = ({ user, isSidebarOpen, setIsSidebarOpen }) => {
       <Toolbar sx={{ justifyContent: "space-between" }}>
         {/* LEFT SIDE */}
         <FlexBetween>
-          <IconButton onClick={() => setIsSidebarOpen(!isSidebarOpen)}>
+          <IconButton sx={{ color: "#3F4BC9" }} onClick={() => setIsSidebarOpen(!isSidebarOpen)}>
             <MenuIcon />
           </IconButton>
           <FlexBetween
-            backgroundColor={theme.palette.background.alt}
+            backgroundColor="#EEF2F6"
             borderRadius="9px"
             gap="3rem"
             p="0.1rem 1.5rem"
           >
-            <InputBase placeholder="Search..." />
+            <InputBase sx={{ color: "#3F4BC9" }} placeholder="Search..." />
             <IconButton>
-              <Search />
+              <Search sx={{ color: "#3F4BC9" }}  />
             </IconButton>
           </FlexBetween>
         </FlexBetween>
@@ -82,13 +90,15 @@ const Navbar = ({ user, isSidebarOpen, setIsSidebarOpen }) => {
             ) : (
               <LightModeOutlined sx={{ fontSize: "25px" }} />
             )}
-          </IconButton> */}
+          </IconButton>   */}
           <IconButton>
             <SettingsOutlined
-              sx={{ fontSize: "25px", color: theme.palette.secondary[300] }}
+              sx={{ fontSize: "25px", color: "#3F4BC9" }}
             />
           </IconButton>
-
+          {loading ? ( // Display CircularProgress when loading is true
+                    <CircularProgress size={24} />
+                  ) : (
           <FlexBetween>
             <Button
               onClick={handleClick}
@@ -100,28 +110,18 @@ const Navbar = ({ user, isSidebarOpen, setIsSidebarOpen }) => {
                 gap: "1rem",
               }}
             >
-              <Box
-                component="img"
-                alt="profile"
-                src={
-                  process.env.REACT_APP_BASE_URL + "/assets/" + user.picturePath
-                }
-                height="32px"
-                width="32px"
-                borderRadius="50%"
-                sx={{ objectFit: "cover" }}
-              />
+              <UserPicture name={user.name} picturePath={user.picturePath} />
               <Box textAlign="left">
                 <Typography
                   fontWeight="bold"
                   fontSize="0.85rem"
-                  sx={{ color: theme.palette.secondary[100] }}
+                  sx={{ color: "#3F4BC9" }}
                 >
                   {user.name}
                 </Typography>
                 <Typography
                   fontSize="0.75rem"
-                  sx={{ color: theme.palette.secondary[200] }}
+                  sx={{ color: "#3F4BC9" }}
                 >
                   {user.role === "admin"
                     ? "Admin"
@@ -131,7 +131,7 @@ const Navbar = ({ user, isSidebarOpen, setIsSidebarOpen }) => {
                 </Typography>
               </Box>
               <ArrowDropDownOutlined
-                sx={{ color: theme.palette.secondary[300], fontSize: "25px" }}
+                sx={{ color: "#3F4BC9", fontSize: "25px" }}
               />
             </Button>
             <Menu
@@ -154,7 +154,7 @@ const Navbar = ({ user, isSidebarOpen, setIsSidebarOpen }) => {
                 </Button>
               </MenuItem>
             </Menu>
-          </FlexBetween>
+          </FlexBetween>)}
         </FlexBetween>
       </Toolbar>
     </AppBar>

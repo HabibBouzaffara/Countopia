@@ -21,6 +21,9 @@ export const register = async (req, res) => {
       clients,
       location,
       status,
+      approved,
+      assigned,
+      service,
       role,
     } = req.body;
     
@@ -54,9 +57,11 @@ export const register = async (req, res) => {
       clients,
       location,
       status,
+      approved,
+      assigned,
+      service,
       role,
     });
-
 
 
     const savedUser = await newUser.save();
@@ -107,6 +112,7 @@ export const login = async (req, res) => {
     const user = await User.findOne({ email: email });
     if (!user) return res.status(400).json({ msg: "User does not exist. " });
     if(!user.status) return res.status(400).json({ msg: "User not verified. " });
+    if(!user.approved) return res.status(400).json({ msg: "User not approved. Wait for admin's approval . " });
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) return res.status(400).json({ msg: "Invalid credentials. " });
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);

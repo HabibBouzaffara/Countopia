@@ -6,7 +6,17 @@ const UserSchema = new mongoose.Schema(
       type: String,
       required: true,
       min: 2,
-      max: 50,
+      max: 20,
+    },
+    companyName:{ 
+      type: String,
+      min: 2,
+      max: 20,
+    },
+    codeFiscale: {
+      type: String,
+      min: 4,
+      max: 4,
     },
     email: {
       type: String,
@@ -32,6 +42,21 @@ const UserSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    approved: {
+      type: Boolean,
+      default: false,
+    },
+    service : {
+      type: String,
+      enum: ["pending", "ongoing", "done"],
+      default: "pending",
+    },
+    assigned: {
+      type: Array,
+      default: [],
+    },
+    factures: Array,
+    clients: Array,
     role: {
       type: String,
       enum: ["client", "admin", "superadmin"],
@@ -44,50 +69,3 @@ const UserSchema = new mongoose.Schema(
 const User = mongoose.model("User", UserSchema);
 export default User;
 
-// import mongoose from "mongoose";
-
-// const UserSchema = new mongoose.Schema(
-//   {
-//     name: {
-//       type: String,
-//       required: true,
-//       min: 2,
-//       max: 100,
-//     },
-//     email: {
-//       type: String,
-//       required: true,
-//       max: 50,
-//       unique: true,
-//     },
-//     password: {
-//       type: String,
-//       required: true,
-//       min: 5,
-//     },
-//     picturePath: {
-//       type: String,
-//       default: "",
-//     },
-//     codeFiscale: {
-//       type: String,
-//       required: true,
-//       // min: 11,
-//       // max: 11,
-//     },
-//     city: String,
-//     state: String,
-//     country: String,
-//     phoneNumber: String,
-//     factures: Array,
-//     role: {
-//       type: String,
-//       enum: ["user", "admin", "superadmin"],
-//       default: "user",
-//     },
-//   },
-//   { timestamps: true }
-// );
-
-// const User = mongoose.model("User", UserSchema);
-// export default User;

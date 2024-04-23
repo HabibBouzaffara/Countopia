@@ -11,7 +11,6 @@ import LoginPage from "./scenes/loginPage";
 import LandingPage from "scenes/landing.Page/LandingPage";
 import Admins from "scenes/adminsManagement";
 import Clients from "scenes/clientsManagement";
-import Clients from "scenes/clientsManagement";
 
 function App() {
   const mode = useSelector((state) => state.mode);

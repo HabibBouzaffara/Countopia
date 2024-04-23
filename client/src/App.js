@@ -11,13 +11,12 @@ import LoginPage from "./scenes/loginPage";
 import LandingPage from "scenes/landing.Page/LandingPage";
 import Admins from "scenes/adminsManagement";
 import Clients from "scenes/clientsManagement";
-import UserInfo from "state/userInfo";
 
 function App() {
   const mode = useSelector((state) => state.mode);
   const theme = useMemo(() => createTheme(themeSettings(mode)), [mode]);
   const isAuth = Boolean(useSelector((state) => state.token));
-  const user = UserInfo(); // Call UserInfo component to fetch user data
+  const user = useSelector((state) => state.user);
 
   return (
     <div className="app">
@@ -26,11 +25,10 @@ function App() {
           <CssBaseline />
           <Routes>
             <Route path="/" element={<LandingPage />} />
-            <Route
-              path="/auth"
-              element={isAuth  ? <Navigate to="/profile" /> : <LoginPage />}
-            />
-            {/* Check if user is authenticated before rendering layout */}
+            <Route path="/auth" element={isAuth  ? <Navigate to="/profile" /> : <LoginPage action="login" />}/>
+            <Route path="/register" element={ <LoginPage action="register" />}/>
+            <Route path="/login" element={ <LoginPage action="login" />} />
+            <Route path="/verify" element={ <LoginPage action="verify" />}/>
             {isAuth && user ? (
               <Route element={<Layout user={user} />}>
                 <Route path="/profile" element={<Profile user={user} />} />

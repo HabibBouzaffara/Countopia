@@ -136,17 +136,18 @@ export const setLogout = async (req, res) => {
 export const verifyEmail = async (req, res) => {
   try {
       const {
-          userId,
+          email,
           otp
       } = req.body
       
-      if (!userId || !otp) return res.status(400).json({
+      if ( !email || !otp) return res.status(400).json({
           msg: "Invalid request, missing parameters!"
       });
+      
       // if (!isValidObjectId(userId)) return res.status(400).json({
       //     msg: "Invalid user id!"
       // });
-      const user = await User.findById(userId)
+       const user = await User.findOne({email})
       if (!user) return res.status(400).json({
           msg: "User not found!"
       });

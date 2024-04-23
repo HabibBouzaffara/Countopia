@@ -4,12 +4,10 @@ import {
   Search,
   SettingsOutlined,
   ArrowDropDownOutlined,
-  LightModeOutlined,
-  DarkModeOutlined,
 } from "@mui/icons-material";
 import FlexBetween from "components/FlexBetween";
 import { useDispatch } from "react-redux";
-import { setLogout, setMode } from "state";
+import { setLogout } from "state";
 import {
   AppBar,
   Box,
@@ -20,7 +18,6 @@ import {
   MenuItem,
   Toolbar,
   Typography,
-  useTheme,
   CircularProgress,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
@@ -28,7 +25,6 @@ import UserPicture from "./UserPicture";
 
 const Navbar = ({ user, isSidebarOpen, setIsSidebarOpen }) => {
   const dispatch = useDispatch();
-  const theme = useTheme();
   const [anchorEl, setAnchorEl] = useState(null);
   const isOpen = Boolean(anchorEl);
   const handleClick = (event) => setAnchorEl(event.currentTarget);

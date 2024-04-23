@@ -1,7 +1,6 @@
 import { Box, Button, TextField, Typography, Input } from "@mui/material";
 import { Formik } from "formik";
 import React, { useState } from "react";
-import UserInfo from "state/userInfo";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import ConfirmationDialog from "../ConfirmationDialog";
 import FileUploadOutlinedIcon from '@mui/icons-material/FileUploadOutlined';
@@ -82,7 +81,7 @@ const Profile = ({ user }) => {
   }
   const deletePicture = async () => {
     try {  
-      const response = await fetch(process.env.REACT_APP_BASE_URL + "/delete-picture", {
+      const response = await fetch(process.env.REACT_APP_BASE_URL + "/profile/delete-picture", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({_id: user._id}),
@@ -108,7 +107,7 @@ const Profile = ({ user }) => {
   }
 
   const handleModify = async (values, onSubmitProps) => {
-    if(message === "save"){
+    if(message === "modifyProfile"){
       try {
       values._id = user._id
       values.picture = selectedPicture;
@@ -125,7 +124,7 @@ const Profile = ({ user }) => {
       setErrorMessage(true)
       setOpenAlert(true);
     }
-    }else if(message === "delete"){
+    }else if(message === "deleteProfilePicture"){
       try{
         await deletePicture();
       }catch(err){

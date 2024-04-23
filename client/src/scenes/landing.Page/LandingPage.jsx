@@ -27,13 +27,13 @@ export default function LandingPage() {
               <div className="landing-page-navbar-link">Features</div>
               <div className="landing-page-navbar-link">Contacts Us</div>
               <div
-                onClick={() =>navigate("/auth")}
+                onClick={() =>navigate("/register")}
                 className="landing-page-navbar-navigate-signup"
               >
                 Register
               </div>
               <div
-                onClick={() =>navigate("/auth")}
+                onClick={() =>navigate("/login")}
                 className="landing-page-navbar-navigate-signin"
               >
                 Login

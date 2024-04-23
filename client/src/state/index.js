@@ -4,8 +4,6 @@ const initialState = {
   mode: "dark",
   user: null,
   token: null,
-  posts: [],
-  //userIds: "65f9a2109ed8ea7fee2bfe00",
 };
 
 export const globalSlice = createSlice({
@@ -19,6 +17,11 @@ export const globalSlice = createSlice({
       state.user = action.payload.user;
       state.token = action.payload.token;
     },
+    setUser: (state, action) => {
+      state.user = action.payload.user;
+      state.token = action.payload.token;
+    },
+    
     setVerify: (state, action) => {
       state.user = action.payload.user;
       state.token = action.payload.token;
@@ -30,17 +33,7 @@ export const globalSlice = createSlice({
   },
 });
 
-// export const globalSlice = createSlice({
-//   name: "global",
-//   initialState,
-//   reducers: {
-//     setMode: (state) => {
-//       state.mode = state.mode === "light" ? "dark" : "light";
-//     },
-//   },
-// });
-
-export const { setMode, setLogin, setLogout, setFriends, setPosts, setPost } =
+export const { setMode, setLogin, setLogout, setFriends, setPosts, setPost,setUser } =
 globalSlice.actions;
 export default globalSlice.reducer;
 

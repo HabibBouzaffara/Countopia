@@ -21,6 +21,9 @@ export const register = async (req, res) => {
       clients,
       location,
       status,
+      approved,
+      assigned,
+      service,
       role,
     } = req.body;
     
@@ -54,9 +57,11 @@ export const register = async (req, res) => {
       clients,
       location,
       status,
+      approved,
+      assigned,
+      service,
       role,
     });
-
 
 
     const savedUser = await newUser.save();
@@ -107,6 +112,7 @@ export const login = async (req, res) => {
     const user = await User.findOne({ email: email });
     if (!user) return res.status(400).json({ msg: "User does not exist. " });
     if(!user.status) return res.status(400).json({ msg: "User not verified. " });
+    if(!user.approved) return res.status(400).json({ msg: "User not approved. Wait for admin's approval . " });
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) return res.status(400).json({ msg: "Invalid credentials. " });
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
@@ -130,17 +136,18 @@ export const setLogout = async (req, res) => {
 export const verifyEmail = async (req, res) => {
   try {
       const {
-          userId,
+          email,
           otp
       } = req.body
       
-      if (!userId || !otp) return res.status(400).json({
+      if ( !email || !otp) return res.status(400).json({
           msg: "Invalid request, missing parameters!"
       });
+      
       // if (!isValidObjectId(userId)) return res.status(400).json({
       //     msg: "Invalid user id!"
       // });
-      const user = await User.findById(userId)
+       const user = await User.findOne({email})
       if (!user) return res.status(400).json({
           msg: "User not found!"
       });

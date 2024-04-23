@@ -1,11 +1,25 @@
 import { Box, Button, TextField, Typography, Input } from "@mui/material";
 import { Formik } from "formik";
 import React, { useState } from "react";
-import UserInfo from "state/userInfo";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
-import DeleteConfirmationDialog from "./DeleteConfirmationDialog";
+import ConfirmationDialog from "../ConfirmationDialog";
 import FileUploadOutlinedIcon from '@mui/icons-material/FileUploadOutlined';
 import CustomSnackbar from "scenes/CustomSnackBar";
+import * as yup from "yup";
+import UserPicture from "components/UserPicture";
+
+const modifySchema = yup.object().shape({
+  name: yup.string(),
+  email: yup.string().email("invalid email"),
+  location: yup.string(),
+  phoneNumber: yup.string(),
+});
+
+const passwordSchema = yup.object().shape({
+  oldPassword: yup.string().required("required"),
+  newPassword: yup.string().required("required").min(6, "min 6 characters"),
+  confirmPassword: yup.string().required("required").min(6, "min 6 characters").oneOf([yup.ref("newPassword"), null], "Passwords must match"),
+})
 
 const initValues = {
   _id: "",
@@ -19,7 +33,7 @@ const initValues = {
   picture: "",
 }
 
-const Profile = () => {
+const Profile = ({ user }) => {
   const [openAlert, setOpenAlert] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState(false);
@@ -28,7 +42,6 @@ const Profile = () => {
   const [message,setMessage] = useState('');
   const [modifyValues, setModifyValues] = useState(initValues);
   const [modifyOnSubmitProps, setModifyOnSubmitProps] = useState(null);
-  const user = UserInfo();
 
   
   const modifyProfile = async (values, onSubmitProps) => {
@@ -56,7 +69,7 @@ const Profile = () => {
         setTimeout(() => {
           window.location.reload();
           
-        }, 4250);
+        }, 3000);
       }
       onSubmitProps.resetForm();
     } catch (err) {
@@ -68,7 +81,7 @@ const Profile = () => {
   }
   const deletePicture = async () => {
     try {  
-      const response = await fetch(process.env.REACT_APP_BASE_URL + "/delete-picture", {
+      const response = await fetch(process.env.REACT_APP_BASE_URL + "/profile/delete-picture", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({_id: user._id}),
@@ -83,7 +96,7 @@ const Profile = () => {
         setTimeout(() => {
           window.location.reload();
           
-        }, 4500);
+        }, 3000);
       }
     } catch (err) {
       console.log(err);
@@ -94,7 +107,7 @@ const Profile = () => {
   }
 
   const handleModify = async (values, onSubmitProps) => {
-    if(message === "save"){
+    if(message === "modifyProfile"){
       try {
       values._id = user._id
       values.picture = selectedPicture;
@@ -111,7 +124,7 @@ const Profile = () => {
       setErrorMessage(true)
       setOpenAlert(true);
     }
-    }else if(message === "delete"){
+    }else if(message === "deleteProfilePicture"){
       try{
         await deletePicture();
       }catch(err){
@@ -122,7 +135,7 @@ const Profile = () => {
   }
  /*delete */
   const handleRemoveClick = async () => {
-    setMessage("delete");
+    setMessage("deleteProfilePicture");
     setOpenConfirmationDialog(true);
   };
   const handleConfirmDelete = async () => {
@@ -142,7 +155,7 @@ const Profile = () => {
   const handleSubmit = async (values, onSubmitProps) => {
     setModifyValues(values);
     setModifyOnSubmitProps(onSubmitProps);
-    setMessage("save");
+    setMessage("modifyProfile");
     setOpenConfirmationDialog(true);
   };
   const handleConfirmModify = async () => {
@@ -170,7 +183,7 @@ const Profile = () => {
     <Box overflow={"hidden"}>
       <CustomSnackbar
         open={openAlert}
-        autoHideDuration={4000}
+        autoHideDuration={3000}
         onClose={handleCloseAlert}
         errorMessage={errorMessage}
         alertMessage={alertMessage}
@@ -229,8 +242,9 @@ const Profile = () => {
         <Formik
           initialValues={initValues}
           onSubmit={handleSubmit}
+          validationSchema={modifySchema}
         >
-          {({ handleChange, handleSubmit, values, resetForm }) => (
+          {({ handleChange, handleSubmit, values, resetForm,handleBlur,errors,touched }) => (
             <form
               onSubmit={handleSubmit}
               style={{
@@ -253,12 +267,13 @@ const Profile = () => {
               />
               <Box></Box>
               <label htmlFor="picture-upload" >
-                <Box
+              <UserPicture sx={{ objectFit: "cover", gridColumn: "span 2", cursor: "pointer",height:"20vh",width:"20vh" }} name={user.name} picturePath={user.picturePath} />
+                {/* <Box
                   display="flex"
                   justifyContent="center"
                   alignItems="center"
                   component="img"
-                  alt="profile"
+                  alt={user.name}
                   border={"3px solid #BFB5FF"}
                   src={selectedPicture ? URL.createObjectURL(selectedPicture) : process.env.REACT_APP_BASE_URL + "/assets/" + user.picturePath}
                   height="20vh"
@@ -266,7 +281,7 @@ const Profile = () => {
                   borderRadius="50%"
                   
                   sx={{ objectFit: "cover", gridColumn: "span 2", cursor: "pointer" }}
-                />
+                /> */}
               </label>
               <Box sx={{ gridColumn: "span 4" }}>
                 <Button
@@ -311,7 +326,7 @@ const Profile = () => {
                     Delete
                   </Typography>
                 </Button>
-                <DeleteConfirmationDialog
+                <ConfirmationDialog
         isOpen={openConfirmationDialog}
         data={message}
         onConfirm={handleConfirmDelete}
@@ -328,6 +343,9 @@ const Profile = () => {
                 variant="outlined"
                 value={values.name}
                 onChange={handleChange}
+                onBlur={handleBlur}
+                error={Boolean(touched.name) && Boolean(errors.name)}
+                helperText={touched.name && errors.name}
                 sx={{ gridColumn: "span 3", }}
                 InputProps={{ style: { borderRadius: "20px" } }}
                 placeholder={user.name}
@@ -340,6 +358,9 @@ const Profile = () => {
                   variant="outlined"
                   value={values.email}
                   onChange={handleChange}
+                  onBlur={handleBlur}
+                  error={Boolean(touched.email) && Boolean(errors.email)}
+                  helperText={touched.email && errors.email}
                   sx={{ gridColumn: "span 3",  }}
                   InputProps={{ style: { borderRadius: "20px" } }}
                   placeholder={user.email}
@@ -351,6 +372,9 @@ const Profile = () => {
                   variant="outlined"
                   value={values.location}
                   onChange={handleChange}
+                  onBlur={handleBlur}
+                  error={Boolean(touched.location) && Boolean(errors.location)}
+                helperText={touched.location && errors.location}
                   sx={{ gridColumn: "span 3",  }}
                   InputProps={{ style: { borderRadius: "20px" } }}
                 />
@@ -361,6 +385,9 @@ const Profile = () => {
                   variant="outlined"
                   value={values.phoneNumber}
                   onChange={handleChange}
+                  onBlur={handleBlur}
+                  error={Boolean(touched.phoneNumber) && Boolean(errors.phoneNumber)}
+                helperText={touched.phoneNumber && errors.phoneNumber}
                   sx={{ gridColumn: "span 3",  }}
                   InputProps={{ style: { borderRadius: "20px" } }}
                 />
@@ -386,7 +413,7 @@ const Profile = () => {
                 >
                   Modify
                 </Button>
-                <DeleteConfirmationDialog
+                <ConfirmationDialog
         isOpen={openConfirmationDialog}
         data={message}
         onConfirm={handleConfirmModify}
@@ -446,8 +473,9 @@ const Profile = () => {
   <Formik
     initialValues={initValues}
     onSubmit={handleSubmit}
+    validationSchema={passwordSchema}
   >
-    {({ handleChange, handleSubmit, values,resetForm }) => (
+    {({ handleChange, handleSubmit, values,resetForm,handleBlur,errors,touched  }) => (
       <form
         onSubmit={handleSubmit}
         style={{
@@ -466,6 +494,9 @@ const Profile = () => {
             variant="outlined"
             value={values.oldPassword}
             onChange={handleChange}
+            onBlur={handleBlur}
+            error={Boolean(touched.oldPassword) && Boolean(errors.oldPassword)}
+            helperText={touched.oldPassword && errors.oldPassword}
             style={{ marginBottom: "10px", width: "90%" }}
             InputProps={{ style: { borderRadius: "20px" } }}
           />
@@ -477,6 +508,9 @@ const Profile = () => {
             variant="outlined"
             value={values.newPassword}
             onChange={handleChange}
+            onBlur={handleBlur}
+            error={Boolean(touched.newPassword) && Boolean(errors.newPassword)}
+            helperText={touched.newPassword && errors.newPassword}
             style={{ marginBottom: "10px",width: "90%"  }}
             InputProps={{ style: { borderRadius: "20px"} }}
           />
@@ -488,6 +522,9 @@ const Profile = () => {
             variant="outlined"
             value={values.confirmPassword}
             onChange={handleChange}
+            onBlur={handleBlur}
+            error={Boolean(touched.confirmPassword) && Boolean(errors.confirmPassword)}
+            helperText={touched.confirmPassword && errors.confirmPassword}
             style={{ marginBottom: "10px" ,width: "90%" }}
             InputProps={{ style: { borderRadius: "20px"} }}
           />

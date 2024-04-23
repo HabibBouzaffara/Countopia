@@ -10,7 +10,6 @@ import {
   ListItemIcon,
   ListItemText,
   Typography,
-  useTheme,
 } from "@mui/material";
 import {
   SettingsOutlined,
@@ -22,12 +21,12 @@ import {
   PointOfSaleOutlined,
   CalendarMonthOutlined,
   AdminPanelSettingsOutlined,
-  
+  TrendingUpOutlined,
 } from "@mui/icons-material";
-
 import { useLocation, useNavigate } from "react-router-dom";
-import FlexBetween from "./FlexBetween";
 import CircularProgress from '@mui/material/CircularProgress';
+import UserPicture from "./UserPicture";
+import FlexBetween from "./FlexBetween";
 
 const navItems = [
   {
@@ -43,11 +42,6 @@ const navItems = [
   {
     text: "Client Facing",
     icon: null,
-    role: ["client", "admin", "superadmin"],
-  },
-  {
-    text: "Clients",
-    icon: <Groups2Outlined />,
     role: ["client", "admin", "superadmin"],
   },
   {
@@ -83,6 +77,7 @@ const navItems = [
   {
     text: "Clients",
     icon: <Groups2Outlined />,
+    role: ["superadmin","admin"],
   },
 ];
 
@@ -95,12 +90,11 @@ const Sidebar = ({
 }) => {
   const { pathname } = useLocation();
   const navigate = useNavigate();
-  const theme = useTheme();
   const [active, setActive] = useState("");
 
   useEffect(() => {
     setActive(pathname.substring(1));
-  }, [pathname]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [pathname]);
 
   const filteredNavItems = navItems.filter(({ role }) =>
     role.includes(user.role)
@@ -109,7 +103,7 @@ const Sidebar = ({
   if (!user) return <CircularProgress/>;
 
   return (
-    <Box component="nav" backgroundColor="white">
+    <Box component="nav" bgcolor="white">
       {isSidebarOpen && (
         <Drawer
           open={isSidebarOpen}
@@ -119,31 +113,30 @@ const Sidebar = ({
           sx={{
             width: drawerWidth,
             "& .MuiDrawer-paper": {
-              boxSixing: "border-box",
-              borderWidth: isNonMobile ? 0 : "2px",
+              boxSizing: "border-box",
               width: drawerWidth,
+              bgcolor: "white",
+              border: isNonMobile ? 0 : "2px solid #3F4BC9",
             },
           }}
         >
           <Box width="100%">
             <Box m="1.5rem 2rem 2rem 3rem">
-              <FlexBetween color="#9D8DFE">
-                <Box
-                  marginLeft="1.5rem"
-                  display="flex"
-                  alignItems="center"
-                  gap="0.5rem"
-                >
-                  <Typography variant="h4" fontWeight="bold">
-                    Countopia
-                  </Typography>
-                </Box>
+              <Box
+                ml="1.5rem"
+                display="flex"
+                alignItems="center"
+                gap="0.5rem"
+              >
+                <Typography variant="h4" fontWeight="bold" color="#9D8DFE">
+                  Countopia
+                </Typography>
                 {!isNonMobile && (
                   <IconButton onClick={() => setIsSidebarOpen(!isSidebarOpen)}>
                     <ChevronLeft />
                   </IconButton>
                 )}
-              </FlexBetween>
+              </Box>
             </Box>
             <List>
               {filteredNavItems.map(({ text, icon }) => {
@@ -167,24 +160,21 @@ const Sidebar = ({
                         setActive(lcText);
                       }}
                       sx={{
-                        backgroundColor:
+                        bgcolor:
                           active === lcText
                             ? "rgba(157, 141, 254, 0.7)"
                             : "transparent",
                         color:
                           active === lcText
-                            ? theme.palette.primary[600]
-                            : theme.palette.secondary[100],
+                            ? "#323DB3"
+                            : "#3F4BC9",
                         borderRadius: "0 0.5rem 0.5rem 0",
                       }}
                     >
                       <ListItemIcon
                         sx={{
                           ml: "2rem",
-                          color:
-                            active === lcText
-                              ? "#323DB3"
-                              : theme.palette.secondary[200],
+                          color: active === lcText ? "#323DB3" : "#3F4BC9",
                         }}
                       >
                         {icon}
@@ -200,47 +190,40 @@ const Sidebar = ({
             </List>
           </Box>
 
-          <Box position="" bottom="2rem" marginBottom="2rem">
+          <Box position="" bottom="2rem" width="100%">
             <Divider />
             <FlexBetween textTransform="none" gap="1rem" m="1.5rem 2rem 0 3rem">
-              <Box
-                component="img"
-                alt="profile"
-                src={
-                  process.env.REACT_APP_BASE_URL + "/assets/" + user.picturePath
-                }
-                height="40px"
-                width="40px"
-                borderRadius="50%"
-                sx={{ objectFit: "cover" }}
-              />
+            <UserPicture name={user.name} picturePath={user.picturePath} />
 
-              <Box textAlign="left">
-                <Typography
-                  fontWeight="bold"
-                  fontSize="0.9rem"
-                  sx={{ color: theme.palette.secondary[100] }}
-                >
-                  {user.name}
-                </Typography>
-                <Typography
-                  fontSize="0.8rem"
-                  sx={{ color: theme.palette.secondary[200] }}
-                >
-                  {user.role === "admin"
-                    ? "Admin"
-                    : user.role === "superadmin"
-                    ? "Superadmin"
-                    : "Client"}
-                </Typography>
-              </Box>
-              <SettingsOutlined
+<Box textAlign="left">
+  <Typography
+    fontWeight="bold"
+    fontSize="0.9rem"
+    sx={{ color: "#9D8DFE" }}
+  >
+    {user.name}
+  </Typography>
+  <Typography
+    fontSize="0.8rem"
+    sx={{ color: "#3F4BC9" }}
+  >
+    {user.role === "admin"
+      ? "Admin"
+      : user.role === "superadmin"
+      ? "Superadmin"
+      : "Client"}
+  </Typography>
+</Box>
+<SettingsOutlined
                 sx={{
-                  color: theme.palette.secondary[300],
+                  color: "#3F4BC9",
                   fontSize: "25px ",
                 }}
               />
+
             </FlexBetween>
+            
+            
           </Box>
         </Drawer>
       )}

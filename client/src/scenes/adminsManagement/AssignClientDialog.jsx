@@ -1,40 +1,44 @@
 import React, { useState, useEffect } from "react";
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Checkbox, FormGroup, ListItem, ListItemButton, ListItemAvatar, Avatar, ListItemText, Box } from "@mui/material";
 
-const AssignClientDialog = ({ admin, isOpen, onClose }) => {
+const AssignClientDialog = ({ admin, isOpen, onClose,onCancel }) => {
   const [clients, setClients] = useState([]);
   const [selectedUser, setSelectedUser] = useState([]);
   useEffect(() => {
     const fetchClients = async () => {
-      try {
-        if (isOpen) {
-          const response = await fetch(`${process.env.REACT_APP_BASE_URL}/clients?adminId=${admin._id}`, {
-            method: "GET",
-            headers: { "Content-Type": "application/json" }
-          });
-          if (!response.ok) {
-            throw new Error("Failed to fetch clients");
-          }
-          const { admin: fetchedAdmin, client: fetchedClients } = await response.json();
-          fetchedAdmin.clients.map(clientObj => clientObj["$each"]).forEach(clientIds => 
-            clientIds.forEach(clientId => {
-              if (!selectedUser.includes(clientId)) {
-                setSelectedUser(prevSelectedUsers => [...prevSelectedUsers, clientId]);
-              }
-            })
-          );
-          
-          setClients(fetchedClients);
-          console.log(fetchedAdmin.clients.map(clientObj => clientObj["$each"]));
+        try {
+            if (isOpen) {
+              // console.log(admin._id);
+                const response = await fetch(`${process.env.REACT_APP_BASE_URL}/clients-assign?adminId=${admin._id}`, {
+                    method: "GET",
+                    headers: { "Content-Type": "application/json" }
+                });
+                if (!response.ok) {
+                    throw new Error("Failed to fetch clients");
+                }
+                const { admin: fetchedAdmin, client: fetchedClients } = await response.json();
+                
+                // console.log("Fetched admin:", fetchedAdmin);
+                // console.log("Fetched clients:", fetchedClients);
 
+                // Check if fetchedAdmin has clients before iterating over them
+                if (fetchedAdmin.clients && fetchedAdmin.clients.length > 0) {
+                    fetchedAdmin.clients.forEach(clientId => {
+                        if (!selectedUser.includes(clientId)) {
+                            setSelectedUser(prevSelectedUsers => [...prevSelectedUsers, clientId]);
+                        }
+                    });
+                }
+                
+                setClients(fetchedClients);
+            }
+        } catch (error) {
+            console.log(error);
         }
-      } catch (error) {
-        console.log(error);
-      }
     };
-  
+
     fetchClients();
-  }, [isOpen, admin._id,selectedUser]);
+}, [isOpen, admin._id]);
 
  
 
@@ -66,7 +70,7 @@ const AssignClientDialog = ({ admin, isOpen, onClose }) => {
   };
 
   return (
-    <Dialog open={isOpen} onClose={onClose} fullWidth fullHeight sx={{ overflow: "hidden", height: "600px", width: "500px",marginLeft: "auto", marginRight: "auto", marginTop: "auto", marginBottom: "auto"}} PaperProps={{
+    <Dialog open={isOpen} onClose={onClose} fullWidth   sx={{ overflow: "hidden", height: "500px", width: "500px",marginLeft: "auto", marginRight: "auto", marginTop: "auto", marginBottom: "auto"}} PaperProps={{
       style: {
         borderRadius: "20px", // Add border radius here
       },
@@ -75,6 +79,7 @@ const AssignClientDialog = ({ admin, isOpen, onClose }) => {
       <DialogContent>
         <FormGroup>
           {clients.map((client) => (
+            (client.assigned.length === 0 || admin.clients.includes(client._id)) &&
             <ListItem key={client._id} disablePadding>
               <ListItemButton >
                 <ListItemAvatar >
@@ -82,7 +87,7 @@ const AssignClientDialog = ({ admin, isOpen, onClose }) => {
                 </ListItemAvatar>
                 <ListItemText primary={client.name}  />
                 <Box display="flex" alignItems="center">
-                   {/* <ListItemText secondary={selectedUser.includes(client._id) ? "Assigned" : "Unassigned"}  />  */}
+                <ListItemText secondary={client.assigned.length === 0 ? "Unassigned" : "Assigned"}  /> 
                 <Checkbox
                 style={{ color: "#BFB5FF",marginLeft: "20px" }}
                   checked={selectedUser.includes(client._id)}
@@ -96,7 +101,7 @@ const AssignClientDialog = ({ admin, isOpen, onClose }) => {
         </FormGroup>
       </DialogContent>
       <DialogActions>
-      <Button onClick={onClose} variant="outlined" style={{ color: "#BFB5FF",border:"1px solid #BFB5FF" ,borderRadius:"40px"}}>
+      <Button onClick={onCancel} variant="outlined" style={{ color: "#BFB5FF",border:"1px solid #BFB5FF" ,borderRadius:"40px"}}>
         Cancel
       </Button>
       <Button onClick={handleAssignClients} variant="contained"  style={{ color: "#FFFFFF",backgroundColor: "#BFB5FF", borderRadius:"40px"}}>

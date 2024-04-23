@@ -16,7 +16,7 @@ import { Formik } from "formik";
 import * as yup from "yup";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { setLogin } from "state";
+import { setLogin, setUser } from "state";
 import Dropzone from "react-dropzone";
 import FlexBetween from "components/FlexBetween";
 import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
@@ -39,10 +39,10 @@ const registerSchema = yup.object().shape({
   companyName: yup.string().required("required"),
   codeFiscale: yup.string().required("required"),
   email: yup.string().email("invalid email").required("required"),
-  password: yup.string().required("required"),
+  password: yup.string().required("required").min(6, "min 6 characters"),
   location: yup.string().required("required"),
   phoneNumber: yup.string().required("required"),
-  picture: yup.string().required("required"),
+  picture: yup.string(),
 });
 
 const loginSchema = yup.object().shape({
@@ -56,7 +56,7 @@ const verifySchema = yup.object().shape({
 
 const initialValuesRegisterVerify = {
   otp: "",
-  id: "",
+  email: "",
 };
 
 const initialValuesRegister = {
@@ -67,8 +67,11 @@ const initialValuesRegister = {
   password: "",
   phoneNumber: "",
   location: "",
-  status: "",
+  status: false,
   picture: "",
+  approved: false,
+  assigned: [],
+  service: "pending",
   role: "client",
 };
 
@@ -78,10 +81,10 @@ const initialValuesLogin = {
   rememberMe: false,
 };
 
-const Form = () => {
-  const [savedUserId, setSavedUserId] = useState("");
+const Form = ({action}) => {
+  const [savedUserEmail, setSavedUserEmail] = useState("");
   const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
-  const [pageType, setPageType] = useState("login");
+  const [pageType, setPageType] = useState(action);
   const [openAlert, setOpenAlert] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
   const { palette } = useTheme();
@@ -120,23 +123,24 @@ const Form = () => {
     onSubmitProps.resetForm();
 
     if (savedUser) {
+      setSavedUserEmail(savedUser.email);
       setPageType("verify");
-      console.log(savedUser._id);
-      setSavedUserId(savedUser._id);
+
     }
     }catch(error){
       setAlertMessage(error.msg || 'An error occurred. Please try again later.');
       setOpenAlert(true);
     }
   };
-  const verifyEmail = async (otp, onSubmitProps, userId) => {
+  const verifyEmail = async (otp, onSubmitProps,email) => {
+    console.log(email);
     try{
     const verificationCode = await fetch(
-      process.env.REACT_APP_BASE_URL + "/verify-email",
+      process.env.REACT_APP_BASE_URL + "/auth/verify-email",
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ otp, userId }),
+        body: JSON.stringify({ otp, email }),
       }
     );
     const verification = await verificationCode.json();
@@ -185,6 +189,7 @@ const Form = () => {
               token: loggedIn.token,
             })
           );
+          dispatch(setUser({ user: loggedIn.user,token:loggedIn.token }));
           navigate('/dashboard');
         }
       } catch (error) {
@@ -222,7 +227,7 @@ const Form = () => {
           if (!values.otp) {
             throw new Error("OTP is required");
           }
-          await verifyEmail(values.otp, onSubmitProps, savedUserId);
+          await verifyEmail(values.otp, onSubmitProps,savedUserEmail);
         } else if (isVerified) {
           navigate("/");
         }
@@ -503,9 +508,14 @@ const Form = () => {
                         <Dropzone
                           acceptedFiles=".jpg,.jpeg,.png"
                           multiple={false}
-                          onDrop={(acceptedFiles) =>
+                          onDrop={(acceptedFiles) =>{
+                            const file =acceptedFiles[0];
+                            if(file && file.size > 200000){
+                              alert("Image size should not exceed 200KB");
+                              return;
+                            }                 
                             setFieldValue("picture", acceptedFiles[0])
-                          }
+                          }}
                         >
                           {({ getRootProps, getInputProps }) => (
                             <Box
@@ -575,6 +585,7 @@ const Form = () => {
                   )}
                   </Box>
                   {isVerify && (
+
                     <div style={ {display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", alignContent: "center"}}>
                       <ReactInputVerificationCode
                         value={values.otp}
@@ -586,8 +597,20 @@ const Form = () => {
                         onCompleted={(e) => setFieldValue("otp", e)}
                         style={{ display:"center",textAlign:"center" }}
                       />
-                      </div>
+                      <TextField
+                        label="Email"
 
+                        onBlur={handleBlur}
+                        onChange={handleChange}
+                        value={values.email||savedUserEmail}
+                        name="email"
+                        error={Boolean(touched.email) && Boolean(errors.email)}
+                        helperText={touched.email && errors.email}
+                        sx={{ marginTop: "20px",width:"400px" }}
+                      />
+                      </div>
+                      
+                     
                   )}
                   
                 

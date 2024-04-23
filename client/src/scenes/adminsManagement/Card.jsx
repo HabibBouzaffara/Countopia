@@ -1,15 +1,16 @@
 import { Box, Button } from "@mui/material";
-import React ,{useState} from "react"; 
+import React ,{useCallback, useEffect, useState} from "react"; 
 import PersonAddAltOutlinedIcon from "@mui/icons-material/PersonAddAltOutlined";
 import PersonRemoveOutlinedIcon from "@mui/icons-material/PersonRemoveOutlined";
 import DeleteConfirmationDialog from "./DeleteConfirmationDialog";
 import AssignClientDialog from "./AssignClientDialog";
+import UserPicture from "components/UserPicture";
 
-const AdminCard = ({ user, refreshPage }) => {
-  const[openConfirmationDialog, setOpenConfirmationDialog] = useState(false);
-  const[openAssignClient, setOpenAssignClient] = useState(false);
-  
-  const handleRemoveUser = async () => {
+const AdminCard = ({ user, deletedAdmin, clientAssigned }) => {
+  const [dialogs, setDialogs] = useState({ confirmation: false, assignClient: false });
+  const [clientsInfo, setClientsInfo] = useState({ activeClients: 0, pendingClients: 0 });
+
+  const handleRemoveUser = useCallback(async () => {
     try {
       const response = await fetch(process.env.REACT_APP_BASE_URL + "/admin", {
         method: "DELETE",
@@ -19,32 +20,58 @@ const AdminCard = ({ user, refreshPage }) => {
       if (!response.ok) {
         throw new Error("Failed to remove admin");
       }
-      
-      refreshPage();
+
+      deletedAdmin();
     } catch (err) {
       console.log(err);
     }
-  };
-  const handleRemoveClick = async () => {
-    
-    setOpenConfirmationDialog(true);
-  };
-  const handleConfirmDelete = async () => {
+  }, [user, deletedAdmin]);
+
+  const clientsStatus = useCallback(async () => {
+    try {
+      const response = await fetch(`${process.env.REACT_APP_BASE_URL}/admin-clients-stats?_id=${user._id}`, {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      });
+      if (!response.ok) {
+        throw new Error("Failed to fetch active and pending clients count");
+      }
+      const { activeClients, pendingClients } = await response.json();
+      setClientsInfo({ activeClients, pendingClients });
+    } catch (err) {
+      console.log(err);
+    }
+  }, [user]);
+
+  useEffect(() => {
+    clientsStatus();
+  }, [clientsStatus]);
+
+  const handleRemoveClick = useCallback(() => {
+    setDialogs((prevState) => ({ ...prevState, confirmation: true }));
+  }, []);
+
+  const handleConfirmDelete = useCallback(async () => {
     await handleRemoveUser();
-    setOpenConfirmationDialog(false);
-  };
+    setDialogs((prevState) => ({ ...prevState, confirmation: false }));
+  }, [handleRemoveUser]);
 
-  const handleCancelDelete =  () => {
-    setOpenConfirmationDialog(false);
-  };
+  const handleCancelDelete = useCallback(() => {
+    setDialogs((prevState) => ({ ...prevState, confirmation: false }));
+  }, []);
 
-  const handleAssignClick = async () => {
-    setOpenAssignClient(true);
-  }
+  const handleAssignClick = useCallback(() => {
+    setDialogs((prevState) => ({ ...prevState, assignClient: true }));
+  }, []);
 
-  const handleConfirmAssign = async () => {
-    setOpenAssignClient(false);
-  }
+  const handleConfirmAssign = useCallback(() => {
+    setDialogs((prevState) => ({ ...prevState, assignClient: false }));
+    clientAssigned();
+  }, [clientAssigned]);
+
+  const handleCancelAssign = useCallback(() => {
+    setDialogs((prevState) => ({ ...prevState, assignClient: false }));
+  }, []);
 
 
   
@@ -58,7 +85,6 @@ const AdminCard = ({ user, refreshPage }) => {
       justifyContent={"space-between"}
       alignItems={"center"}
       borderRadius={"15px"}
-      //   padding={"20px"}
       paddingLeft={"40px"}
       paddingRight={"40px"}
       paddingTop={"20px"}
@@ -76,11 +102,7 @@ const AdminCard = ({ user, refreshPage }) => {
       >
         {/* Picture and user info in one column */}
         <Box display={"flex"} alignItems={"center"}>
-          <img
-            src={process.env.REACT_APP_BASE_URL + "/assets/" + user.picturePath}
-            alt="User"
-            style={{ width: "120px", height: "120px", borderRadius: "50%" }}
-          />
+          <UserPicture name={user.name} picturePath={user.picturePath} sx={{ width: "120px", height: "120px" }} />
           <Box marginLeft={"50px"}>
             <p style={{ fontWeight: "bold", color: "rgba(0, 0, 0, 0.6)" }}>
               {user.name}
@@ -90,7 +112,7 @@ const AdminCard = ({ user, refreshPage }) => {
             <p>{user.location}</p>
           </Box>
         </Box>
-
+  
         {/* Buttons aligned to the right */}
         <Box>
           <Button
@@ -100,21 +122,20 @@ const AdminCard = ({ user, refreshPage }) => {
               fontWeight: "normal",
               borderRadius: "20px",
               backgroundColor: "#BFB5FF",
-              width: "150px",
+              width: "180px",
               height: "40px",
               marginRight: "20px",
               marginBottom: "70px",
             }}
           >
-            <PersonAddAltOutlinedIcon
-              style={{ marginRight: "10px", fontWeight: "normal" }}
-            />
-            Assign Client
+            <PersonAddAltOutlinedIcon style={{ marginRight: "10px", fontWeight: "normal" }} />
+            Manage Clients
           </Button>
           <AssignClientDialog
             admin={user}
-            isOpen={openAssignClient}
+            isOpen={dialogs.assignClient}
             onClose={handleConfirmAssign}
+            onCancel={handleCancelAssign}
           />
           <Button
             onClick={handleRemoveClick}
@@ -127,23 +148,16 @@ const AdminCard = ({ user, refreshPage }) => {
               height: "40px",
             }}
           >
-            <PersonRemoveOutlinedIcon
-              sx={{
-                color: "red",
-                fontWeight: "normal",
-              }}
-              fontWeight={"normal"}
-            ></PersonRemoveOutlinedIcon>
+            <PersonRemoveOutlinedIcon sx={{ color: "red", fontWeight: "normal" }} fontWeight={"normal"} />
           </Button>
           <DeleteConfirmationDialog
-        isOpen={openConfirmationDialog}
-        onConfirm={handleConfirmDelete}
-        onCancel={handleCancelDelete}
-      />
+            isOpen={dialogs.confirmation}
+            onConfirm={handleConfirmDelete}
+            onCancel={handleCancelDelete}
+          />
         </Box>
-        
       </Box>
-
+  
       <Box
         width={"95%"}
         display={"flex"}
@@ -152,32 +166,18 @@ const AdminCard = ({ user, refreshPage }) => {
         marginTop={"20px"}
       >
         {/* Three buttons in the second row */}
-        <Box
-          border="2px solid #C7C7C7"
-          borderRadius={"20px"}
-          padding="10px"
-          width="200px"
-        >
-          Clients number : 0
+        <Box border="2px solid #C7C7C7" borderRadius={"20px"} padding="10px" width="200px">
+          Clients number : {user.clients.length}
         </Box>
-        <Box
-          border="2px solid #C7C7C7"
-          borderRadius={"20px"}
-          padding="10px"
-          width="200px"
-        >
-          Active Clients : 0
+        <Box border="2px solid #C7C7C7" borderRadius={"20px"} padding="10px" width="200px">
+          Active Clients : {clientsInfo.activeClients}
         </Box>
-        <Box
-          border="2px solid #C7C7C7"
-          borderRadius={"20px"}
-          padding="10px"
-          width="200px"
-        >
-          Pending Clients : 0
+        <Box border="2px solid #C7C7C7" borderRadius={"20px"} padding="10px" width="200px">
+          Pending Clients : {clientsInfo.pendingClients}
         </Box>
       </Box>
     </Box>
   );
+  
 };
 export default AdminCard;

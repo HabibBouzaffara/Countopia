@@ -60,11 +60,11 @@ const upload = multer({ storage });
 // ROUTES WITH FILES
 app.post("/auth/register", upload.single("picture"), register);
 app.post("/auth/login", login);
-app.post("/verify-email", verifyEmail);
+app.post("/auth/verify-email", verifyEmail);
 app.post("/setLogout", setLogout);
 
 app.patch("/profile",upload.single("picture"), modifyProfile);
-app.patch("/delete-picture",deletePicture);
+app.patch("/profile/delete-picture",deletePicture);
 
 app.get("/admins", getAdmins);
 app.delete("/admin", deleteUser);
@@ -90,7 +90,7 @@ app.use("/users", userRoutes);
 // app.use("/setLogout", setLogoutRoutes);
 // app.use("/admins", adminsRoutes);
 // app.use("/profile", profileRoutes);
-// app.use("/delete-picture", picRoutes);
+app.use("/profile/delete-picture", profileRoutes);
 // app.use("/admin", deleteAdminRoutes);
 app.use("/clients", clientsRoutes);
 app.use("/adminName", clientsRoutes);

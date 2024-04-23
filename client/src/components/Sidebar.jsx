@@ -21,6 +21,7 @@ import {
   PointOfSaleOutlined,
   CalendarMonthOutlined,
   AdminPanelSettingsOutlined,
+  TrendingUpOutlined,
 } from "@mui/icons-material";
 import { useLocation, useNavigate } from "react-router-dom";
 import CircularProgress from '@mui/material/CircularProgress';

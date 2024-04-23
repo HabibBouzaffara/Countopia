@@ -20,7 +20,6 @@ import {
   MenuItem,
   Toolbar,
   Typography,
-  useTheme,
   CircularProgress,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
@@ -28,7 +27,6 @@ import UserPicture from "./UserPicture";
 
 const Navbar = ({ user, isSidebarOpen, setIsSidebarOpen }) => {
   const dispatch = useDispatch();
-  const theme = useTheme();
   const [anchorEl, setAnchorEl] = useState(null);
   const isOpen = Boolean(anchorEl);
   const handleClick = (event) => setAnchorEl(event.currentTarget);

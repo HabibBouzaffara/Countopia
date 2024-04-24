@@ -18,6 +18,7 @@ import LandingPage from "scenes/landing.Page/LandingPage";
 import Admins from "scenes/adminsManagement";
 import Clients from "scenes/clientsManagement";
 import UploadInvoice from "scenes/Invoices";
+import Overview from "scenes/Overview";
 
 function App() {
   const mode = useSelector((state) => state.mode);
@@ -67,6 +68,18 @@ function App() {
                   <Route path='/clients' element={<Clients user={user} />} />
                 )}
                 <Route path='/invoices' element={<InvoicePage />} />
+                <Route path='/profile' element={<Profile user={user} />} />
+                <Route path='/dashboard' element={<Dashboard />} />
+                {user.role === "superadmin" && (
+                  <Route
+                    path='/admins'
+                    element={<Admins superadmin={user} />}
+                  />
+                )}
+                <Route path='/overview' element={<Overview user={user} />} />
+                {(user.role === "superadmin" || user.role === "admin") && (
+                  <Route path='/clients' element={<Clients user={user} />} />
+                )}
               </Route>
             ) : (
               <Route path='/auth' element={<LoginPage />} />

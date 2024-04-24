@@ -1,7 +1,5 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap");
 
-
-
 html,
 body,
 #root,
@@ -9,7 +7,7 @@ body,
   height: 100%;
   width: 100%;
   font-family: "poppins", "poppins";
-  background-color: #EEF2F6; 
+  background-color: #eef2f6;
 }
 
 ::-webkit-scrollbar {
@@ -30,4 +28,3 @@ body,
 ::-webkit-scrollbar-track:hover {
   background: #21295c;
 }
-

@@ -7,7 +7,8 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import { Avatar, MenuItem, Select } from '@mui/material';
+import { Avatar, IconButton, MenuItem, Select } from '@mui/material';
+import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
 
 
 
@@ -41,6 +42,13 @@ const CenteredTableContainer = styled(TableContainer)({
 
 const AdminClientsTable = ({ clientsData,handleChange }) => {
     const [selectedService, setSelectedService] = useState({});
+    // const navigate = useNavigate();
+
+    // const handleOpen = (userId) => {
+    // navigate('/invoices?userId=' + userId);
+    // };
+
+
 
     useEffect(() => {
         const initialSelectedService = {};
@@ -89,6 +97,7 @@ const AdminClientsTable = ({ clientsData,handleChange }) => {
               <StyledTableCell>Phone Number</StyledTableCell>
               <StyledTableCell>Location</StyledTableCell>
               <StyledTableCell>Service</StyledTableCell>
+              <StyledTableCell>Invoice</StyledTableCell>
               {/* Add more table headers as needed */}
             </TableRow>
           </TableHead>
@@ -116,6 +125,11 @@ const AdminClientsTable = ({ clientsData,handleChange }) => {
                     <MenuItem value="ongoing">Ongoing</MenuItem>
                     <MenuItem value="done">Done</MenuItem>
                   </Select>
+                </StyledTableCell>
+                <StyledTableCell>
+                  <IconButton >
+                  <DescriptionOutlinedIcon />
+                  </IconButton>
                 </StyledTableCell>
                 {/* Add more table cells for additional user data */}
               </StyledTableRow>

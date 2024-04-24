@@ -24,13 +24,24 @@ import Client from "./models/client.js";
 import Admin from "./models/admin.js";
 import profileRoutes from "./routes/profile.js";
 import { deletePicture, modifyProfile } from "./controllers/profile.js";
-import { assignClient,getAdmins, getAssignClients, adminClientsStats} from "./controllers/adminManagement.js";
+import {
+  assignClient,
+  getAdmins,
+  getAssignClients,
+  adminClientsStats,
+} from "./controllers/adminManagement.js";
 
 import clientAssignRoutes from "./routes/adminManagement.js";
-import {approveClient, getAdminNames, getClients, updateService} from "./controllers/clientsManagement.js";
+import {
+  approveClient,
+  getAdminNames,
+  getClients,
+  updateService,
+} from "./controllers/clientsManagement.js";
 import clientsRoutes from "./routes/clientsManagement.js";
 import { deleteUser } from "./controllers/users.js";
-
+import { getInvoices, uploadInvoice } from "./controllers/invoices.js";
+import invoicesRoutes from "./routes/invoices.js";
 
 /* Config */
 const __filename = fileURLToPath(import.meta.url);
@@ -45,9 +56,10 @@ app.use(bodyParser.json({ limit: "30mb", extended: true }));
 app.use(bodyParser.urlencoded({ limit: "30mb", extended: true }));
 app.use(cors());
 app.use("/assets", express.static(path.join(__dirname, "public/assets")));
+app.use("/invoices", express.static(path.join(__dirname, "public/invoices")));
 
-// FILE STORAGE
-const storage = multer.diskStorage({
+// Image STORAGE
+const imageStorage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, "public/assets");
   },
@@ -55,31 +67,44 @@ const storage = multer.diskStorage({
     cb(null, file.originalname);
   },
 });
-const upload = multer({ storage });
+const storeImage = multer({ imageStorage });
+// Invoice STORAGE
+const invoicesStorage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "public/invoices");
+  },
+  filename: function (req, file, cb) {
+    cb(null, file.originalname);
+  },
+});
+const storeInvoice = multer({ storage: invoicesStorage });
+app.post("/uploadInvoices", storeInvoice.single("file"), uploadInvoice);
 
 // ROUTES WITH FILES
-app.post("/auth/register", upload.single("picture"), register);
+app.post("/auth/register", storeImage.single("picture"), register);
 app.post("/auth/login", login);
 app.post("/auth/verify-email", verifyEmail);
 app.post("/setLogout", setLogout);
 
-app.patch("/profile",upload.single("picture"), modifyProfile);
-app.patch("/profile/delete-picture",deletePicture);
+app.patch("/profile", storeImage.single("picture"), modifyProfile);
+app.patch("/profile/delete-picture", deletePicture);
 
 app.get("/admins", getAdmins);
 app.delete("/admin", deleteUser);
-app.get("/admin-clients-stats",adminClientsStats);
+app.get("/admin-clients-stats", adminClientsStats);
 app.patch("/clients-assign", assignClient);
-app.get("/clients-assign",getAssignClients);
+app.get("/clients-assign", getAssignClients);
 
-app.get("/clients",getClients);
-app.post("/adminName",getAdminNames);
+app.get("/clients", getClients);
+app.post("/adminName", getAdminNames);
 app.patch("/clients", approveClient);
 app.delete("/clients", deleteUser);
-app.patch("/service",updateService)
+app.patch("/service", updateService);
 
+app.get("/invoices", getInvoices);
 
 /* Routes */
+app.use("/invoices", invoicesRoutes);
 app.use("/management", managementRoutes);
 app.use("/users", userRoutes);
 // app.use("/client", clientRoutes);
@@ -106,7 +131,7 @@ mongoose
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
-  .then(async() => {
+  .then(async () => {
     app.listen(PORT, () => console.log(`Server Port: ${PORT}`));
 
     // ADD DATA ONE TIME

@@ -4,12 +4,10 @@ import {
   Search,
   SettingsOutlined,
   ArrowDropDownOutlined,
-  LightModeOutlined,
-  DarkModeOutlined,
 } from "@mui/icons-material";
 import FlexBetween from "components/FlexBetween";
 import { useDispatch } from "react-redux";
-import { setLogout, setMode } from "state";
+import { setLogout } from "state";
 import {
   AppBar,
   Box,
@@ -46,7 +44,7 @@ const Navbar = ({ user, isSidebarOpen, setIsSidebarOpen }) => {
       navigate("/");
     } catch (err) {
       console.log(err);
-    }finally {
+    } finally {
       setLoading(false);
     }
   };
@@ -65,7 +63,10 @@ const Navbar = ({ user, isSidebarOpen, setIsSidebarOpen }) => {
       <Toolbar sx={{ justifyContent: "space-between" }}>
         {/* LEFT SIDE */}
         <FlexBetween>
-          <IconButton sx={{ color: "#3F4BC9" }} onClick={() => setIsSidebarOpen(!isSidebarOpen)}>
+          <IconButton
+            sx={{ color: "#3F4BC9" }}
+            onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+          >
             <MenuIcon />
           </IconButton>
           <FlexBetween
@@ -76,7 +77,7 @@ const Navbar = ({ user, isSidebarOpen, setIsSidebarOpen }) => {
           >
             <InputBase sx={{ color: "#3F4BC9" }} placeholder="Search..." />
             <IconButton>
-              <Search sx={{ color: "#3F4BC9" }}  />
+              <Search sx={{ color: "#3F4BC9" }} />
             </IconButton>
           </FlexBetween>
         </FlexBetween>
@@ -90,69 +91,65 @@ const Navbar = ({ user, isSidebarOpen, setIsSidebarOpen }) => {
             )}
           </IconButton>   */}
           <IconButton>
-            <SettingsOutlined
-              sx={{ fontSize: "25px", color: "#3F4BC9" }}
-            />
+            <SettingsOutlined sx={{ fontSize: "25px", color: "#3F4BC9" }} />
           </IconButton>
           {loading ? ( // Display CircularProgress when loading is true
-                    <CircularProgress size={24} />
-                  ) : (
-          <FlexBetween>
-            <Button
-              onClick={handleClick}
-              sx={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                textTransform: "none",
-                gap: "1rem",
-              }}
-            >
-              <UserPicture name={user.name} picturePath={user.picturePath} />
-              <Box textAlign="left">
-                <Typography
-                  fontWeight="bold"
-                  fontSize="0.85rem"
-                  sx={{ color: "#3F4BC9" }}
-                >
-                  {user.name}
-                </Typography>
-                <Typography
-                  fontSize="0.75rem"
-                  sx={{ color: "#3F4BC9" }}
-                >
-                  {user.role === "admin"
-                    ? "Admin"
-                    : user.role === "superadmin"
-                    ? "Superadmin"
-                    : "Client"}
-                </Typography>
-              </Box>
-              <ArrowDropDownOutlined
-                sx={{ color: "#3F4BC9", fontSize: "25px" }}
-              />
-            </Button>
-            <Menu
-              anchorEl={anchorEl}
-              open={isOpen}
-              onClose={handleClose}
-              anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-            >
-              <MenuItem
+            <CircularProgress size={24} />
+          ) : (
+            <FlexBetween>
+              <Button
+                onClick={handleClick}
                 sx={{
-                  width: "80px",
-                  height: "30px",
+                  display: "flex",
+                  justifyContent: "space-between",
                   alignItems: "center",
-                  justifyContent: "center",
+                  textTransform: "none",
+                  gap: "1rem",
                 }}
-                onClick={handleClose}
               >
-                <Button sx={{ color: "black" }} onClick={handleLogout}>
-                  Log out
-                </Button>
-              </MenuItem>
-            </Menu>
-          </FlexBetween>)}
+                <UserPicture name={user.name} picturePath={user.picturePath} />
+                <Box textAlign="left">
+                  <Typography
+                    fontWeight="bold"
+                    fontSize="0.85rem"
+                    sx={{ color: "#3F4BC9" }}
+                  >
+                    {user.name}
+                  </Typography>
+                  <Typography fontSize="0.75rem" sx={{ color: "#3F4BC9" }}>
+                    {user.role === "admin"
+                      ? "Admin"
+                      : user.role === "superadmin"
+                      ? "Superadmin"
+                      : "Client"}
+                  </Typography>
+                </Box>
+                <ArrowDropDownOutlined
+                  sx={{ color: "#3F4BC9", fontSize: "25px" }}
+                />
+              </Button>
+              <Menu
+                anchorEl={anchorEl}
+                open={isOpen}
+                onClose={handleClose}
+                anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+              >
+                <MenuItem
+                  sx={{
+                    width: "80px",
+                    height: "30px",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                  onClick={handleClose}
+                >
+                  <Button sx={{ color: "black" }} onClick={handleLogout}>
+                    Log out
+                  </Button>
+                </MenuItem>
+              </Menu>
+            </FlexBetween>
+          )}
         </FlexBetween>
       </Toolbar>
     </AppBar>

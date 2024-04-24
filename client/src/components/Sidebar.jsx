@@ -21,7 +21,7 @@ import {
   PointOfSaleOutlined,
   CalendarMonthOutlined,
   AdminPanelSettingsOutlined,
-  TrendingUpOutlined,
+  
 } from "@mui/icons-material";
 import { useLocation, useNavigate } from "react-router-dom";
 import CircularProgress from '@mui/material/CircularProgress';
@@ -57,7 +57,7 @@ const navItems = [
   {
     text: "Overview",
     icon: <PointOfSaleOutlined />,
-    role: ["client", "admin", "superadmin"],
+    role: [ "admin", "superadmin"],
   },
   {
     text: "Monthly",

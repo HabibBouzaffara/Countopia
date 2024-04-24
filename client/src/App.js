@@ -11,6 +11,7 @@ import LoginPage from "./scenes/loginPage";
 import LandingPage from "scenes/landing.Page/LandingPage";
 import Admins from "scenes/adminsManagement";
 import Clients from "scenes/clientsManagement";
+import Overview from "scenes/Overview";
 
 function App() {
   const mode = useSelector((state) => state.mode);
@@ -48,6 +49,7 @@ function App() {
                     element={<Admins superadmin={user} />}
                   />
                 )}
+                <Route path="/overview" element={<Overview user={user} />} />
                 {(user.role === "superadmin" || user.role === "admin") && (
                   <Route path="/clients" element={<Clients user={user} />} />
                 )}

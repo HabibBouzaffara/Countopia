@@ -1,4 +1,44 @@
 import mongoose from "mongoose";
+const invoiceItemSchema = new mongoose.Schema({
+  _id: {
+    type: String,
+  },
+  client_id: {
+    type: String,
+    required: true,
+  },
+  date_facture: {
+    type: String,
+    required: true,
+  },
+  description: {
+    type: String,
+    required: true,
+  },
+  nom_unite: String,
+  nombre_unit: String,
+  prix_unit: String,
+  total_unit: String,
+  total_net: {
+    type: String, // Update type to String or whatever is appropriate
+    default: "", // Use a default value if needed
+  },
+  taxe: {
+    type: String, // Update type to String or whatever is appropriate
+    default: "0", // Use a default value if needed
+  },
+  total: {
+    type: String,
+    required: true,
+  },
+  num_facture: {
+    type: String,
+    required: true,
+  },
+  category: {
+    type: String,
+  },
+});
 
 const UserSchema = new mongoose.Schema(
   {
@@ -8,7 +48,7 @@ const UserSchema = new mongoose.Schema(
       min: 2,
       max: 20,
     },
-    companyName:{ 
+    companyName: {
       type: String,
       min: 2,
       max: 20,
@@ -47,7 +87,7 @@ const UserSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    service : {
+    service: {
       type: String,
       enum: ["pending", "ongoing", "done"],
       default: "pending",
@@ -56,12 +96,12 @@ const UserSchema = new mongoose.Schema(
       type: Array,
       default: [],
     },
-    factures: Array,
+    factures: [invoiceItemSchema],
     clients: Array,
     role: {
       type: String,
       enum: ["client", "admin", "superadmin"],
-      default:"client",
+      default: "client",
     },
   },
   { timestamps: true }
@@ -69,4 +109,3 @@ const UserSchema = new mongoose.Schema(
 
 const User = mongoose.model("User", UserSchema);
 export default User;
-

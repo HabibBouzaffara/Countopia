@@ -1,5 +1,5 @@
 import { Box, Button } from "@mui/material";
-import React ,{useCallback, useEffect, useState} from "react"; 
+import React, { useCallback, useEffect, useState } from "react";
 import PersonAddAltOutlinedIcon from "@mui/icons-material/PersonAddAltOutlined";
 import PersonRemoveOutlinedIcon from "@mui/icons-material/PersonRemoveOutlined";
 import DeleteConfirmationDialog from "./DeleteConfirmationDialog";
@@ -7,8 +7,14 @@ import AssignClientDialog from "./AssignClientDialog";
 import UserPicture from "components/UserPicture";
 
 const AdminCard = ({ user, deletedAdmin, clientAssigned }) => {
-  const [dialogs, setDialogs] = useState({ confirmation: false, assignClient: false });
-  const [clientsInfo, setClientsInfo] = useState({ activeClients: 0, pendingClients: 0 });
+  const [dialogs, setDialogs] = useState({
+    confirmation: false,
+    assignClient: false,
+  });
+  const [clientsInfo, setClientsInfo] = useState({
+    activeClients: 0,
+    pendingClients: 0,
+  });
 
   const handleRemoveUser = useCallback(async () => {
     try {
@@ -20,7 +26,8 @@ const AdminCard = ({ user, deletedAdmin, clientAssigned }) => {
       if (!response.ok) {
         throw new Error("Failed to remove admin");
       }
-
+      const data = await response.json();
+      console.log(data);
       deletedAdmin();
     } catch (err) {
       console.log(err);
@@ -29,10 +36,13 @@ const AdminCard = ({ user, deletedAdmin, clientAssigned }) => {
 
   const clientsStatus = useCallback(async () => {
     try {
-      const response = await fetch(`${process.env.REACT_APP_BASE_URL}/admin-clients-stats?_id=${user._id}`, {
-        method: "GET",
-        headers: { "Content-Type": "application/json" },
-      });
+      const response = await fetch(
+        `${process.env.REACT_APP_BASE_URL}/admin-clients-stats?_id=${user._id}`,
+        {
+          method: "GET",
+          headers: { "Content-Type": "application/json" },
+        }
+      );
       if (!response.ok) {
         throw new Error("Failed to fetch active and pending clients count");
       }
@@ -51,10 +61,10 @@ const AdminCard = ({ user, deletedAdmin, clientAssigned }) => {
     setDialogs((prevState) => ({ ...prevState, confirmation: true }));
   }, []);
 
-  const handleConfirmDelete = useCallback(async () => {
+  const handleConfirmDelete = async () => {
     await handleRemoveUser();
     setDialogs((prevState) => ({ ...prevState, confirmation: false }));
-  }, [handleRemoveUser]);
+  };
 
   const handleCancelDelete = useCallback(() => {
     setDialogs((prevState) => ({ ...prevState, confirmation: false }));
@@ -73,8 +83,6 @@ const AdminCard = ({ user, deletedAdmin, clientAssigned }) => {
     setDialogs((prevState) => ({ ...prevState, assignClient: false }));
   }, []);
 
-
-  
   return (
     <Box
       width={"100%"}
@@ -102,7 +110,11 @@ const AdminCard = ({ user, deletedAdmin, clientAssigned }) => {
       >
         {/* Picture and user info in one column */}
         <Box display={"flex"} alignItems={"center"}>
-          <UserPicture name={user.name} picturePath={user.picturePath} sx={{ width: "120px", height: "120px" }} />
+          <UserPicture
+            name={user.name}
+            picturePath={user.picturePath}
+            sx={{ width: "120px", height: "120px" }}
+          />
           <Box marginLeft={"50px"}>
             <p style={{ fontWeight: "bold", color: "rgba(0, 0, 0, 0.6)" }}>
               {user.name}
@@ -112,11 +124,11 @@ const AdminCard = ({ user, deletedAdmin, clientAssigned }) => {
             <p>{user.location}</p>
           </Box>
         </Box>
-  
+
         {/* Buttons aligned to the right */}
         <Box>
           <Button
-            variant="contained"
+            variant='contained'
             onClick={handleAssignClick}
             style={{
               fontWeight: "normal",
@@ -128,7 +140,9 @@ const AdminCard = ({ user, deletedAdmin, clientAssigned }) => {
               marginBottom: "70px",
             }}
           >
-            <PersonAddAltOutlinedIcon style={{ marginRight: "10px", fontWeight: "normal" }} />
+            <PersonAddAltOutlinedIcon
+              style={{ marginRight: "10px", fontWeight: "normal" }}
+            />
             Manage Clients
           </Button>
           <AssignClientDialog
@@ -139,7 +153,7 @@ const AdminCard = ({ user, deletedAdmin, clientAssigned }) => {
           />
           <Button
             onClick={handleRemoveClick}
-            variant="contained"
+            variant='contained'
             style={{
               borderRadius: "20px",
               border: "1px solid #A6A6A6",
@@ -148,7 +162,10 @@ const AdminCard = ({ user, deletedAdmin, clientAssigned }) => {
               height: "40px",
             }}
           >
-            <PersonRemoveOutlinedIcon sx={{ color: "red", fontWeight: "normal" }} fontWeight={"normal"} />
+            <PersonRemoveOutlinedIcon
+              sx={{ color: "red", fontWeight: "normal" }}
+              fontWeight={"normal"}
+            />
           </Button>
           <DeleteConfirmationDialog
             isOpen={dialogs.confirmation}
@@ -157,7 +174,7 @@ const AdminCard = ({ user, deletedAdmin, clientAssigned }) => {
           />
         </Box>
       </Box>
-  
+
       <Box
         width={"95%"}
         display={"flex"}
@@ -166,18 +183,32 @@ const AdminCard = ({ user, deletedAdmin, clientAssigned }) => {
         marginTop={"20px"}
       >
         {/* Three buttons in the second row */}
-        <Box border="2px solid #C7C7C7" borderRadius={"20px"} padding="10px" width="200px">
+        <Box
+          border='2px solid #C7C7C7'
+          borderRadius={"20px"}
+          padding='10px'
+          width='200px'
+        >
           Clients number : {user.clients.length}
         </Box>
-        <Box border="2px solid #C7C7C7" borderRadius={"20px"} padding="10px" width="200px">
+        <Box
+          border='2px solid #C7C7C7'
+          borderRadius={"20px"}
+          padding='10px'
+          width='200px'
+        >
           Active Clients : {clientsInfo.activeClients}
         </Box>
-        <Box border="2px solid #C7C7C7" borderRadius={"20px"} padding="10px" width="200px">
+        <Box
+          border='2px solid #C7C7C7'
+          borderRadius={"20px"}
+          padding='10px'
+          width='200px'
+        >
           Pending Clients : {clientsInfo.pendingClients}
         </Box>
       </Box>
     </Box>
   );
-  
 };
 export default AdminCard;

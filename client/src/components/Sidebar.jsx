@@ -21,11 +21,11 @@ import {
   PointOfSaleOutlined,
   CalendarMonthOutlined,
   AdminPanelSettingsOutlined,
-  
 } from "@mui/icons-material";
 import { useLocation, useNavigate } from "react-router-dom";
-import CircularProgress from '@mui/material/CircularProgress';
-import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
+import CircularProgress from "@mui/material/CircularProgress";
+import DescriptionOutlinedIcon from "@mui/icons-material/DescriptionOutlined";
+// import TocOutlinedIcon from "@mui/icons-material/TocOutlined";
 import UserPicture from "./UserPicture";
 import FlexBetween from "./FlexBetween";
 
@@ -58,7 +58,7 @@ const navItems = [
   {
     text: "Overview",
     icon: <PointOfSaleOutlined />,
-    role: [ "admin", "superadmin"],
+    role: ["admin", "superadmin"],
   },
   {
     text: "Monthly",
@@ -78,13 +78,18 @@ const navItems = [
   {
     text: "Clients",
     icon: <Groups2Outlined />,
-    role: ["superadmin","admin"],
+    role: ["superadmin", "admin"],
   },
   {
     text: "Invoices",
     icon: <DescriptionOutlinedIcon />,
-    role: ["superadmin","admin"],
+    role: ["superadmin", "admin"],
   },
+  // {
+  //   text: "Journal",
+  //   icon: <TocOutlinedIcon />,
+  //   role: ["superadmin", "admin"],
+  // },
 ];
 
 const Sidebar = ({
@@ -106,16 +111,16 @@ const Sidebar = ({
     role.includes(user.role)
   );
 
-  if (!user) return <CircularProgress/>;
+  if (!user) return <CircularProgress />;
 
   return (
-    <Box component="nav" bgcolor="white">
+    <Box component='nav' bgcolor='white'>
       {isSidebarOpen && (
         <Drawer
           open={isSidebarOpen}
           onClose={() => setIsSidebarOpen(false)}
-          variant="persistent"
-          anchor="left"
+          variant='persistent'
+          anchor='left'
           sx={{
             width: drawerWidth,
             "& .MuiDrawer-paper": {
@@ -126,15 +131,10 @@ const Sidebar = ({
             },
           }}
         >
-          <Box width="100%">
-            <Box m="1.5rem 2rem 2rem 3rem">
-              <Box
-                ml="1.5rem"
-                display="flex"
-                alignItems="center"
-                gap="0.5rem"
-              >
-                <Typography variant="h4" fontWeight="bold" color="#9D8DFE">
+          <Box width='100%'>
+            <Box m='1.5rem 2rem 2rem 3rem'>
+              <Box ml='1.5rem' display='flex' alignItems='center' gap='0.5rem'>
+                <Typography variant='h4' fontWeight='bold' color='#9D8DFE'>
                   Countopia
                 </Typography>
                 {!isNonMobile && (
@@ -170,10 +170,7 @@ const Sidebar = ({
                           active === lcText
                             ? "rgba(157, 141, 254, 0.7)"
                             : "transparent",
-                        color:
-                          active === lcText
-                            ? "#323DB3"
-                            : "#3F4BC9",
+                        color: active === lcText ? "#323DB3" : "#3F4BC9",
                         borderRadius: "0 0.5rem 0.5rem 0",
                       }}
                     >
@@ -196,40 +193,34 @@ const Sidebar = ({
             </List>
           </Box>
 
-          <Box position="" bottom="2rem" width="100%">
+          <Box position='' bottom='2rem' width='100%'>
             <Divider />
-            <FlexBetween textTransform="none" gap="1rem" m="1.5rem 2rem 0 3rem">
-            <UserPicture name={user.name} picturePath={user.picturePath} />
+            <FlexBetween textTransform='none' gap='1rem' m='1.5rem 2rem 0 3rem'>
+              <UserPicture name={user.name} picturePath={user.picturePath} />
 
-<Box textAlign="left">
-  <Typography
-    fontWeight="bold"
-    fontSize="0.9rem"
-    sx={{ color: "#9D8DFE" }}
-  >
-    {user.name}
-  </Typography>
-  <Typography
-    fontSize="0.8rem"
-    sx={{ color: "#3F4BC9" }}
-  >
-    {user.role === "admin"
-      ? "Admin"
-      : user.role === "superadmin"
-      ? "Superadmin"
-      : "Client"}
-  </Typography>
-</Box>
-<SettingsOutlined
+              <Box textAlign='left'>
+                <Typography
+                  fontWeight='bold'
+                  fontSize='0.9rem'
+                  sx={{ color: "#9D8DFE" }}
+                >
+                  {user.name}
+                </Typography>
+                <Typography fontSize='0.8rem' sx={{ color: "#3F4BC9" }}>
+                  {user.role === "admin"
+                    ? "Admin"
+                    : user.role === "superadmin"
+                    ? "Superadmin"
+                    : "Client"}
+                </Typography>
+              </Box>
+              <SettingsOutlined
                 sx={{
                   color: "#3F4BC9",
                   fontSize: "25px ",
                 }}
               />
-
             </FlexBetween>
-            
-            
           </Box>
         </Drawer>
       )}

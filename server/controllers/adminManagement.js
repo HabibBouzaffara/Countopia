@@ -17,15 +17,21 @@ export const adminClientsStats = async (req, res) => {
     if (!admin) return res.status(404).json({ msg: "Admin not found" });
 
     const clients = await User.find({ _id: { $in: admin.clients } });
-    const activeClients = clients.filter((client) => client.service==="ongoing").length;
-    const pendingClients = clients.filter((client) => client.service==="pending").length;
-    
-    
-    res.status(200).json({ activeClients , pendingClients});
+    const activeClients = clients.filter(
+      (client) => client.service === "ongoing"
+    ).length;
+    const pendingClients = clients.filter(
+      (client) => client.service === "pending"
+    ).length;
+    const doneClients = clients.filter(
+      (client) => client.service === "done"
+    ).length;
+
+    res.status(200).json({ activeClients, pendingClients, doneClients });
   } catch (err) {
     res.status(404).json({ message: err.message });
   }
-}
+};
 
 export const getAssignClients = async (req, res) => {
   try {
@@ -36,7 +42,7 @@ export const getAssignClients = async (req, res) => {
     }
     const allClients = await User.find({ role: "client", approved: true });
 
-    res.status(200).json({ admin: admin, client:allClients });
+    res.status(200).json({ admin: admin, client: allClients });
   } catch (err) {
     res.status(404).json({ message: err.message });
   }
@@ -57,7 +63,7 @@ export const assignClient = async (req, res) => {
     // Update the assigned array of the clientsId users
     await User.updateMany(
       { _id: { $in: clientsId }, assigned: { $ne: adminId } },
-      {  assigned: adminId  }
+      { assigned: adminId }
     );
 
     // Remove adminId from the assigned array of clients not in clientsId
@@ -70,5 +76,4 @@ export const assignClient = async (req, res) => {
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
-}
-
+};

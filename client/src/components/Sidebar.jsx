@@ -25,6 +25,7 @@ import {
 } from "@mui/icons-material";
 import { useLocation, useNavigate } from "react-router-dom";
 import CircularProgress from '@mui/material/CircularProgress';
+import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
 import UserPicture from "./UserPicture";
 import FlexBetween from "./FlexBetween";
 
@@ -77,6 +78,11 @@ const navItems = [
   {
     text: "Clients",
     icon: <Groups2Outlined />,
+    role: ["superadmin","admin"],
+  },
+  {
+    text: "Invoices",
+    icon: <DescriptionOutlinedIcon />,
     role: ["superadmin","admin"],
   },
 ];

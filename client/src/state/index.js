@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  mode: "dark",
+  mode: "light",
   user: null,
   token: null,
 };
@@ -21,7 +21,7 @@ export const globalSlice = createSlice({
       state.user = action.payload.user;
       state.token = action.payload.token;
     },
-    
+
     setVerify: (state, action) => {
       state.user = action.payload.user;
       state.token = action.payload.token;
@@ -33,8 +33,13 @@ export const globalSlice = createSlice({
   },
 });
 
-export const { setMode, setLogin, setLogout, setFriends, setPosts, setPost,setUser } =
-globalSlice.actions;
+export const {
+  setMode,
+  setLogin,
+  setLogout,
+  setFriends,
+  setPosts,
+  setPost,
+  setUser,
+} = globalSlice.actions;
 export default globalSlice.reducer;
-
-

@@ -10,7 +10,7 @@ import {
   Checkbox,
   Snackbar,
 } from "@mui/material";
-import MuiAlert from '@mui/material/Alert';
+import MuiAlert from "@mui/material/Alert";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import { Formik } from "formik";
 import * as yup from "yup";
@@ -81,12 +81,12 @@ const initialValuesLogin = {
   rememberMe: false,
 };
 
-const Form = ({action}) => {
+const Form = ({ action }) => {
   const [savedUserEmail, setSavedUserEmail] = useState("");
   const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
   const [pageType, setPageType] = useState(action);
   const [openAlert, setOpenAlert] = useState(false);
-  const [alertMessage, setAlertMessage] = useState('');
+  const [alertMessage, setAlertMessage] = useState("");
   const { palette } = useTheme();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -98,145 +98,150 @@ const Form = ({action}) => {
   // const [rememberMe, setRememberMe] = useState(false);
 
   const register = async (values, onSubmitProps) => {
-    
     const formData = new FormData();
     for (let value in values) {
       formData.append(value, values[value]);
     }
     formData.append("picturePath", values.picture.name);
-    try{
-    const savedUserResponse = await fetch(
-      process.env.REACT_APP_BASE_URL + "/auth/register",
-      {
-        method: "POST",
-        body: formData,
+    try {
+      const savedUserResponse = await fetch(
+        process.env.REACT_APP_BASE_URL + "/auth/register",
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
+      const savedUser = await savedUserResponse.json();
+
+      if (!savedUserResponse.ok) {
+        // Handle server error
+        setAlertMessage(savedUser.msg || "Error occurred during login");
+        setOpenAlert(true);
+        return;
       }
-    );
-    const savedUser = await savedUserResponse.json();
+      onSubmitProps.resetForm();
 
-    if (!savedUserResponse.ok) {
-      // Handle server error
-      setAlertMessage(savedUser.msg || 'Error occurred during login');
-      setOpenAlert(true);
-      return;
-    }
-    onSubmitProps.resetForm();
-
-    if (savedUser) {
-      setSavedUserEmail(savedUser.email);
-      setPageType("verify");
-
-    }
-    }catch(error){
-      setAlertMessage(error.msg || 'An error occurred. Please try again later.');
+      if (savedUser) {
+        setSavedUserEmail(savedUser.email);
+        setPageType("verify");
+      }
+    } catch (error) {
+      setAlertMessage(
+        error.msg || "An error occurred. Please try again later."
+      );
       setOpenAlert(true);
     }
   };
-  const verifyEmail = async (otp, onSubmitProps,email) => {
+  const verifyEmail = async (otp, onSubmitProps, email) => {
     console.log(email);
-    try{
-    const verificationCode = await fetch(
-      process.env.REACT_APP_BASE_URL + "/auth/verify-email",
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ otp, email }),
-      }
-    );
-    const verification = await verificationCode.json();
+    try {
+      const verificationCode = await fetch(
+        process.env.REACT_APP_BASE_URL + "/auth/verify-email",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ otp, email }),
+        }
+      );
+      const verification = await verificationCode.json();
 
-    if (!verificationCode.ok) {
-      // Handle server error
-      setAlertMessage(verification.msg || 'Error occurred during login');
+      if (!verificationCode.ok) {
+        // Handle server error
+        setAlertMessage(verification.msg || "Error occurred during login");
+        setOpenAlert(true);
+        return;
+      }
+
+      if (verification) {
+        setPageType("verified");
+      }
+    } catch (error) {
+      setAlertMessage("An error occurred. Please try again later.");
       setOpenAlert(true);
-      return;
     }
-  
-    if (verification) {
-      setPageType("verified");
-    } 
-          
-  }catch(error){
-    setAlertMessage('An error occurred. Please try again later.');
-    setOpenAlert(true);
-  }
   };
 
   const login = async (values, onSubmitProps) => {
-      try {
-        const loggedInResponse = await fetch(
-          process.env.REACT_APP_BASE_URL + '/auth/login',
-          {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(values),
-          }
-        );
-  
-        const loggedIn = await loggedInResponse.json();
-        if (!loggedInResponse.ok) {
-          // Handle server error
-          setAlertMessage(loggedIn.msg || 'Error occurred during login');
-          setOpenAlert(true);
-          return;
+    try {
+      const loggedInResponse = await fetch(
+        process.env.REACT_APP_BASE_URL + "/auth/login",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(values),
         }
-        onSubmitProps.resetForm();
-  
-        if (loggedIn) {
-          dispatch(
-            setLogin({
-              user: loggedIn.user,
-              token: loggedIn.token,
-            })
-          );
-          dispatch(setUser({ user: loggedIn.user,token:loggedIn.token }));
-          navigate('/dashboard');
-        }
-      } catch (error) {
-        // Handle other errors (e.g., network error)
-        setAlertMessage('An error occurred. Please try again later.');
+      );
+
+      const loggedIn = await loggedInResponse.json();
+      if (!loggedInResponse.ok) {
+        // Handle server error
+        setAlertMessage(loggedIn.msg || "Error occurred during login");
         setOpenAlert(true);
-      }
-    
-  };
-    const handleCloseAlert = (event, reason) => {
-      if (reason === 'clickaway') {
         return;
       }
-      setOpenAlert(false);
-    };
+      onSubmitProps.resetForm();
 
-  
-
-    const handleFormSubmit = async (values, onSubmitProps) => {
-      try {
-        if (isLogin) {
-          // If Remember Me is checked, save the email in localStorage
-          if (values.rememberMe) {
-            localStorage.setItem("rememberedEmail", values.email);
-          } else {
-            localStorage.removeItem("rememberedEmail");
-          }
-          await login(values, onSubmitProps);
-        } else if (isRegister) {
-          if (!values.name || !values.companyName || !values.codeFiscale || !values.email || !values.password || !values.location || !values.phoneNumber || !values.picture) {
-            throw new Error("All fields are required");
-          }
-          await register(values, onSubmitProps);
-        } else if (isVerify) {
-          if (!values.otp) {
-            throw new Error("OTP is required");
-          }
-          await verifyEmail(values.otp, onSubmitProps,savedUserEmail);
-        } else if (isVerified) {
-          navigate("/");
-        }
-      } catch (error) {
-        setAlertMessage(error.message);
-        setOpenAlert(true);
+      if (loggedIn) {
+        dispatch(
+          setLogin({
+            user: loggedIn.user,
+            token: loggedIn.token,
+          })
+        );
+        dispatch(setUser({ user: loggedIn.user, token: loggedIn.token }));
+        navigate("/profile");
       }
-    };
-    
+    } catch (error) {
+      // Handle other errors (e.g., network error)
+      setAlertMessage("An error occurred. Please try again later.");
+      setOpenAlert(true);
+    }
+  };
+  const handleCloseAlert = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpenAlert(false);
+  };
+
+  const handleFormSubmit = async (values, onSubmitProps) => {
+    try {
+      if (isLogin) {
+        // If Remember Me is checked, save the email in localStorage
+        if (values.rememberMe) {
+          localStorage.setItem("rememberedEmail", values.email);
+        } else {
+          localStorage.removeItem("rememberedEmail");
+        }
+        await login(values, onSubmitProps);
+      } else if (isRegister) {
+        if (
+          !values.name ||
+          !values.companyName ||
+          !values.codeFiscale ||
+          !values.email ||
+          !values.password ||
+          !values.location ||
+          !values.phoneNumber ||
+          !values.picture
+        ) {
+          throw new Error("All fields are required");
+        }
+        await register(values, onSubmitProps);
+      } else if (isVerify) {
+        if (!values.otp) {
+          throw new Error("OTP is required");
+        }
+        await verifyEmail(values.otp, onSubmitProps, savedUserEmail);
+      } else if (isVerified) {
+        navigate("/");
+      }
+    } catch (error) {
+      setAlertMessage(error.message);
+      setOpenAlert(true);
+    }
+  };
+
   const [showPassword, setShowPassword] = useState(false);
 
   const handleClickShowPassword = () => {
@@ -249,43 +254,43 @@ const Form = ({action}) => {
 
   return (
     <Box
-      display="flex"
-      justifyContent="center"
-      alignItems="center"
-      height="95%"
-      width="95%"
-      borderRadius="4rem"
-      backgroundColor="#BFB5FF"
-      margin="2.5rem"
-      marginTop="20px" // Adjusted marginTop to move the purple box closer to the top
-      flex="1"
-      position="relative"
+      display='flex'
+      justifyContent='center'
+      alignItems='center'
+      height='95%'
+      width='95%'
+      borderRadius='4rem'
+      backgroundColor='#BFB5FF'
+      margin='2.5rem'
+      marginTop='20px' // Adjusted marginTop to move the purple box closer to the top
+      flex='1'
+      position='relative'
     >
       <Box
-        display="flex"
-        flexDirection="row" // Align components vertically
-        justifyContent="center"
-        alignItems="center"
-        height="95%"
-        width="97%"
-        borderRadius="4rem"
-        backgroundColor="white"
-        position="relative"
+        display='flex'
+        flexDirection='row' // Align components vertically
+        justifyContent='center'
+        alignItems='center'
+        height='95%'
+        width='97%'
+        borderRadius='4rem'
+        backgroundColor='white'
+        position='relative'
       >
         <Box
-          flex="1"
-          display="flex"
-          justifyContent="center"
-          alignItems="center"
-          borderRight="1px solid #BFB5FF"
-          maxWidth="50%"
-          position="relative"
+          flex='1'
+          display='flex'
+          justifyContent='center'
+          alignItems='center'
+          borderRight='1px solid #BFB5FF'
+          maxWidth='50%'
+          position='relative'
           justifyItems={"center"}
         >
           {isLogin && isNonMobileScreens && (
             <img
               src={signIn}
-              alt=""
+              alt=''
               style={{
                 maxWidth: "70%",
                 maxHeight: "70%",
@@ -294,10 +299,10 @@ const Form = ({action}) => {
               }}
             />
           )}
-          {isRegister && isNonMobileScreens &&(
+          {isRegister && isNonMobileScreens && (
             <img
               src={signUp}
-              alt=""
+              alt=''
               style={{
                 maxWidth: "100%",
                 maxHeight: "100%",
@@ -306,10 +311,10 @@ const Form = ({action}) => {
               }}
             />
           )}
-          {isVerify && isNonMobileScreens &&(
+          {isVerify && isNonMobileScreens && (
             <img
               src={verify}
-              alt=""
+              alt=''
               style={{
                 maxWidth: "100%",
                 maxHeight: "100%",
@@ -318,10 +323,10 @@ const Form = ({action}) => {
               }}
             />
           )}
-          {isVerified && isNonMobileScreens &&(
+          {isVerified && isNonMobileScreens && (
             <img
               src={verified}
-              alt=""
+              alt=''
               style={{
                 maxWidth: "100%",
                 maxHeight: "100%",
@@ -330,75 +335,74 @@ const Form = ({action}) => {
               }}
             />
           )}
-
         </Box>
 
         <Box
           width={isNonMobileScreens ? "50%" : "90%"}
-          p="2rem"
-          borderRadius="4rem"
-          backgroundColor="white"
-          height="99%"
-          overflow="auto"
-          position="relative"
+          p='2rem'
+          borderRadius='4rem'
+          backgroundColor='white'
+          height='99%'
+          overflow='auto'
+          position='relative'
         >
           {/* Text above the form */}
           {isLogin ? (
             <Typography
-              variant="h2"
-              color="#BFB5FF"
+              variant='h2'
+              color='#BFB5FF'
               gutterBottom
-              align="center"
-              alignItems="center"
-              justifyContent="center"
-              textAlign="center"
-              marginTop="20%"
-              marginBottom="3rem"
-              fontFamily="Poppins"
-              fontWeight="900"
+              align='center'
+              alignItems='center'
+              justifyContent='center'
+              textAlign='center'
+              marginTop='20%'
+              marginBottom='3rem'
+              fontFamily='Poppins'
+              fontWeight='900'
               // marginTop="110px"
             >
               Sign In To Countopia
             </Typography>
           ) : isRegister ? (
             <Typography
-              variant="h2"
-              color="#BFB5FF"
+              variant='h2'
+              color='#BFB5FF'
               gutterBottom
-              align="center"
-              marginBottom="3rem"
-              fontFamily="Poppins"
-              fontWeight="900"
+              align='center'
+              marginBottom='3rem'
+              fontFamily='Poppins'
+              fontWeight='900'
             >
               Sign Up To Countopia
             </Typography>
-          ) :isVerify ? (
+          ) : isVerify ? (
             <Typography
-              variant="h2"
-              color="#BFB5FF"
+              variant='h2'
+              color='#BFB5FF'
               gutterBottom
-              align="center"
-              marginBottom="3rem"
-              marginTop="25%"
-              fontFamily="Poppins"
-              fontWeight="900"
+              align='center'
+              marginBottom='3rem'
+              marginTop='25%'
+              fontFamily='Poppins'
+              fontWeight='900'
             >
               Verify Your Email
             </Typography>
-          ):isVerified ? (
+          ) : isVerified ? (
             <Typography
-              variant="h2"
-              color="#BFB5FF"
+              variant='h2'
+              color='#BFB5FF'
               gutterBottom
-              align="center"
-              marginBottom="3rem"
-              marginTop="25%"
-              fontFamily="Poppins"
-              fontWeight="900"
+              align='center'
+              marginBottom='3rem'
+              marginTop='25%'
+              fontFamily='Poppins'
+              fontWeight='900'
             >
               Thanks for signing up !
             </Typography>
-          ): null}
+          ) : null}
 
           {/* Form component */}
           <Formik
@@ -411,7 +415,13 @@ const Form = ({action}) => {
                 : initialValuesRegisterVerify
             }
             validationSchema={
-              isLogin ? loginSchema : isRegister ? registerSchema :isVerify? verifySchema: null
+              isLogin
+                ? loginSchema
+                : isRegister
+                ? registerSchema
+                : isVerify
+                ? verifySchema
+                : null
             }
           >
             {({
@@ -426,9 +436,9 @@ const Form = ({action}) => {
             }) => (
               <form onSubmit={handleSubmit}>
                 <Box
-                  display="grid"
-                  gap="5px"
-                  gridTemplateColumns="repeat(4, minmax(0, 1fr))"
+                  display='grid'
+                  gap='5px'
+                  gridTemplateColumns='repeat(4, minmax(0, 1fr))'
                   sx={{
                     "& > div": {
                       gridColumn: isNonMobile ? undefined : "span 4",
@@ -438,21 +448,21 @@ const Form = ({action}) => {
                   {isRegister && !isVerify && (
                     <>
                       <TextField
-                        label="Name"
+                        label='Name'
                         onBlur={handleBlur}
                         onChange={handleChange}
                         value={values.name}
-                        name="name"
+                        name='name'
                         error={Boolean(touched.name) && Boolean(errors.name)}
                         helperText={touched.name && errors.name}
                         sx={{ gridColumn: "span 2" }}
                       />
                       <TextField
-                        label="Company Name"
+                        label='Company Name'
                         onBlur={handleBlur}
                         onChange={handleChange}
                         value={values.companyName}
-                        name="companyName"
+                        name='companyName'
                         error={
                           Boolean(touched.companyName) &&
                           Boolean(errors.companyName)
@@ -461,11 +471,11 @@ const Form = ({action}) => {
                         sx={{ gridColumn: "span 2" }}
                       />
                       <TextField
-                        label="Location"
+                        label='Location'
                         onBlur={handleBlur}
                         onChange={handleChange}
                         value={values.location}
-                        name="location"
+                        name='location'
                         error={
                           Boolean(touched.location) && Boolean(errors.location)
                         }
@@ -474,11 +484,11 @@ const Form = ({action}) => {
                       />
 
                       <TextField
-                        label="Tax Code"
+                        label='Tax Code'
                         onBlur={handleBlur}
                         onChange={handleChange}
                         value={values.codeFiscale}
-                        name="codeFiscale"
+                        name='codeFiscale'
                         error={
                           Boolean(touched.codeFiscale) &&
                           Boolean(errors.codeFiscale)
@@ -487,11 +497,11 @@ const Form = ({action}) => {
                         sx={{ gridColumn: "span 2" }}
                       />
                       <TextField
-                        label="Phone Number : "
+                        label='Phone Number : '
                         onBlur={handleBlur}
                         onChange={handleChange}
                         value={values.phoneNumber}
-                        name="phoneNumber"
+                        name='phoneNumber'
                         error={
                           Boolean(touched.phoneNumber) &&
                           Boolean(errors.phoneNumber)
@@ -500,33 +510,33 @@ const Form = ({action}) => {
                         sx={{ gridColumn: "span 4" }}
                       />
                       <Box
-                        gridColumn="span 4"
+                        gridColumn='span 4'
                         border={`1px solid ${palette.neutral.medium}`}
-                        borderRadius="5px"
-                        p="1rem"
+                        borderRadius='5px'
+                        p='1rem'
                       >
                         <Dropzone
-                          acceptedFiles=".jpg,.jpeg,.png"
+                          acceptedFiles='.jpg,.jpeg,.png'
                           multiple={false}
-                          onDrop={(acceptedFiles) =>{
-                            const file =acceptedFiles[0];
-                            if(file && file.size > 200000){
+                          onDrop={(acceptedFiles) => {
+                            const file = acceptedFiles[0];
+                            if (file && file.size > 200000) {
                               alert("Image size should not exceed 200KB");
                               return;
-                            }                 
-                            setFieldValue("picture", acceptedFiles[0])
+                            }
+                            setFieldValue("picture", acceptedFiles[0]);
                           }}
                         >
                           {({ getRootProps, getInputProps }) => (
                             <Box
                               {...getRootProps()}
                               border={`2px dashed ${palette.primary.main}`}
-                              p="1rem"
-                              borderRadius="60px"
-                              display="flex"
-                              alignItems="center"
-                              justifyContent="center"
-                              height="50px"
+                              p='1rem'
+                              borderRadius='60px'
+                              display='flex'
+                              alignItems='center'
+                              justifyContent='center'
+                              height='50px'
                               sx={{ "&:hover": { cursor: "pointer" } }}
                             >
                               <input {...getInputProps()} />
@@ -548,28 +558,28 @@ const Form = ({action}) => {
                   {(isLogin || isRegister) && (
                     <>
                       <TextField
-                        label="Email"
+                        label='Email'
                         onBlur={handleBlur}
                         onChange={handleChange}
                         value={values.email}
-                        name="email"
+                        name='email'
                         error={Boolean(touched.email) && Boolean(errors.email)}
                         helperText={touched.email && errors.email}
                         sx={{ gridColumn: "span 4" }}
                       />
                       <TextField
-                        label="Password"
+                        label='Password'
                         type={showPassword ? "text" : "password"}
                         value={values.password}
                         sx={{ gridColumn: "span 4 " }}
                         onChange={handleChange("password")}
                         InputProps={{
                           endAdornment: (
-                            <InputAdornment position="end">
+                            <InputAdornment position='end'>
                               <IconButton
                                 onClick={handleClickShowPassword}
                                 onMouseDown={handleMouseDownPassword}
-                                edge="end"
+                                edge='end'
                               >
                                 {showPassword ? (
                                   <Visibility />
@@ -583,60 +593,70 @@ const Form = ({action}) => {
                       />
                     </>
                   )}
-                  </Box>
-                  {isVerify && (
+                </Box>
+                {isVerify && (
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      alignContent: "center",
+                    }}
+                  >
+                    <ReactInputVerificationCode
+                      value={values.otp}
+                      onChange={(e) => setFieldValue("otp", e)}
+                      autoFocus={true}
+                      length={4}
+                      placeholder=''
+                      onComplete={(e) => setFieldValue("otp", e)}
+                      onCompleted={(e) => setFieldValue("otp", e)}
+                      style={{ display: "center", textAlign: "center" }}
+                    />
+                    <TextField
+                      label='Email'
+                      onBlur={handleBlur}
+                      onChange={handleChange}
+                      value={values.email || savedUserEmail}
+                      name='email'
+                      error={Boolean(touched.email) && Boolean(errors.email)}
+                      helperText={touched.email && errors.email}
+                      sx={{ marginTop: "20px", width: "400px" }}
+                    />
+                  </div>
+                )}
 
-                    <div style={ {display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", alignContent: "center"}}>
-                      <ReactInputVerificationCode
-                        value={values.otp}
-                        onChange={(e) => setFieldValue("otp", e)}
-                        autoFocus={true}
-                        length={4}
-                        placeholder=""
-                        onComplete={(e) => setFieldValue("otp", e)}
-                        onCompleted={(e) => setFieldValue("otp", e)}
-                        style={{ display:"center",textAlign:"center" }}
-                      />
-                      <TextField
-                        label="Email"
-
-                        onBlur={handleBlur}
-                        onChange={handleChange}
-                        value={values.email||savedUserEmail}
-                        name="email"
-                        error={Boolean(touched.email) && Boolean(errors.email)}
-                        helperText={touched.email && errors.email}
-                        sx={{ marginTop: "20px",width:"400px" }}
-                      />
-                      </div>
-                      
-                     
-                  )}
-                  
-                
-                {isVerified &&(
-                    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", alignContent: "center" }}>
+                {isVerified && (
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      alignContent: "center",
+                    }}
+                  >
                     <Typography
-                      variant="h4"
-                      color="black"
-                      marginBottom="40px"
-                      align="center"
-                      fontFamily="Poppins"
-                      fontWeight="200"
+                      variant='h4'
+                      color='black'
+                      marginBottom='40px'
+                      align='center'
+                      fontFamily='Poppins'
+                      fontWeight='200'
                     >
                       An approval email will be sent to you in less than 24H !
                     </Typography>
                     <img
                       src={section2}
-                      alt=""
+                      alt=''
                       style={{
                         margin: "20px",
                         // Your styles for the image
                       }}
                     />
                   </div>
-                  
-                  )}
+                )}
                 {isLogin && !isVerify && (
                   <>
                     <FormControlLabel
@@ -644,7 +664,7 @@ const Form = ({action}) => {
                         <Checkbox
                           checked={values.rememberMe}
                           onChange={handleChange}
-                          name="rememberMe"
+                          name='rememberMe'
                           icon={
                             <CheckBoxOutlineBlankIcon
                               style={{ color: "#1976D2" }}
@@ -655,7 +675,7 @@ const Form = ({action}) => {
                           } // Blue color for checked checkbox
                         />
                       }
-                      label="Remember Me"
+                      label='Remember Me'
                       sx={{ gridColumn: "span 4", marginBottom: "-30px" }} // Adjust the marginTop value as needed
                     />
                   </>
@@ -666,7 +686,7 @@ const Form = ({action}) => {
                 <Box>
                   <Button
                     fullWidth
-                    type="submit"
+                    type='submit'
                     sx={{
                       m: "2rem 0",
                       p: "0.5rem",
@@ -679,24 +699,30 @@ const Form = ({action}) => {
                       },
                     }}
                   >
-                    {isLogin ? "Sign In" :isRegister? "Sign Up":isVerify? "Verify": "Go to home page"} 
+                    {isLogin
+                      ? "Sign In"
+                      : isRegister
+                      ? "Sign Up"
+                      : isVerify
+                      ? "Verify"
+                      : "Go to home page"}
                   </Button>
-                      <Snackbar
-                        open={openAlert}
-                        autoHideDuration={4000}
-                        onClose={handleCloseAlert}
-                        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-                        sx={{ paddingBottom: '15px' }}
-                      >
-                        <MuiAlert
-                          elevation={6}
-                          variant="standard"
-                          severity="error"
-                          onClose={handleCloseAlert}
-                        >
-                         {alertMessage}
-                        </MuiAlert>
-                      </Snackbar>
+                  <Snackbar
+                    open={openAlert}
+                    autoHideDuration={4000}
+                    onClose={handleCloseAlert}
+                    anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+                    sx={{ paddingBottom: "15px" }}
+                  >
+                    <MuiAlert
+                      elevation={6}
+                      variant='standard'
+                      severity='error'
+                      onClose={handleCloseAlert}
+                    >
+                      {alertMessage}
+                    </MuiAlert>
+                  </Snackbar>
                   <Typography
                     onClick={() => {
                       setPageType(
@@ -704,7 +730,6 @@ const Form = ({action}) => {
                       );
                       resetForm();
                       isVerified && navigate("/");
-                      
                     }}
                     sx={{
                       textDecoration: "underline",
@@ -715,13 +740,11 @@ const Form = ({action}) => {
                       },
                     }}
                   >
-                    {isLogin 
+                    {isLogin
                       ? "Don't have an account? Sign Up here."
-                      :isRegister
+                      : isRegister
                       ? "Already have an account? Login here."
-                      :null
-                      }
-                    
+                      : null}
                   </Typography>
                 </Box>
               </form>

@@ -21,7 +21,7 @@ export const getClients = async (req, res) => {
 
     if (role === "superadmin") {
       // For superadmin, return all users with role "client"
-      const clients = await User.find({ role: "client" });
+      const clients = await User.find({ role: "client" },{ factures: 0, clients: 0 });
       res.status(200).json(clients);
     } else if (role === "admin") {
       // For admin, return clients associated with the admin user
@@ -34,7 +34,7 @@ export const getClients = async (req, res) => {
         return res.status(200).json([]);
       }
       // Fetch the clients associated with the admin user
-      const clients = await User.find({ _id: { $in: adminUser.clients } });
+      const clients = await User.find({ _id: { $in: adminUser.clients } },{ factures: 0, clients: 0,role: 0,approved: 0,status: 0,createdAt: 0,updatedAt: 0,__v: 0,assigned:0 });
       res.status(200).json(clients);
     } else {
       res.status(400).json({ message: "Invalid role provided" });

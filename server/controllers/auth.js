@@ -109,7 +109,7 @@ export const register = async (req, res) => {
 export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
-    const user = await User.findOne({ email: email });
+    const user = await User.findOne({ email: email }).select('+password');;
     if (!user) return res.status(400).json({ msg: "User does not exist. " });
     if(!user.status) return res.status(400).json({ msg: "User not verified. " });
     if(!user.approved) return res.status(400).json({ msg: "User not approved. Wait for admin's approval . " });

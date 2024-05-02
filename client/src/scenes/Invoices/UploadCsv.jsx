@@ -2,83 +2,14 @@ import React, { useState } from "react";
 import Dropzone from "react-dropzone";
 import UploadFileOutlinedIcon from "@mui/icons-material/UploadFileOutlined";
 import ArrowForwardOutlinedIcon from "@mui/icons-material/ArrowForwardOutlined";
-import {
-  Box,
-  Button,
-  CircularProgress,
-  Typography,
-  circularProgressClasses,
-} from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
+import Journal from "scenes/journal/Journal";
 
-const UploadCsv = ({ setFileData }) => {
+const UploadCsv = ({ user, setFileData }) => {
   const [file, setFile] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const FacebookCircularProgress = (props) => {
-    return (
-      <Box sx={{ position: "relative" }}>
-        <CircularProgress
-          variant='determinate'
-          sx={{
-            color: "#9D8DFE",
-          }}
-          size={100}
-          thickness={4}
-          {...props}
-          value={100}
-        />
-        <CircularProgress
-          variant='indeterminate'
-          disableShrink
-          sx={{
-            color: "#D8D8D8",
-            animationDuration: "550ms",
-            position: "absolute",
-            left: 0,
-            [`& .${circularProgressClasses.circle}`]: {
-              strokeLinecap: "round",
-            },
-          }}
-          size={100}
-          thickness={4}
-          {...props}
-        />
-      </Box>
-    );
-  };
-  const handleUpload = async () => {
-    if (!file) {
-      console.error("No file selected.");
-      return;
-    }
-    console.log("File selected:", file);
 
-    try {
-      setLoading(true);
-      const formData = new FormData();
-      formData.append("file", file);
-
-      const response = await fetch(
-        `${process.env.REACT_APP_BASE_URL}/uploadInvoices`,
-        {
-          method: "POST",
-          body: formData,
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error("Failed to upload file.");
-      }
-
-      const { responseData } = await response.json(); // Parse the response body as JSON
-      console.log("Response:", responseData);
-      // Trigger a refresh of the invoices after successful upload
-      setFileData(responseData);
-    } catch (error) {
-      console.error("Error uploading file:", error);
-    }
-  };
   return (
-    <>
+    <Box>
       <Typography
         sx={{
           color: "#263238",
@@ -94,7 +25,7 @@ const UploadCsv = ({ setFileData }) => {
         sx={{
           color: "#A6A6A6",
           fontSize: "15px",
-          marginTop: "9px",
+          marginTop: "7px",
           marginLeft: "30px",
           // marginBottom: "25px",
         }}
@@ -119,8 +50,8 @@ const UploadCsv = ({ setFileData }) => {
                 cursor: "pointer",
                 color: "#C7C7C7F",
                 backgroundColor: "#F5F5F5",
-                width: "80%",
-                height: "350px",
+                width: "70%",
+                height: "270px",
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
@@ -134,36 +65,33 @@ const UploadCsv = ({ setFileData }) => {
               }}
             >
               <input {...getInputProps()} />
-              {!loading && (
-                <>
-                  <UploadFileOutlinedIcon
-                    sx={{
-                      fontSize: "80px",
-                      color: !file ? "rgba(191,181,255,0.5)" : "#9D8DFE",
-                    }}
-                  />
-                  <Typography
-                    sx={{
-                      fontSize: "16px",
-                      color: !file ? "rgba(191,181,255,0.5)" : "#9D8DFE",
-                    }}
-                  >
-                    Drag and drop CSV file here, or click to select files
-                  </Typography>
-                </>
+
+              <UploadFileOutlinedIcon
+                sx={{
+                  fontSize: "80px",
+                  color: !file ? "rgba(191,181,255,0.5)" : "#9D8DFE",
+                  marginBottom: "10px",
+                }}
+              />
+              {!file && (
+                <Typography
+                  sx={{
+                    fontSize: "16px",
+                    color: "rgba(191,181,255,0.5)",
+                  }}
+                >
+                  Drag and drop CSV file here, or click to select files
+                </Typography>
               )}
-              {loading && (
-                <>
-                  <FacebookCircularProgress />
-                  <Typography
-                    sx={{
-                      fontSize: "16px",
-                      color: "#9D8DFE",
-                    }}
-                  >
-                    Uploading The file !
-                  </Typography>
-                </>
+              {file && (
+                <Typography
+                  sx={{
+                    fontSize: "18px",
+                    color: "#9D8DFE",
+                  }}
+                >
+                  {file.name}
+                </Typography>
               )}
             </Box>
           )}
@@ -174,7 +102,7 @@ const UploadCsv = ({ setFileData }) => {
             alignItems: "end",
             justifyContent: "end",
             marginBottom: "20px",
-            marginRight: "100px",
+            marginRight: "180px",
           }}
         >
           <Button
@@ -190,13 +118,14 @@ const UploadCsv = ({ setFileData }) => {
                 backgroundColor: "#9D8DFE",
               },
             }}
-            onClick={handleUpload}
+            onClick={() => setFileData(file)}
           >
             Upload
           </Button>
         </Box>
       </Box>
-    </>
+      <Journal user={user} />
+    </Box>
   );
 };
 

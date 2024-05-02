@@ -21,7 +21,7 @@ export const getClients = async (req, res) => {
 
     if (role === "superadmin") {
       // For superadmin, return all users with role "client"
-      const clients = await User.find({ role: "client" },{ factures: 0, clients: 0 });
+      const clients = await User.find({ role: "client" }, { clients: 0 });
       res.status(200).json(clients);
     } else if (role === "admin") {
       // For admin, return clients associated with the admin user
@@ -34,7 +34,19 @@ export const getClients = async (req, res) => {
         return res.status(200).json([]);
       }
       // Fetch the clients associated with the admin user
-      const clients = await User.find({ _id: { $in: adminUser.clients } },{ factures: 0, clients: 0,role: 0,approved: 0,status: 0,createdAt: 0,updatedAt: 0,__v: 0,assigned:0 });
+      const clients = await User.find(
+        { _id: { $in: adminUser.clients } },
+        {
+          clients: 0,
+          role: 0,
+          approved: 0,
+          status: 0,
+          createdAt: 0,
+          updatedAt: 0,
+          __v: 0,
+          assigned: 0,
+        }
+      );
       res.status(200).json(clients);
     } else {
       res.status(400).json({ message: "Invalid role provided" });
@@ -51,7 +63,7 @@ export const getClients = async (req, res) => {
 //   } catch (err) {
 //     res.status(404).json({ message: err.message });
 //   }
-  
+
 // }
 
 export const approveClient = async (req, res) => {
@@ -59,26 +71,25 @@ export const approveClient = async (req, res) => {
     const { _id } = req.body;
     const client = await User.findById({ _id: _id });
     await User.updateOne({ _id }, { $set: { approved: true } });
-    
+
     mailTransport().sendMail({
       from: "countopia@countopia.com",
       to: client.email,
       subject: "Account Activation",
       html: generateActivationEmailHTML(client.name),
-    })
+    });
     res.status(200).json({ msg: "Client approved successfully" });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
-  
-}
+};
 
 export const updateService = async (req, res) => {
   try {
-    const {_id, service } = req.body;
+    const { _id, service } = req.body;
     await User.updateOne({ _id }, { $set: { service: service } });
     res.status(200).json({ msg: "Service updated successfully" });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
-}
+};

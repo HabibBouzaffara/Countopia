@@ -1,15 +1,15 @@
 import mongoose from "mongoose";
 
-const invoiceSchema = new mongoose.Schema({
+const invoiceItemSchema = new mongoose.Schema({
   client_id: {
     type: String,
     required: true,
   },
   date_facture: {
-    type: Date,
+    type: String,
     required: true,
   },
-  Description: {
+  description: {
     type: String,
     required: true,
   },
@@ -18,21 +18,38 @@ const invoiceSchema = new mongoose.Schema({
   prix_unit: String,
   total_unit: String,
   total_net: {
-    type: Number,
-    required: true,
+    type: String, // Update type to String or whatever is appropriate
+    default: "", // Use a default value if needed
   },
   taxe: {
-    type: Number,
-    default: 0,
+    type: String, // Update type to String or whatever is appropriate
+    default: "0", // Use a default value if needed
   },
   total: {
-    type: Number,
+    type: String,
     required: true,
   },
   num_facture: {
     type: String,
     required: true,
   },
+  category: {
+    type: String,
+  },
+  assigned: {
+    type: Boolean,
+    default: false,
+  },
+});
+
+const invoiceSchema = new mongoose.Schema({
+  date: {
+    type: Date,
+    default: Date.now,
+  },
+  adminId: { type: mongoose.Types.ObjectId, ref: "User" },
+  adminName: { type: String, default: "" },
+  items: [invoiceItemSchema],
 });
 const Invoice = mongoose.model("Invoice", invoiceSchema);
 export default Invoice;

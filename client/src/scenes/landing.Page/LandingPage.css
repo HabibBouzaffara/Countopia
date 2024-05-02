@@ -16,11 +16,10 @@
   height: 1340px;
   background: linear-gradient(240deg, #323db3 12.52%, #7558c8 95.97%);
   overflow: hidden;
-  border-radius: 70px;
+  border-radius: 46px;
 }
 
 .lading-page-navbar {
-
   display: flex;
   height: 100px;
   align-items: center;
@@ -139,11 +138,6 @@
   margin-top: -10vh; /* Adjust this value to move the waves higher */
   margin-right: 0vw; /* Adjust this value to move the waves to the left */
 }
-
-
-
- 
-  
 
 .landing-page-images {
   top: 75vh;

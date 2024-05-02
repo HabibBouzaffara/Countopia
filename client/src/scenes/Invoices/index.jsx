@@ -1,62 +1,48 @@
-import { Box, Button } from "@mui/material";
+import { Box } from "@mui/material";
 import React, { useState } from "react";
-import GradingOutlinedIcon from "@mui/icons-material/GradingOutlined";
-import JsonToCsv from "./JsonToCsv";
+import CleanedInvoice from "./CleanedInvoice";
 import UploadCsv from "./UploadCsv";
+import OriginalInvoice from "./OriginalInvoice";
 
-const UploadInvoice = ({ clientId }) => {
+const UploadInvoice = ({ user }) => {
+  console.log(user);
   const [fileData, setFileData] = useState(null);
+  const [cleanedVersion, setCleanedVersion] = useState(null);
+  // console.log(cleanedVersion);
 
   return (
-    <>
-      {!fileData && (
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "end",
-            justifyContent: "center",
-            marginTop: "20px",
-            marginBottom: "20px",
-            marginRight: "8%",
-          }}
-        >
-          <Button
-            variant='contained'
-            startIcon={<GradingOutlinedIcon />}
-            sx={{
-              backgroundColor: "#9D8DFE",
-              color: "white",
-              borderRadius: "30px",
-              width: "200px",
-              height: "45px",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              textTransform: "none",
-            }}
-            // onClick={handleUpload}
-          >
-            Financial Journal
-          </Button>
-        </Box>
-      )}
-
+    <Box {...(!fileData && { minHeight: "720px" })}>
       <Box
         sx={{
           backgroundColor: "white",
           display: "flex",
           flexDirection: "column",
           width: "90%",
-          margin: "auto",
-          borderRadius: "30px",
+          marginTop: "auto",
+          marginLeft: "auto",
+          marginRight: "auto",
+          borderRadius: "12px",
         }}
       >
-        {!fileData && <UploadCsv setFileData={setFileData} />}
-
-        {fileData && <JsonToCsv fileData={fileData} />}
+        {!fileData && <UploadCsv user={user} setFileData={setFileData} />}
+        {fileData && !cleanedVersion && (
+          <OriginalInvoice
+            file={fileData}
+            setCleanedVersion={setCleanedVersion}
+            setFileData={setFileData}
+          />
+        )}
+        {cleanedVersion && (
+          <CleanedInvoice
+            adminId={user._id}
+            adminName={user.name}
+            cleanedVersion={cleanedVersion}
+            setCleanedVersion={setCleanedVersion}
+            setFileData={setFileData}
+          />
+        )}
       </Box>
-    </>
+    </Box>
   );
 };
 

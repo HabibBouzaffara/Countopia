@@ -5,18 +5,16 @@ import { Outlet } from "react-router-dom";
 import Navbar from "components/Navbar";
 import Sidebar from "components/Sidebar";
 
-
-
-const Layout = ({user}) => {
+const Layout = ({ user }) => {
   const isNonMobile = useMediaQuery("(min-width: 600px)");
   const [isSidebarOpen, setIsSidebarOpen] = useState(true); // [isSidebarOpen, setIsSidebarOpen]
 
   return (
-    <Box display={isNonMobile ? "flex" : "block"} width="100%" height="100%">
-      <Sidebar 
+    <Box display={isNonMobile ? "flex" : "block"} width='100%' height='100%'>
+      <Sidebar
         user={user || {}}
         isNonMobile={isNonMobile}
-        drawerWidth="250px"
+        drawerWidth='250px'
         isSidebarOpen={isSidebarOpen}
         setIsSidebarOpen={setIsSidebarOpen}
       />

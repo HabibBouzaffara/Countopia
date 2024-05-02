@@ -5,6 +5,7 @@ import {
   Divider,
   InputBase,
   IconButton,
+  Box,
 } from "@mui/material";
 import HourglassTopOutlinedIcon from "@mui/icons-material/HourglassTopOutlined";
 import SearchIcon from "@mui/icons-material/Search";
@@ -13,6 +14,7 @@ import FlexBetween from "components/FlexBetween";
 import WaitingClients from "./WaitingClientsDialog";
 import SuperadminClientsTable from "./SuperadminClientsTable";
 import AdminClientsTable from "./AdminClientsTable";
+import ProgressCircle from "scenes/ProgressCircle";
 
 const Search = styled("div")({
   position: "relative",
@@ -28,6 +30,7 @@ const Search = styled("div")({
 const Clients = ({ user }) => {
   const [clients, setClients] = useState(null);
   const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleOpen = () => {
     setOpen(true);
@@ -39,6 +42,7 @@ const Clients = ({ user }) => {
 
   const getAllClients = async () => {
     try {
+      setLoading(true);
       const url = new URL(process.env.REACT_APP_BASE_URL + "/clients");
       // Add user._id and user.role as query parameters
       url.searchParams.append("userId", user?._id);
@@ -52,6 +56,7 @@ const Clients = ({ user }) => {
       if (!clientsResponse.ok) {
         throw new Error(data.msg);
       }
+      setLoading(false);
       setClients(data);
     } catch (err) {
       console.log(err);
@@ -113,38 +118,38 @@ const Clients = ({ user }) => {
           width: "90%",
         }}
       />
-      <div
-        style={{ display: "flex", alignItems: "center", marginLeft: "10px" }}
-      >
-        <Search>
-          <FlexBetween
-            backgroundColor='#fcfcfc'
-            borderRadius='9px'
-            gap='1rem' // Adjust the gap as needed
-            p='0.1rem 1rem'
-          >
-            <InputBase
-              placeholder='Search...'
-              sx={{ width: "150px" }} // Adjust the width as needed
-              inputProps={{ "aria-label": "search" }}
-            />
-            <IconButton size='small'>
-              {" "}
-              {/* Adjust the size as needed */}
-              <SearchIcon />
-            </IconButton>
-          </FlexBetween>
-        </Search>
-      </div>
 
-      <div style={{ height: "500px", overflow: "auto", marginTop: "10px" }}>
-        {clients && user.role === "superadmin" && (
+      {loading && (
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            marginTop: "100px",
+          }}
+        >
+          <ProgressCircle size={90} />
+        </Box>
+      )}
+
+      <div
+        style={{
+          height: "500px",
+          overflow: "auto",
+          width: "98%",
+          margin: "auto",
+          marginTop: "20px",
+          borderRadius: "20px",
+        }}
+      >
+        {clients && user.role === "superadmin" && !loading && (
           <SuperadminClientsTable
             userData={clients.filter((clients) => clients.approved)}
             handleChange={getAllClients}
           />
         )}
-        {clients && user.role === "admin" && (
+
+        {clients && user.role === "admin" && !loading && (
           <AdminClientsTable
             clientsData={clients}
             handleChange={getAllClients}

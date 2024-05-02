@@ -19,6 +19,7 @@ import Admins from "scenes/adminsManagement";
 import Clients from "scenes/clientsManagement";
 import UploadInvoice from "scenes/Invoices";
 import Overview from "scenes/Overview";
+import Journal from "scenes/journal/Journal";
 
 function App() {
   const mode = useSelector((state) => state.mode);
@@ -31,7 +32,7 @@ function App() {
     const searchParams = new URLSearchParams(location.search);
     const userId = searchParams.get("userId");
 
-    return <UploadInvoice clientId={userId} />;
+    return <UploadInvoice clientId={userId} user={user} />;
   };
 
   return (
@@ -65,21 +66,14 @@ function App() {
                   />
                 )}
                 {(user.role === "superadmin" || user.role === "admin") && (
-                  <Route path='/clients' element={<Clients user={user} />} />
+                  <>
+                    <Route path='/clients' element={<Clients user={user} />} />
+                    <Route path='/invoices' element={<InvoicePage />} />
+                    {/* <Route path='/journal' element={<Journal user={user} />} /> */}
+                  </>
                 )}
-                <Route path='/invoices' element={<InvoicePage />} />
-                <Route path='/profile' element={<Profile user={user} />} />
-                <Route path='/dashboard' element={<Dashboard />} />
-                {user.role === "superadmin" && (
-                  <Route
-                    path='/admins'
-                    element={<Admins superadmin={user} />}
-                  />
-                )}
+
                 <Route path='/overview' element={<Overview user={user} />} />
-                {(user.role === "superadmin" || user.role === "admin") && (
-                  <Route path='/clients' element={<Clients user={user} />} />
-                )}
               </Route>
             ) : (
               <Route path='/auth' element={<LoginPage />} />

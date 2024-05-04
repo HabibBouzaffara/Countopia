@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import Paper from "@mui/material/Paper";
-import { Avatar, Box, IconButton, Modal, Typography } from "@mui/material";
-import { CloseFullscreen, Delete } from "@mui/icons-material";
+import { Avatar, IconButton } from "@mui/material";
+import { Delete } from "@mui/icons-material";
 import ConfirmationDialog from "scenes/ConfirmationDialog";
 import DescriptionOutlinedIcon from "@mui/icons-material/DescriptionOutlined";
 import InvoicesModal from "components/InvoicesModal";
@@ -14,9 +14,11 @@ const SuperadminClientsTable = ({ userData, handleChange }) => {
   const [clientId, setClientId] = useState(null);
   const [open, setOpen] = useState(false);
   const [invoices, setInvoices] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const fetchInvoices = async (clientId) => {
     try {
+      setLoading(true);
       const response = await fetch(
         `${process.env.REACT_APP_BASE_URL}/getClientJournal?clientId=${clientId}`
       );
@@ -28,8 +30,10 @@ const SuperadminClientsTable = ({ userData, handleChange }) => {
       const { journal } = await response.json();
       console.log(journal);
       setInvoices(journal);
+      setLoading(false);
     } catch (err) {
       console.log(err);
+      setLoading(false);
     }
   };
 
@@ -201,11 +205,14 @@ const SuperadminClientsTable = ({ userData, handleChange }) => {
           onCancel={handleCancelDelete}
         />
       </Paper>
-      <InvoicesModal
-        open={open}
-        handleClose={handleClose}
-        invoices={invoices}
-      />
+      {invoices && (
+        <InvoicesModal
+          open={open}
+          handleClose={handleClose}
+          invoices={invoices}
+          loading={loading}
+        />
+      )}
     </>
   );
 };

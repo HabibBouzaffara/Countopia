@@ -17,15 +17,14 @@ import {
   ChevronRightOutlined,
   HomeOutlined,
   Groups2Outlined,
-  ReceiptLongOutlined,
   PointOfSaleOutlined,
-  CalendarMonthOutlined,
   AdminPanelSettingsOutlined,
 } from "@mui/icons-material";
 import { useLocation, useNavigate } from "react-router-dom";
 import CircularProgress from "@mui/material/CircularProgress";
 import DescriptionOutlinedIcon from "@mui/icons-material/DescriptionOutlined";
-// import TocOutlinedIcon from "@mui/icons-material/TocOutlined";
+import QueryStatsOutlinedIcon from "@mui/icons-material/QueryStatsOutlined";
+import TocOutlinedIcon from "@mui/icons-material/TocOutlined";
 import UserPicture from "./UserPicture";
 import FlexBetween from "./FlexBetween";
 
@@ -36,39 +35,35 @@ const navItems = [
     role: ["client", "admin", "superadmin"],
   },
   {
-    text: "Profile",
-    icon: <SettingsOutlined />,
-    role: ["client", "admin", "superadmin"],
-  },
-  {
-    text: "Client Facing",
-    icon: null,
-    role: ["client", "admin", "superadmin"],
-  },
-  {
-    text: "Transactions",
-    icon: <ReceiptLongOutlined />,
-    role: ["client", "admin", "superadmin"],
-  },
-  {
-    text: "Sales",
-    icon: null,
-    role: ["client", "admin", "superadmin"],
-  },
-  {
     text: "Overview",
     icon: <PointOfSaleOutlined />,
     role: ["admin", "superadmin"],
   },
-  {
-    text: "Monthly",
-    icon: <CalendarMonthOutlined />,
-    role: ["client", "admin", "superadmin"],
-  },
+  // {
+  //   text: "Profile",
+  //   icon: null,
+  //   role: ["client", "admin", "superadmin"],
+  // },
+
+  // {
+  //   text: "Client Facing",
+  //   icon: null,
+  //   role: ["client", "admin", "superadmin"],
+  // },
+  // {
+  //   text: "Sales",
+  //   icon: null,
+  //   role: ["client", "admin", "superadmin"],
+  // },
   {
     text: "Management",
     icon: null,
     role: ["admin", "superadmin"],
+  },
+  {
+    text: "Profile",
+    icon: <SettingsOutlined />,
+    role: ["client", "admin", "superadmin"],
   },
   {
     text: "Admins",
@@ -81,15 +76,35 @@ const navItems = [
     role: ["superadmin", "admin"],
   },
   {
+    text: "Journal",
+    icon: null,
+    role: ["client", "admin", "superadmin"],
+  },
+  {
     text: "Invoices",
     icon: <DescriptionOutlinedIcon />,
     role: ["superadmin", "admin"],
   },
-  // {
-  //   text: "Journal",
-  //   icon: <TocOutlinedIcon />,
-  //   role: ["superadmin", "admin"],
-  // },
+  {
+    text: "Overview",
+    icon: <PointOfSaleOutlined />,
+    role: ["client"],
+  },
+  {
+    text: "Journal",
+    icon: <TocOutlinedIcon />,
+    role: ["client"],
+  },
+  {
+    text: "Next Feature",
+    icon: null,
+    role: ["client", "admin", "superadmin"],
+  },
+  {
+    text: "Ask Your DB",
+    icon: <QueryStatsOutlinedIcon />,
+    role: ["superadmin", "admin", "client"],
+  },
 ];
 
 const Sidebar = ({
@@ -193,7 +208,7 @@ const Sidebar = ({
             </List>
           </Box>
 
-          <Box position='' bottom='2rem' width='100%'>
+          <Box position='absolute' bottom='2rem' width='100%'>
             <Divider />
             <FlexBetween textTransform='none' gap='1rem' m='1.5rem 2rem 0 3rem'>
               <UserPicture name={user.name} picturePath={user.picturePath} />

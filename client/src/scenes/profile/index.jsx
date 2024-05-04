@@ -3,7 +3,7 @@ import { Formik } from "formik";
 import React, { useState } from "react";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import ConfirmationDialog from "../ConfirmationDialog";
-import FileUploadOutlinedIcon from '@mui/icons-material/FileUploadOutlined';
+import FileUploadOutlinedIcon from "@mui/icons-material/FileUploadOutlined";
 import CustomSnackbar from "scenes/CustomSnackBar";
 import * as yup from "yup";
 import UserPicture from "components/UserPicture";
@@ -18,8 +18,12 @@ const modifySchema = yup.object().shape({
 const passwordSchema = yup.object().shape({
   oldPassword: yup.string().required("required"),
   newPassword: yup.string().required("required").min(6, "min 6 characters"),
-  confirmPassword: yup.string().required("required").min(6, "min 6 characters").oneOf([yup.ref("newPassword"), null], "Passwords must match"),
-})
+  confirmPassword: yup
+    .string()
+    .required("required")
+    .min(6, "min 6 characters")
+    .oneOf([yup.ref("newPassword"), null], "Passwords must match"),
+});
 
 const initValues = {
   _id: "",
@@ -31,124 +35,134 @@ const initValues = {
   location: "",
   phoneNumber: "",
   picture: "",
-}
+};
 
 const Profile = ({ user }) => {
   const [openAlert, setOpenAlert] = useState(false);
-  const [alertMessage, setAlertMessage] = useState('');
+  const [alertMessage, setAlertMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState(false);
   const [selectedPicture, setSelectedPicture] = useState(null); // State to store selected picture
-  const[openConfirmationDialog, setOpenConfirmationDialog] = useState(false);
-  const [message,setMessage] = useState('');
+  const [openConfirmationDialog, setOpenConfirmationDialog] = useState(false);
+  const [message, setMessage] = useState("");
   const [modifyValues, setModifyValues] = useState(initValues);
   const [modifyOnSubmitProps, setModifyOnSubmitProps] = useState(null);
 
-  
   const modifyProfile = async (values, onSubmitProps) => {
     try {
       const formData = new FormData();
-    for (let value in values) {
-      formData.append(value, values[value]);
-    }
-    if (values.picture) {
-      formData.append("picturePath", values.picture.name);
-    }
-      const response = await fetch(process.env.REACT_APP_BASE_URL + "/profile", {
-        method: "PATCH",
-        body: formData,
-      });
+      for (let value in values) {
+        formData.append(value, values[value]);
+      }
+      if (values.picture) {
+        formData.append("picturePath", values.picture.name);
+      }
+      const response = await fetch(
+        process.env.REACT_APP_BASE_URL + "/profile",
+        {
+          method: "PATCH",
+          body: formData,
+        }
+      );
       const data = await response.json();
       if (!response.ok) {
         setAlertMessage(data.msg);
-        setErrorMessage(true)
+        setErrorMessage(true);
         setOpenAlert(true);
       } else {
-        setAlertMessage(data.msg || 'updated successfully');
-        setErrorMessage(false)
+        setAlertMessage(data.msg || "updated successfully");
+        setErrorMessage(false);
         setOpenAlert(true);
         setTimeout(() => {
           window.location.reload();
-          
         }, 3000);
       }
       onSubmitProps.resetForm();
     } catch (err) {
       console.log(err);
-      setAlertMessage(err.msg || 'Error occurred. Please try again later.');
-      setErrorMessage(true)
+      setAlertMessage(err.msg || "Error occurred. Please try again later.");
+      setErrorMessage(true);
       setOpenAlert(true);
     }
-  }
+  };
   const deletePicture = async () => {
-    try {  
-      const response = await fetch(process.env.REACT_APP_BASE_URL + "/profile/delete-picture", {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({_id: user._id}),
-      });
+    try {
+      const response = await fetch(
+        process.env.REACT_APP_BASE_URL + "/profile/delete-picture",
+        {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ _id: user._id }),
+        }
+      );
       const data = await response.json();
       if (!response.ok) {
-        throw new Error(data.msg || 'Failed to delete picture');
+        throw new Error(data.msg || "Failed to delete picture");
       } else {
-        setAlertMessage(data.msg || 'Picture deleted successfully');
+        setAlertMessage(data.msg || "Picture deleted successfully");
         setErrorMessage(false);
         setOpenAlert(true);
         setTimeout(() => {
           window.location.reload();
-          
         }, 3000);
       }
     } catch (err) {
       console.log(err);
-      setAlertMessage(err.msg || 'Error occurred while deleting picture');
+      setAlertMessage(err.msg || "Error occurred while deleting picture");
       setErrorMessage(true);
       setOpenAlert(true);
     }
-  }
+  };
 
   const handleModify = async (values, onSubmitProps) => {
-    if(message === "modifyProfile"){
+    if (message === "modifyProfile") {
       try {
-      values._id = user._id
-      values.picture = selectedPicture;
-      if (!values.newPassword && !values.confirmPassword && !values.oldPassword && !values.name && !values.email && !values.location && !values.phoneNumber && !values.picture) {
-        throw new Error("Nothing to update !");
+        values._id = user._id;
+        values.picture = selectedPicture;
+        if (
+          !values.newPassword &&
+          !values.confirmPassword &&
+          !values.oldPassword &&
+          !values.name &&
+          !values.email &&
+          !values.location &&
+          !values.phoneNumber &&
+          !values.picture
+        ) {
+          throw new Error("Nothing to update !");
+        }
+        if (values.newPassword !== values.confirmPassword) {
+          throw new Error("Passwords do not match !");
+        }
+        await modifyProfile(values, onSubmitProps);
+      } catch (err) {
+        console.log(err);
+        setAlertMessage(err.msg || "Error occurred. Please try again later.");
+        setErrorMessage(true);
+        setOpenAlert(true);
       }
-      if (values.newPassword !== values.confirmPassword) {
-        throw new Error("Passwords do not match !");
-      }
-      await modifyProfile(values, onSubmitProps);
-    } catch (err) {
-      console.log(err);
-      setAlertMessage(err.msg || 'Error occurred. Please try again later.');
-      setErrorMessage(true)
-      setOpenAlert(true);
-    }
-    }else if(message === "deleteProfilePicture"){
-      try{
+    } else if (message === "deleteProfilePicture") {
+      try {
         await deletePicture();
-      }catch(err){
+      } catch (err) {
         console.log(err);
       }
     }
-    
-  }
- /*delete */
+  };
+  /*delete */
   const handleRemoveClick = async () => {
     setMessage("deleteProfilePicture");
     setOpenConfirmationDialog(true);
   };
   const handleConfirmDelete = async () => {
-    try{
+    try {
       await deletePicture();
-    setOpenConfirmationDialog(false);
-    }catch(err){
+      setOpenConfirmationDialog(false);
+    } catch (err) {
       console.log(err);
     }
-    
   };
 
-  const handleCancelDelete =  () => {
+  const handleCancelDelete = () => {
     setOpenConfirmationDialog(false);
   };
   /*modify */
@@ -159,16 +173,16 @@ const Profile = ({ user }) => {
     setOpenConfirmationDialog(true);
   };
   const handleConfirmModify = async () => {
-    await handleModify(modifyValues,modifyOnSubmitProps);
+    await handleModify(modifyValues, modifyOnSubmitProps);
     setOpenConfirmationDialog(false);
   };
 
-  const handleCancelModify =  () => {
+  const handleCancelModify = () => {
     setOpenConfirmationDialog(false);
   };
 
   const handleCloseAlert = (event, reason) => {
-    if (reason === 'clickaway') {
+    if (reason === "clickaway") {
       return;
     }
     setOpenAlert(false);
@@ -189,7 +203,7 @@ const Profile = ({ user }) => {
         alertMessage={alertMessage}
       />
       <Typography
-        variant="h2"
+        variant='h2'
         sx={{
           color: "#263238",
           marginLeft: "30px",
@@ -215,7 +229,7 @@ const Profile = ({ user }) => {
         }}
       >
         <Typography
-          variant="h5"
+          variant='h5'
           sx={{
             marginBottom: "20px",
             textAlign: "start",
@@ -228,13 +242,14 @@ const Profile = ({ user }) => {
         </Typography>
 
         <Typography
-          variant="h5"
+          variant='h5'
           sx={{
             marginBottom: "20px",
             textAlign: "start",
             gridColumn: "span 6",
             color: "rgba(0, 0, 0, 0.6)",
           }}
+          alignSelf={"flex-start"}
         >
           {user.companyName}
         </Typography>
@@ -244,7 +259,15 @@ const Profile = ({ user }) => {
           onSubmit={handleSubmit}
           validationSchema={modifySchema}
         >
-          {({ handleChange, handleSubmit, values, resetForm,handleBlur,errors,touched }) => (
+          {({
+            handleChange,
+            handleSubmit,
+            values,
+            resetForm,
+            handleBlur,
+            errors,
+            touched,
+          }) => (
             <form
               onSubmit={handleSubmit}
               style={{
@@ -254,20 +277,28 @@ const Profile = ({ user }) => {
                 alignItems: "center",
                 justifyContent: "end",
                 alignContent: "end",
-                
               }}
             >
               {/* Picture upload section */}
               <Input
-                type="file"
+                type='file'
                 onChange={handlePictureChange}
                 style={{ display: "none" }}
-                id="picture-upload"
-                
+                id='picture-upload'
               />
               <Box></Box>
-              <label htmlFor="picture-upload" >
-              <UserPicture sx={{ objectFit: "cover", gridColumn: "span 2", cursor: "pointer",height:"20vh",width:"20vh" }} name={user.name} picturePath={user.picturePath} />
+              <label htmlFor='picture-upload'>
+                <UserPicture
+                  sx={{
+                    objectFit: "cover",
+                    gridColumn: "span 2",
+                    cursor: "pointer",
+                    height: "20vh",
+                    width: "20vh",
+                  }}
+                  name={user.name}
+                  picturePath={user.picturePath}
+                />
                 {/* <Box
                   display="flex"
                   justifyContent="center"
@@ -285,8 +316,8 @@ const Profile = ({ user }) => {
               </label>
               <Box sx={{ gridColumn: "span 4" }}>
                 <Button
-                  variant="contained"
-                  type="button"
+                  variant='contained'
+                  type='button'
                   style={{
                     backgroundColor: "#BFB5FF",
                     color: "white",
@@ -298,16 +329,18 @@ const Profile = ({ user }) => {
                     marginBottom: "10px",
                     marginTop: "20px",
                   }}
-                  onClick={() => document.getElementById('picture-upload').click()}
+                  onClick={() =>
+                    document.getElementById("picture-upload").click()
+                  }
                 >
                   <FileUploadOutlinedIcon sx={{ marginRight: "5px" }} />
                   Upload Picture
                 </Button>
 
                 <Button
-                  variant="outlined"
-                  color="error"
-                  type="button"
+                  variant='outlined'
+                  color='error'
+                  type='button'
                   onClick={handleRemoveClick}
                   style={{
                     padding: "10px 20px",
@@ -320,77 +353,79 @@ const Profile = ({ user }) => {
                 >
                   <DeleteForeverIcon />
                   <Typography
-                    variant="h7"
+                    variant='h7'
                     sx={{ color: "black", marginLeft: "5px" }}
                   >
                     Delete
                   </Typography>
                 </Button>
                 <ConfirmationDialog
-        isOpen={openConfirmationDialog}
-        data={message}
-        onConfirm={handleConfirmDelete}
-        onCancel={handleCancelDelete}
-      />
+                  isOpen={openConfirmationDialog}
+                  data={message}
+                  onConfirm={handleConfirmDelete}
+                  onCancel={handleCancelDelete}
+                />
               </Box>
               {/* End of picture upload section */}
 
               {/* Other input fields */}
               <TextField
-                id="name"
-                name="name"
-                label="Name"
-                variant="outlined"
+                id='name'
+                name='name'
+                label='Name'
+                variant='outlined'
                 value={values.name}
                 onChange={handleChange}
                 onBlur={handleBlur}
                 error={Boolean(touched.name) && Boolean(errors.name)}
                 helperText={touched.name && errors.name}
-                sx={{ gridColumn: "span 3", }}
+                sx={{ gridColumn: "span 3" }}
                 InputProps={{ style: { borderRadius: "20px" } }}
                 placeholder={user.name}
               />
               {/* Rest of the input fields */}
               <TextField
-                  id="email"
-                  name="email"
-                  label="Email"
-                  variant="outlined"
-                  value={values.email}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  error={Boolean(touched.email) && Boolean(errors.email)}
-                  helperText={touched.email && errors.email}
-                  sx={{ gridColumn: "span 3",  }}
-                  InputProps={{ style: { borderRadius: "20px" } }}
-                  placeholder={user.email}
-                />
-                <TextField
-                  id="address"
-                  name="address"
-                  label="Address"
-                  variant="outlined"
-                  value={values.location}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  error={Boolean(touched.location) && Boolean(errors.location)}
+                id='email'
+                name='email'
+                label='Email'
+                variant='outlined'
+                value={values.email}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                error={Boolean(touched.email) && Boolean(errors.email)}
+                helperText={touched.email && errors.email}
+                sx={{ gridColumn: "span 3" }}
+                InputProps={{ style: { borderRadius: "20px" } }}
+                placeholder={user.email}
+              />
+              <TextField
+                id='address'
+                name='address'
+                label='Address'
+                variant='outlined'
+                value={values.location}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                error={Boolean(touched.location) && Boolean(errors.location)}
                 helperText={touched.location && errors.location}
-                  sx={{ gridColumn: "span 3",  }}
-                  InputProps={{ style: { borderRadius: "20px" } }}
-                />
-                <TextField
-                  id="phone"
-                  name="phone"
-                  label="Phone"
-                  variant="outlined"
-                  value={values.phoneNumber}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  error={Boolean(touched.phoneNumber) && Boolean(errors.phoneNumber)}
+                sx={{ gridColumn: "span 3" }}
+                InputProps={{ style: { borderRadius: "20px" } }}
+              />
+              <TextField
+                id='phone'
+                name='phone'
+                label='Phone'
+                variant='outlined'
+                value={values.phoneNumber}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                error={
+                  Boolean(touched.phoneNumber) && Boolean(errors.phoneNumber)
+                }
                 helperText={touched.phoneNumber && errors.phoneNumber}
-                  sx={{ gridColumn: "span 3",  }}
-                  InputProps={{ style: { borderRadius: "20px" } }}
-                />
+                sx={{ gridColumn: "span 3" }}
+                InputProps={{ style: { borderRadius: "20px" } }}
+              />
               {/* Submit and reset buttons */}
               <Box
                 sx={{
@@ -400,29 +435,28 @@ const Profile = ({ user }) => {
                 }}
               >
                 <Button
-                  type="submit"
-                  variant="contained"
+                  type='submit'
+                  variant='contained'
                   style={{
                     backgroundColor: "#BFB5FF",
                     color: "white",
                     borderRadius: "20px",
                     marginRight: "10px",
                     width: "100px",
-                    
                   }}
                 >
                   Modify
                 </Button>
                 <ConfirmationDialog
-        isOpen={openConfirmationDialog}
-        data={message}
-        onConfirm={handleConfirmModify}
-        onCancel={handleCancelModify}
-      />
+                  isOpen={openConfirmationDialog}
+                  data={message}
+                  onConfirm={handleConfirmModify}
+                  onCancel={handleCancelModify}
+                />
                 <Button
-                  type="reset"
+                  type='reset'
                   onClick={resetForm}
-                  variant="outlined"
+                  variant='outlined'
                   style={{
                     color: "#BFB5FF",
                     borderRadius: "20px",
@@ -438,7 +472,6 @@ const Profile = ({ user }) => {
           )}
         </Formik>
       </Box>
-
 
       {/* Form for Old Password and New Password */}
       <Box
@@ -457,7 +490,7 @@ const Profile = ({ user }) => {
         }}
       >
         <Typography
-          variant="h5"
+          variant='h5'
           sx={{
             marginBottom: "20px",
             textAlign: "start",
@@ -470,103 +503,132 @@ const Profile = ({ user }) => {
         </Typography>
 
         <Box sx={{ width: "100%", marginTop: "20px" }}>
-  <Formik
-    initialValues={initValues}
-    onSubmit={handleSubmit}
-    validationSchema={passwordSchema}
-  >
-    {({ handleChange, handleSubmit, values,resetForm,handleBlur,errors,touched  }) => (
-      <form
-        onSubmit={handleSubmit}
-        style={{
-          display: "grid",
-          gridTemplateColumns: "1fr 1fr", // Divide the form into two columns
-          gap: "10px",
-        }}
-      >
-        {/* Text Fields */}
-        <div style={{ display: "flex", flexDirection: "column",alignItems: "end" }}>
-          <TextField
-            id="old-password"
-            type="password"
-            name="oldPassword"
-            label="Old Password"
-            variant="outlined"
-            value={values.oldPassword}
-            onChange={handleChange}
-            onBlur={handleBlur}
-            error={Boolean(touched.oldPassword) && Boolean(errors.oldPassword)}
-            helperText={touched.oldPassword && errors.oldPassword}
-            style={{ marginBottom: "10px", width: "90%" }}
-            InputProps={{ style: { borderRadius: "20px" } }}
-          />
-          <TextField
-            id="new-password"
-            type="password"
-            name="newPassword"
-            label="New Password"
-            variant="outlined"
-            value={values.newPassword}
-            onChange={handleChange}
-            onBlur={handleBlur}
-            error={Boolean(touched.newPassword) && Boolean(errors.newPassword)}
-            helperText={touched.newPassword && errors.newPassword}
-            style={{ marginBottom: "10px",width: "90%"  }}
-            InputProps={{ style: { borderRadius: "20px"} }}
-          />
-          <TextField
-            id="confirm-password"
-            name="confirmPassword"
-            type="password"
-            label="Confirm Password"
-            variant="outlined"
-            value={values.confirmPassword}
-            onChange={handleChange}
-            onBlur={handleBlur}
-            error={Boolean(touched.confirmPassword) && Boolean(errors.confirmPassword)}
-            helperText={touched.confirmPassword && errors.confirmPassword}
-            style={{ marginBottom: "10px" ,width: "90%" }}
-            InputProps={{ style: { borderRadius: "20px"} }}
-          />
-        </div>
-        
-        {/* Buttons */}
-        <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-          <Button
-            type="submit"
-            variant="contained"
-            style={{
-              backgroundColor: "#BFB5FF",
-              color: "white",
-              borderRadius: "20px",
-              marginBottom: "10px",
-              width: "90%",
-              height: "50px",
-            }}
+          <Formik
+            initialValues={initValues}
+            onSubmit={handleSubmit}
+            validationSchema={passwordSchema}
           >
-            Confirm Changes
-          </Button>
-          <Button
-            type="reset"
-            onClick={resetForm}
-            variant="outlined"
-            style={{
-              color: "#BFB5FF",
-              borderRadius: "20px",
-              border: "2px solid #BFB5FF",
-              width: "90%",
-              height: "50px",
-            }}
-          >
-            Cancel
-          </Button>
-          
-        </div>
-      </form>
-    )}
-  </Formik>
-</Box>
+            {({
+              handleChange,
+              handleSubmit,
+              values,
+              resetForm,
+              handleBlur,
+              errors,
+              touched,
+            }) => (
+              <form
+                onSubmit={handleSubmit}
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "1fr 1fr", // Divide the form into two columns
+                  gap: "10px",
+                }}
+              >
+                {/* Text Fields */}
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "end",
+                  }}
+                >
+                  <TextField
+                    id='old-password'
+                    type='password'
+                    name='oldPassword'
+                    label='Old Password'
+                    variant='outlined'
+                    value={values.oldPassword}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    error={
+                      Boolean(touched.oldPassword) &&
+                      Boolean(errors.oldPassword)
+                    }
+                    helperText={touched.oldPassword && errors.oldPassword}
+                    style={{ marginBottom: "10px", width: "90%" }}
+                    InputProps={{ style: { borderRadius: "20px" } }}
+                  />
+                  <TextField
+                    id='new-password'
+                    type='password'
+                    name='newPassword'
+                    label='New Password'
+                    variant='outlined'
+                    value={values.newPassword}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    error={
+                      Boolean(touched.newPassword) &&
+                      Boolean(errors.newPassword)
+                    }
+                    helperText={touched.newPassword && errors.newPassword}
+                    style={{ marginBottom: "10px", width: "90%" }}
+                    InputProps={{ style: { borderRadius: "20px" } }}
+                  />
+                  <TextField
+                    id='confirm-password'
+                    name='confirmPassword'
+                    type='password'
+                    label='Confirm Password'
+                    variant='outlined'
+                    value={values.confirmPassword}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    error={
+                      Boolean(touched.confirmPassword) &&
+                      Boolean(errors.confirmPassword)
+                    }
+                    helperText={
+                      touched.confirmPassword && errors.confirmPassword
+                    }
+                    style={{ marginBottom: "10px", width: "90%" }}
+                    InputProps={{ style: { borderRadius: "20px" } }}
+                  />
+                </div>
 
+                {/* Buttons */}
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                  }}
+                >
+                  <Button
+                    type='submit'
+                    variant='contained'
+                    style={{
+                      backgroundColor: "#BFB5FF",
+                      color: "white",
+                      borderRadius: "20px",
+                      marginBottom: "10px",
+                      width: "90%",
+                      height: "50px",
+                    }}
+                  >
+                    Confirm Changes
+                  </Button>
+                  <Button
+                    type='reset'
+                    onClick={resetForm}
+                    variant='outlined'
+                    style={{
+                      color: "#BFB5FF",
+                      borderRadius: "20px",
+                      border: "2px solid #BFB5FF",
+                      width: "90%",
+                      height: "50px",
+                    }}
+                  >
+                    Cancel
+                  </Button>
+                </div>
+              </form>
+            )}
+          </Formik>
+        </Box>
       </Box>
     </Box>
   );

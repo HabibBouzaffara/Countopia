@@ -1,11 +1,11 @@
-import * as React from "react";
+import React, { useEffect, useState } from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import ArrowForwardOutlinedIcon from "@mui/icons-material/ArrowForwardOutlined";
 import { Box, Button, Typography } from "@mui/material";
 import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
 const OriginalInvoice = ({ file, setCleanedVersion, setFileData }) => {
-  const [convertedVersion, setConvertedVersion] = React.useState([]);
-  const [tableHead, setTableHead] = React.useState([]);
+  const [convertedVersion, setConvertedVersion] = useState([]);
+  const [tableHead, setTableHead] = useState([]);
 
   const handleUpload = async () => {
     try {
@@ -31,39 +31,38 @@ const OriginalInvoice = ({ file, setCleanedVersion, setFileData }) => {
     }
   };
 
-  const convertToCsv = async () => {
-    try {
-      const formData = new FormData();
-      formData.append("file", file);
-      const response = await fetch(
-        `${process.env.REACT_APP_BASE_URL}/convertToCsv`,
-        {
-          method: "POST",
-          body: formData,
+  useEffect(() => {
+    const convertToCsv = async () => {
+      try {
+        const formData = new FormData();
+        formData.append("file", file);
+        const response = await fetch(
+          `${process.env.REACT_APP_BASE_URL}/convertToCsv`,
+          {
+            method: "POST",
+            body: formData,
+          }
+        );
+        if (!response.ok) {
+          throw new Error("Failed to convert file to CSV.");
         }
-      );
-      if (!response.ok) {
-        throw new Error("Failed to convert file to CSV.");
+        const { responseData } = await response.json(); // Parse the response body as JSON
+
+        // Add a unique id to each row
+        const dataWithIds = responseData.map((row, index) => ({
+          ...row,
+          id: index + 1, // Generate a unique id using the index
+        }));
+
+        // Trigger a refresh of the invoices after successful upload
+        setConvertedVersion(dataWithIds);
+        setTableHead(Object.keys(responseData[0]));
+      } catch (error) {
+        console.error("Error converting file to CSV:", error);
       }
-      const { responseData } = await response.json(); // Parse the response body as JSON
-
-      // Add a unique id to each row
-      const dataWithIds = responseData.map((row, index) => ({
-        ...row,
-        id: index + 1, // Generate a unique id using the index
-      }));
-
-      // Trigger a refresh of the invoices after successful upload
-      setConvertedVersion(dataWithIds);
-      setTableHead(Object.keys(responseData[0]));
-    } catch (error) {
-      console.error("Error converting file to CSV:", error);
-    }
-  };
-
-  React.useEffect(() => {
+    };
     convertToCsv();
-  }, []);
+  }, [file]);
 
   return (
     <>
@@ -91,7 +90,7 @@ const OriginalInvoice = ({ file, setCleanedVersion, setFileData }) => {
         >
           <Typography
             sx={{
-              color: "#A6A6A6",
+              color: "#BFB5FF",
               fontSize: "15px",
             }}
           >
@@ -109,7 +108,7 @@ const OriginalInvoice = ({ file, setCleanedVersion, setFileData }) => {
       </Box>
 
       <Box mt='20px' marginBottom='20px' width='98%' mx='auto'>
-        <div style={{ height: 500, width: "100%" }}>
+        <div style={{ width: "100%" }}>
           <DataGrid
             rows={convertedVersion}
             columns={tableHead.map((header) => ({
@@ -117,8 +116,8 @@ const OriginalInvoice = ({ file, setCleanedVersion, setFileData }) => {
               headerName: header,
               flex: 1,
             }))}
-            pageSize={5}
-            rowsPerPageOptions={[5, 10, 20]}
+            initialState={{ pagination: { paginationModel: { pageSize: 10 } } }}
+            pageSizeOptions={[5, 10, 25, 50]}
           />
         </div>
       </Box>

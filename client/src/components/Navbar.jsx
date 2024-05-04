@@ -52,7 +52,7 @@ const Navbar = ({ user, isSidebarOpen, setIsSidebarOpen }) => {
   if (!user) return null;
   return (
     <AppBar
-      position="static"
+      position='sticky' //static old version
       sx={{
         background: "none",
         boxShadow: "none",
@@ -70,19 +70,19 @@ const Navbar = ({ user, isSidebarOpen, setIsSidebarOpen }) => {
             <MenuIcon />
           </IconButton>
           <FlexBetween
-            backgroundColor="#EEF2F6"
-            borderRadius="9px"
-            gap="3rem"
-            p="0.1rem 1.5rem"
+            backgroundColor='#EEF2F6'
+            borderRadius='9px'
+            gap='3rem'
+            p='0.1rem 1.5rem'
           >
-            <InputBase sx={{ color: "#3F4BC9" }} placeholder="Search..." />
+            <InputBase sx={{ color: "#3F4BC9" }} placeholder='Search...' />
             <IconButton>
               <Search sx={{ color: "#3F4BC9" }} />
             </IconButton>
           </FlexBetween>
         </FlexBetween>
         {/* RIGHT SIDE */}
-        <FlexBetween gap="1.5rem">
+        <FlexBetween gap='1.5rem'>
           {/* <IconButton onClick={() => dispatch(setMode())}>
             {theme.palette.mode === "dark" ? (
               <DarkModeOutlined sx={{ fontSize: "25px" }} />
@@ -108,15 +108,15 @@ const Navbar = ({ user, isSidebarOpen, setIsSidebarOpen }) => {
                 }}
               >
                 <UserPicture name={user.name} picturePath={user.picturePath} />
-                <Box textAlign="left">
+                <Box textAlign='left'>
                   <Typography
-                    fontWeight="bold"
-                    fontSize="0.85rem"
+                    fontWeight='bold'
+                    fontSize='0.85rem'
                     sx={{ color: "#3F4BC9" }}
                   >
                     {user.name}
                   </Typography>
-                  <Typography fontSize="0.75rem" sx={{ color: "#3F4BC9" }}>
+                  <Typography fontSize='0.75rem' sx={{ color: "#3F4BC9" }}>
                     {user.role === "admin"
                       ? "Admin"
                       : user.role === "superadmin"

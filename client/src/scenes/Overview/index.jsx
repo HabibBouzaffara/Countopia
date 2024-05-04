@@ -57,88 +57,88 @@ const Overview = ({ user }) => {
       >
         <UserPicture name={name} picturePath={avatarUrl} />
 
-        <Typography variant="body1">{name}</Typography>
+        <Typography variant='body1'>{name}</Typography>
         <BorderLinearProgress
-          variant="determinate"
+          variant='determinate'
           value={invoicesLength}
           sx={{ width: "55%" }}
         />
-        <Typography variant="body1">{invoicesLength}%</Typography>
+        <Typography variant='body1'>{invoicesLength}%</Typography>
       </Box>
     </Box>
   );
 
-  const getAllClients = async () => {
-    try {
-      const url = new URL(process.env.REACT_APP_BASE_URL + "/clients");
-      // Add user._id and user.role as query parameters
-      url.searchParams.append("userId", user?._id);
-      url.searchParams.append("role", user?.role);
-
-      const clientsResponse = await fetch(url, {
-        method: "GET",
-        headers: { "Content-Type": "application/json" },
-      });
-      const data = await clientsResponse.json();
-      if (!clientsResponse.ok) {
-        throw new Error(data.msg);
-      }
-      setClients(data);
-      const totalClients = data ? data.length : 0;
-
-      const ongoingCount = data.filter(
-        (client) => client.service === "ongoing"
-      ).length;
-      const pendingCount = data.filter(
-        (client) => client.service === "pending"
-      ).length;
-      const doneCount = data.filter(
-        (client) => client.service === "done"
-      ).length;
-
-      setServiceStatusData([
-        {
-          name: "Ongoing",
-          value: Math.round((ongoingCount / totalClients) * 1000) / 10,
-          color: "#FFA8A7",
-        },
-        {
-          name: "Pending",
-          value: Math.round((pendingCount / totalClients) * 1000) / 10,
-          color: "#BFB5FF",
-        },
-        {
-          name: "Done",
-          value: Math.round((doneCount / totalClients) * 1000) / 10,
-          color: "#81D9ED",
-        },
-      ]);
-
-      setInvoiceStatusData([
-        {
-          name: "Ongoing",
-          value: data.filter((client) => client.service === "ongoing").length,
-          color: "#FFA8A7",
-        },
-        {
-          name: "Pending",
-          value: data.filter((client) => client.service === "pending").length,
-          color: "#BFB5FF",
-        },
-        {
-          name: "Done",
-          value: data.filter((client) => client.service === "done").length,
-          color: "#81D9ED",
-        },
-      ]);
-    } catch (err) {
-      console.log(err);
-    }
-  };
   useEffect(() => {
+    const getAllClients = async () => {
+      try {
+        const url = new URL(process.env.REACT_APP_BASE_URL + "/clients");
+        // Add user._id and user.role as query parameters
+        url.searchParams.append("userId", user?._id);
+        url.searchParams.append("role", user?.role);
+
+        const clientsResponse = await fetch(url, {
+          method: "GET",
+          headers: { "Content-Type": "application/json" },
+        });
+        const data = await clientsResponse.json();
+        if (!clientsResponse.ok) {
+          throw new Error(data.msg);
+        }
+        setClients(data);
+        const totalClients = data ? data.length : 0;
+
+        const ongoingCount = data.filter(
+          (client) => client.service === "ongoing"
+        ).length;
+        const pendingCount = data.filter(
+          (client) => client.service === "pending"
+        ).length;
+        const doneCount = data.filter(
+          (client) => client.service === "done"
+        ).length;
+
+        setServiceStatusData([
+          {
+            name: "Ongoing",
+            value: Math.round((ongoingCount / totalClients) * 1000) / 10,
+            color: "#FFA8A7",
+          },
+          {
+            name: "Pending",
+            value: Math.round((pendingCount / totalClients) * 1000) / 10,
+            color: "#BFB5FF",
+          },
+          {
+            name: "Done",
+            value: Math.round((doneCount / totalClients) * 1000) / 10,
+            color: "#81D9ED",
+          },
+        ]);
+
+        setInvoiceStatusData([
+          {
+            name: "Ongoing",
+            value: data.filter((client) => client.service === "ongoing").length,
+            color: "#FFA8A7",
+          },
+          {
+            name: "Pending",
+            value: data.filter((client) => client.service === "pending").length,
+            color: "#BFB5FF",
+          },
+          {
+            name: "Done",
+            value: data.filter((client) => client.service === "done").length,
+            color: "#81D9ED",
+          },
+        ]);
+      } catch (err) {
+        console.log(err);
+      }
+    };
     getAllClients();
-    getAdmins();
-  }, []);
+    user.role === "superadmin" && getAdmins();
+  }, [user]);
   const ClientBox = ({ name, invoicesLength, avatarUrl }) => (
     <Box sx={{ width: "90%", marginBottom: "10px" }}>
       <Box
@@ -150,10 +150,10 @@ const Overview = ({ user }) => {
       >
         <UserPicture name={name} picturePath={avatarUrl} />
 
-        <Typography variant="body1" marginRight="70px">
+        <Typography variant='body1' marginRight='70px'>
           {name}
         </Typography>
-        <Typography variant="body1">{invoicesLength} invoices</Typography>
+        <Typography variant='body1'>{invoicesLength} invoices</Typography>
       </Box>
     </Box>
   );
@@ -172,7 +172,7 @@ const Overview = ({ user }) => {
         style={{ display: "flex", alignItems: "center", marginLeft: "50px" }}
       >
         <Typography
-          variant="h2"
+          variant='h2'
           sx={{
             color: "#263238",
             fontWeight: "bold",
@@ -207,7 +207,7 @@ const Overview = ({ user }) => {
           <AssignmentIcon
             style={{ marginRight: "10px", fontWeight: "normal" }}
           />
-          <Typography variant="h6">
+          <Typography variant='h6'>
             Projects:{" "}
             {clients.filter((client) => client.approved === true).length}
           </Typography>
@@ -225,7 +225,7 @@ const Overview = ({ user }) => {
           }}
         >
           <TaskIcon style={{ marginRight: "10px", fontWeight: "normal" }} />
-          <Typography variant="h6">
+          <Typography variant='h6'>
             Tasks:{clients.filter((client) => client.approved === true).length}
           </Typography>
         </Box>
@@ -245,7 +245,7 @@ const Overview = ({ user }) => {
             <AssignmentIndIcon
               style={{ marginRight: "10px", fontWeight: "normal" }}
             />
-            <Typography variant="h6">Admins: {admins.length}</Typography>
+            <Typography variant='h6'>Admins: {admins.length}</Typography>
           </Box>
         )}
         {user.role === "admin" && admins && (
@@ -264,7 +264,7 @@ const Overview = ({ user }) => {
             <AssignmentIndIcon
               style={{ marginRight: "10px", fontWeight: "normal" }}
             />
-            <Typography variant="h6">Financial Report: </Typography>
+            <Typography variant='h6'>Financial Report: </Typography>
           </Box>
         )}
         <Box
@@ -280,7 +280,7 @@ const Overview = ({ user }) => {
           }}
         >
           <PeopleIcon style={{ marginRight: "10px", fontWeight: "normal" }} />
-          <Typography variant="h6">
+          <Typography variant='h6'>
             Clients:{" "}
             {clients.filter((client) => client.approved === true).length}
           </Typography>
@@ -310,7 +310,7 @@ const Overview = ({ user }) => {
             alignItems: "center",
           }}
         >
-          <Typography variant="h5" sx={{ fontWeight: "bold" }}>
+          <Typography variant='h5' sx={{ fontWeight: "bold" }}>
             Service Status
           </Typography>
 
@@ -362,7 +362,7 @@ const Overview = ({ user }) => {
                       borderRadius: "50%",
                     }}
                   ></div>
-                  <Typography variant="body1">
+                  <Typography variant='body1'>
                     {dataItem.name} - {dataItem.value}%
                   </Typography>
 
@@ -387,7 +387,7 @@ const Overview = ({ user }) => {
             alignItems: "center",
           }}
         >
-          <Typography variant="h5" sx={{ fontWeight: "bold" }}>
+          <Typography variant='h5' sx={{ fontWeight: "bold" }}>
             Invoices Rate
           </Typography>
           <InvoicesRateBar />
@@ -431,14 +431,14 @@ const Overview = ({ user }) => {
           >
             <div style={{ textAlign: "center" }}>
               <Typography
-                variant="h5"
+                variant='h5'
                 sx={{ fontWeight: "bold", marginBottom: "20px" }}
               >
                 Waiting Clients
               </Typography>
             </div>
             <Typography
-              variant="h1"
+              variant='h1'
               sx={{ fontWeight: "bold", marginBottom: "40px" }}
             >
               {clients.filter((client) => client.approved === false).length}
@@ -463,7 +463,7 @@ const Overview = ({ user }) => {
           >
             <div style={{ textAlign: "center" }}>
               <Typography
-                variant="h5"
+                variant='h5'
                 sx={{ fontWeight: "bold", marginBottom: "20px" }}
               >
                 Completed invoices
@@ -471,7 +471,7 @@ const Overview = ({ user }) => {
             </div>
 
             <Typography
-              variant="h1"
+              variant='h1'
               sx={{ fontWeight: "bold", marginBottom: "40px" }}
             >
               145
@@ -494,7 +494,7 @@ const Overview = ({ user }) => {
           }}
         >
           <Typography
-            variant="h5"
+            variant='h5'
             sx={{ fontWeight: "bold", marginBottom: "10px" }}
           >
             Clients Activities
@@ -543,7 +543,7 @@ const Overview = ({ user }) => {
             }}
           >
             <Typography
-              variant="h5"
+              variant='h5'
               sx={{ fontWeight: "bold", marginBottom: "10px" }}
             >
               Admin Performance
@@ -590,82 +590,79 @@ const Overview = ({ user }) => {
             }}
           >
             <Typography
-              variant="h5"
+              variant='h5'
               sx={{ fontWeight: "bold", marginBottom: "10px" }}
             >
               Clients Review
             </Typography>
 
             <div
-      style={{
-        display: "flex",
-        flexDirection: "row",
-        width: "100%",
-        maxHeight: "200px",
-        marginLeft: "10px",
-        marginTop: "10px",
-        
-      }}
-    >
-      {/* Legend */}
-      <div
-        style={{
-          width: "50%", // Take up half of the available width
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "flex-start", // Align legend items to the left
-          
-        }}
-      >
-        {clientReviewData.map((item, index) => (
-          <div
-            key={index}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              marginBottom: "5px",
-            }}
-          >
-            <div
               style={{
-                width: "20px",
-                height: "20px",
-                backgroundColor: item.color,
-                marginRight: "5px",
-                borderRadius: "50%",
+                display: "flex",
+                flexDirection: "row",
+                width: "100%",
+                maxHeight: "200px",
+                marginLeft: "10px",
+                marginTop: "10px",
               }}
-            ></div>
-            <Typography variant="body1">
-              {item.category} - {item.value}%
-            </Typography>
-          </div>
-        ))}
-      </div>
+            >
+              {/* Legend */}
+              <div
+                style={{
+                  width: "50%", // Take up half of the available width
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "flex-start", // Align legend items to the left
+                }}
+              >
+                {clientReviewData.map((item, index) => (
+                  <div
+                    key={index}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      marginBottom: "5px",
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: "20px",
+                        height: "20px",
+                        backgroundColor: item.color,
+                        marginRight: "5px",
+                        borderRadius: "50%",
+                      }}
+                    ></div>
+                    <Typography variant='body1'>
+                      {item.category} - {item.value}%
+                    </Typography>
+                  </div>
+                ))}
+              </div>
 
-      {/* Pie chart */}
-      <PieChart
-        series={[
-          {
-            data: clientReviewData.map((item) => ({
-              ...item,
-              value: item.value / 100, // Convert to percentage
-            })),
-            innerRadius: 30,
-            outerRadius: 50, // Increased radius for better visibility
-            paddingAngle: 5,
-            cornerRadius: 5,
-            startAngle: -90,
-            endAngle: 270, // 360 degrees for a complete circle
-            cx: 140,
-            cy: 50,
-          },
-        ]}
-        width={200} // Adjust the width of the chart
-        height={200} // Adjust the height of the chart
-      />
-    </div>
+              {/* Pie chart */}
+              <PieChart
+                series={[
+                  {
+                    data: clientReviewData.map((item) => ({
+                      ...item,
+                      value: item.value / 100, // Convert to percentage
+                    })),
+                    innerRadius: 30,
+                    outerRadius: 50, // Increased radius for better visibility
+                    paddingAngle: 5,
+                    cornerRadius: 5,
+                    startAngle: -90,
+                    endAngle: 270, // 360 degrees for a complete circle
+                    cx: 140,
+                    cy: 50,
+                  },
+                ]}
+                width={200} // Adjust the width of the chart
+                height={200} // Adjust the height of the chart
+              />
+            </div>
           </Box>
-   
         )}
       </Box>
     </>

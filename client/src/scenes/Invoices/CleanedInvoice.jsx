@@ -1,10 +1,11 @@
-import React from "react";
-import { DataGrid, GridCellEditStopReasons } from "@mui/x-data-grid";
+import React, { useState } from "react";
+import { DataGrid } from "@mui/x-data-grid";
 import ArrowForwardOutlinedIcon from "@mui/icons-material/ArrowForwardOutlined";
-import { Box, Button, Typography } from "@mui/material";
+import { Box, Button, IconButton, Typography } from "@mui/material";
 import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
-import DeleteIcon from "@mui/icons-material/Delete";
-import ModeEditOutlineOutlinedIcon from "@mui/icons-material/ModeEditOutlineOutlined";
+import { format } from "date-fns";
+
+import { DeleteForever, Save } from "@mui/icons-material";
 
 const CleanedInvoice = ({
   adminId,
@@ -13,6 +14,7 @@ const CleanedInvoice = ({
   setCleanedVersion,
   setFileData,
 }) => {
+  const [rowId, setRowId] = useState([]);
   const uploadJournal = async () => {
     try {
       const response = await fetch(
@@ -36,92 +38,187 @@ const CleanedInvoice = ({
 
   console.log(cleanedVersion);
   // Ensure cleanedVersion exists and is not empty
+
+  // Define columns manually
+  const columns = [
+    {
+      field: "client_id",
+      headerName: "client_id",
+      flex: 1,
+      editable: false,
+      align: "center",
+      headerAlign: "center",
+    },
+    {
+      field: "date_facture",
+      headerName: "date_facture",
+      flex: 1,
+      editable: true,
+      align: "center",
+      headerAlign: "center",
+      type: "date",
+      valueFormatter: (params) => {
+        return format(new Date(params.value), "dd/MM/yyyy");
+      },
+    },
+    {
+      field: "description",
+      headerName: "description",
+      flex: 1,
+      editable: true,
+      align: "center",
+      headerAlign: "center",
+    },
+    {
+      field: "nom_unite",
+      headerName: "nom_unite",
+      flex: 1,
+      editable: true,
+      align: "center",
+      headerAlign: "center",
+    },
+    {
+      field: "nombre_unit",
+      headerName: "nombre_unit",
+      flex: 1,
+      editable: true,
+      align: "center",
+      headerAlign: "center",
+    },
+    {
+      field: "prix_unite",
+      headerName: "prix_unite",
+      flex: 1,
+      editable: true,
+      align: "center",
+      headerAlign: "center",
+    },
+    {
+      field: "total_unit",
+      headerName: "total_unit",
+      flex: 1,
+      editable: true,
+      align: "center",
+      headerAlign: "center",
+    },
+    {
+      field: "total_net",
+      headerName: "total_net",
+      flex: 1,
+      editable: true,
+      align: "center",
+      headerAlign: "center",
+    },
+    {
+      field: "taxe",
+      headerName: "taxe",
+      flex: 1,
+      editable: true,
+      align: "center",
+      headerAlign: "center",
+    },
+    {
+      field: "total",
+      headerName: "total",
+      flex: 1,
+      editable: true,
+      align: "center",
+      headerAlign: "center",
+    },
+    {
+      field: "num_facture",
+      headerName: "num_facture",
+      flex: 1,
+      editable: true,
+      align: "center",
+      headerAlign: "center",
+    },
+    {
+      field: "category",
+      headerName: "Categorie",
+      flex: 1,
+      editable: true,
+      type: "singleSelect",
+      valueOptions: ["V", "A"],
+      align: "center",
+      headerAlign: "center",
+    },
+    {
+      field: "actions",
+      cellClassName: "actions",
+      headerName: "Actions",
+      type: "actions",
+      align: "center",
+      headerAlign: "center",
+
+      renderCell: (params) => (
+        <>
+          <div style={{ textAlign: "center" }}>
+            <IconButton
+              sx={{
+                color: "#9D8DFE",
+              }}
+              disabled={params.row.id !== rowId}
+              onClick={() => handleEditClick(params.row.id, params.row)}
+            >
+              <Save />
+            </IconButton>
+            <div style={{ fontSize: "10px" }}>Save</div>
+          </div>
+          <div style={{ textAlign: "center" }}>
+            <IconButton
+              sx={{
+                color: "#C95F50",
+              }}
+              onClick={() => handleDeleteClick(params.row.id, params.row)}
+            >
+              <DeleteForever />
+            </IconButton>
+            <div style={{ fontSize: "10px" }}>Delete</div>
+          </div>
+        </>
+      ),
+    },
+  ];
   if (!cleanedVersion || cleanedVersion.length === 0) return null;
-
-  // Add unique id property to each row
-  const rowsWithIds = cleanedVersion.map((row, index) => ({
-    id: index + 1, // You can adjust the logic to generate unique ids based on your requirements
-    ...row,
-  }));
-
-  // Define columns based on the keys of the first row
-  const columns = Object.keys(cleanedVersion[0]).map((header) => ({
-    field: header,
-    headerName: header,
-    flex: 1,
-    editable: header !== "client_id",
-    align: "center",
-    headerAlign: "center",
-  }));
-
-  // Add action column
-  columns.push({
-    field: "actions",
-    headerName: "Actions",
-    align: "center",
-    headerAlign: "center",
-    width: 150,
-    renderCell: (params) => (
-      <>
-        <Button
-          variant='outlined'
-          size='small'
-          sx={{
-            backgroundColor: "#BFB5FF",
-            color: "black",
-            marginRight: "10px",
-          }}
-          startIcon={<ModeEditOutlineOutlinedIcon />}
-          onClick={() => handleEditClick(params.row.id, params.row)}
-        >
-          Edit
-        </Button>
-        <Button
-          sx={{
-            color: "#C95F50",
-            borderColor: "#C95F50",
-          }}
-          variant='outlined'
-          size='small'
-          startIcon={<DeleteIcon sx={{ color: "#C95F50" }} />}
-          onClick={() => handleDeleteClick(params.row.id, params.row)}
-        >
-          Delete
-        </Button>
-      </>
-    ),
-  });
-
   // Replace empty values with dash (-) in rows
-  const rowsWithDash = rowsWithIds.map((row) =>
-    Object.entries(row).reduce((acc, [key, value]) => {
-      acc[key] = value || "-";
-      return acc;
-    }, {})
-  );
+  const rowsWithDash = cleanedVersion.map((row, index) => ({
+    id: index + 1, // You can adjust the logic to generate unique ids based on your requirements
+    client_id: row.client_id || "-",
+    date_facture: row.date_facture || "-",
+    description: row.description || "-",
+    nom_unite: row.nom_unite || "-",
+    nombre_unit: row.nombre_unit || "-",
+    prix_unit: row.prix_unit || "-",
+    total_unit: row.total_unit || "-",
+    total_net: row.total_net || "-",
+    taxe: row.taxe || "-",
+    total: row.total || "-",
+    num_facture: row.num_facture || "-",
+    category: row.category || "-",
+  }));
 
   const handleDeleteClick = (id) => {
     // Handle delete action here
-    const updatedData = rowsWithIds.filter((row) => row.id !== id);
+    const updatedData = rowsWithDash.filter((row) => row.id !== id);
     setCleanedVersion(updatedData);
   };
   const handleEditClick = (id, editedRow) => {
     // Find the index of the row with the provided id
-    const oldRowIndex = rowsWithIds.findIndex((row) => row.id === id);
-    const updateRow = rowsWithIds[oldRowIndex];
+    const oldRowIndex = rowsWithDash.findIndex((row) => row.id === id);
+    const updateRow = rowsWithDash[oldRowIndex];
 
     // Update the row with the new values
-
     Object.entries(editedRow).forEach(([key, value]) => {
       updateRow[key] = value;
     });
 
     // Replace the old row with the updated row
-
-    const updatedData = [...rowsWithIds];
+    const updatedData = [...rowsWithDash];
     updatedData[oldRowIndex] = updateRow;
 
     setCleanedVersion(updatedData);
+    setRowId(null);
   };
 
   return (
@@ -166,26 +263,31 @@ const CleanedInvoice = ({
         </Box>
       </Box>
 
-      <Box mt='20px' marginBottom='20px' width='98%' mx='auto'>
-        <div style={{ maxHeight: 600, width: "100%" }}>
+      <Box mt='10px' marginBottom='20px' width='98%' mx='auto'>
+        <div style={{ width: "100%" }}>
           <DataGrid
             rows={rowsWithDash}
             columns={columns}
-            pageSize={5}
-            rowsPerPageOptions={[5, 10, 20]}
             editMode='row'
+            initialState={{ pagination: { paginationModel: { pageSize: 10 } } }}
+            pageSizeOptions={[5, 10, 25, 50]}
+            hideFooterSelectedRowCount
             sx={{
-              maxHeight: 600,
               "& .MuiDataGrid-cell": {
-                cursor: "pointer",
+                cursor: "auto",
               },
               "& .MuiDataGrid-cell:hover": {
                 color: "#BFB5FF",
+              },
+              "& .actions:hover": {
+                color: "black",
+                cursor: "default",
               },
               "& .MuiDataGrid-columnHeaders": {
                 backgroundColor: "#BFB5FF",
               },
             }}
+            onRowEditStart={(params) => setRowId(params.id)}
           />
         </div>
       </Box>

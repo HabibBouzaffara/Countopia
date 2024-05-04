@@ -87,6 +87,12 @@ export const uploadJournal = async (req, res) => {
     const { journal } = req.body; // Access journal from req.body
     const invoice = new Invoice();
     for (const itemData of journal) {
+      const year = parseInt(itemData.date_facture.substring(0, 4));
+      const month = parseInt(itemData.date_facture.substring(5, 7)) - 1; // Month is 0-indexed in Date object
+      const day = parseInt(itemData.date_facture.substring(8, 10));
+      const date_facture = new Date(year, month, day);
+      itemData.date_facture = date_facture;
+      // console.log("strats" + itemData.date_facture);
       invoice.items.push(itemData);
       invoice.adminId = adminId;
       invoice.adminName = adminName;
@@ -128,7 +134,7 @@ export const deleteJournal = async (req, res) => {
 export const assignInvoices = async (req, res) => {
   try {
     const { invoices, clientId, invoiceId } = req.body;
-    console.log(invoices, clientId);
+    // console.log(invoices, clientId);
 
     // Push invoices to the user's factures array
     await User.findByIdAndUpdate(clientId, { $push: { factures: invoices } });

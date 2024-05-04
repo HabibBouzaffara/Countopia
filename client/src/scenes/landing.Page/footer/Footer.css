@@ -10,32 +10,25 @@
 }
 
 .landing-page-footer-logo-nav {
- 
   height: 80%;
   width: 80%;
   display: flex;
   justify-content: space-between;
   align-items: center;
   border-bottom: 0.2px solid rgb(253, 253, 253);
-  
 }
 .landing-page-footer-social {
- 
   height: 20%;
   width: 80%;
   display: flex;
   justify-content: space-between;
   align-items: center;
   overflow: hidden;
-  color:white;
-  
-  
- 
+  color: white;
 }
 .landing-page-footer-social img {
   height: 30px;
   width: 30px;
-  
 }
 .landing-page-footer-nav {
   width: 50%;
@@ -63,15 +56,15 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  margin-left: -10px;
 }
 
 .landing-page-footer-social-icons {
-    display: flex;
-    align-items: center;
-    color: white;
-    font-family: poppins;
-    justify-content: space-between; 
-    
+  display: flex;
+  align-items: center;
+  color: white;
+  font-family: poppins;
+  justify-content: space-between;
 }
 
 .landing-page-footer-contactus {

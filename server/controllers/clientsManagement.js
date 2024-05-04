@@ -3,7 +3,11 @@ import { generateActivationEmailHTML, mailTransport } from "../utils/mail.js";
 
 export const getAdminNames = async (req, res) => {
   try {
-    const { adminIds } = req.body;
+    let { adminIds } = req.body;
+
+    // Filter out empty strings from adminIds
+    adminIds = adminIds.filter((id) => id.trim() !== "");
+
     const admins = await User.find({ _id: { $in: adminIds } });
     const adminNames = admins.reduce((acc, admin) => {
       acc[admin._id] = admin.name;
@@ -39,12 +43,10 @@ export const getClients = async (req, res) => {
         {
           clients: 0,
           role: 0,
-          approved: 0,
-          status: 0,
+          __v: 0,
+          password: 0,
           createdAt: 0,
           updatedAt: 0,
-          __v: 0,
-          assigned: 0,
         }
       );
       res.status(200).json(clients);

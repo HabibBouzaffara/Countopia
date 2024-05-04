@@ -113,6 +113,7 @@ const AdminClientsTable = ({ clientsData, handleChange }) => {
       width: 150,
       renderCell: (params) => (
         <Select
+          sx={{ width: 120 }}
           value={selectedService[params.row._id] || ""}
           onChange={(e) =>
             handleServiceChange(

@@ -53,7 +53,7 @@ const AssignInvoices = ({
       }
     };
     fetchClients();
-  }, [isOpen]);
+  }, [isOpen, admin]);
 
   const handleCheckboxChange = (clientId) => {
     setSelectedUser(clientId);

@@ -6,7 +6,7 @@ const invoiceItemSchema = new mongoose.Schema({
     required: true,
   },
   date_facture: {
-    type: String,
+    type: Date,
     required: true,
   },
   description: {

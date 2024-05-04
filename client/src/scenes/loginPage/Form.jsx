@@ -70,7 +70,6 @@ const initialValuesRegister = {
   status: false,
   picture: "",
   approved: false,
-  assigned: [],
   service: "pending",
   role: "client",
 };

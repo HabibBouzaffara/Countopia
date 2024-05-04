@@ -49,7 +49,7 @@ export const getAssignClients = async (req, res) => {
 };
 
 export const assignClient = async (req, res) => {
-  console.log(req.body);
+  // console.log(req.body);
   try {
     const { adminId, clientsId } = req.body;
 

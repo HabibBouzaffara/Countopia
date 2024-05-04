@@ -4,7 +4,6 @@ import {
   Box,
   Typography,
   IconButton,
-  Checkbox,
   Icon,
   Button,
 } from "@mui/material";
@@ -13,6 +12,7 @@ import { DataGrid } from "@mui/x-data-grid";
 import OpenInNewOutlinedIcon from "@mui/icons-material/OpenInNewOutlined";
 import { Delete } from "@mui/icons-material";
 import AssignInvoices from "./AssignInvoices";
+import { format } from "date-fns";
 
 const Journal = ({ user }) => {
   const [journal, setJournal] = useState([]);
@@ -44,15 +44,6 @@ const Journal = ({ user }) => {
     setDialogs((prevState) => ({ ...prevState, assignInvoices: false }));
   }, []);
 
-  const handleCheckboxChange = (id, assigned) => {
-    if (!assigned) {
-      if (checkedRows.includes(id)) {
-        setCheckedRows(checkedRows.filter((rowId) => rowId !== id));
-      } else {
-        setCheckedRows([...checkedRows, id]);
-      }
-    }
-  };
   const deleteJournal = async (journalId) => {
     try {
       const response = await fetch(
@@ -74,7 +65,6 @@ const Journal = ({ user }) => {
       console.log(err);
     }
   };
-
   const handleDeleteJournal = (journalId) => {
     deleteJournal(journalId);
   };
@@ -102,10 +92,15 @@ const Journal = ({ user }) => {
       }
     };
     getJournal();
-  }, [user._id]);
+  }, [user]);
 
   const handleViewItems = (items, id) => {
     setSelectedItems(items);
+    items.reduce((acc, item) => {
+      acc[item._id] = item.assigned;
+      return acc;
+    }, {});
+
     setInvoiceId(id);
     setOpen(true);
   };
@@ -203,6 +198,7 @@ const Journal = ({ user }) => {
             borderRadius: "20px",
             boxShadow: 24,
             p: 4,
+            overflow: "auto",
           }}
         >
           <Typography
@@ -229,8 +225,12 @@ const Journal = ({ user }) => {
               <CloseFullscreen />
             </IconButton>
             <DataGrid
+              initialState={{
+                pagination: { paginationModel: { pageSize: 10 } },
+              }}
+              pageSizeOptions={[5, 10, 25, 50]}
+              autoHeight
               sx={{
-                maxHeight: "600px",
                 marginBottom: "10px",
                 borderRadius: "20px",
                 boxShadow: "0px 0px 20px rgba(0, 0, 0, 0.1)",
@@ -242,36 +242,59 @@ const Journal = ({ user }) => {
                 ...item,
                 id: item._id,
               }))}
+              isRowSelectable={(param) => !param.row.assigned}
+              checkboxSelection
+              onRowSelectionModelChange={(newSelection) => {
+                const updatedCheckedRows = [...checkedRows];
+                newSelection.forEach((selectedRowId) => {
+                  if (!updatedCheckedRows.includes(selectedRowId)) {
+                    updatedCheckedRows.push(selectedRowId);
+                  }
+                });
+                const uncheckedRows = checkedRows.filter(
+                  (rowId) => !newSelection.includes(rowId)
+                );
+                uncheckedRows.forEach((uncheckedRowId) => {
+                  const index = updatedCheckedRows.indexOf(uncheckedRowId);
+                  if (index !== -1) {
+                    updatedCheckedRows.splice(index, 1);
+                  }
+                });
+                setCheckedRows(updatedCheckedRows);
+              }}
               columns={[
-                {
-                  field: "checkbox",
-                  headerName: "Select",
-                  width: 90,
-                  disableColumnMenu: true,
-                  disableColumnFilter: true,
-                  hideSortIcons: true,
-                  disableReorder: true,
-                  disableExport: true,
-                  sortable: false,
+                // {
+                //   field: "checkbox",
+                //   headerName: "Select",
+                //   width: 90,
+                //   disableColumnMenu: true,
+                //   disableColumnFilter: true,
+                //   hideSortIcons: true,
+                //   disableReorder: true,
+                //   disableExport: true,
+                //   sortable: false,
 
-                  renderCell: (params) => (
-                    <Checkbox
-                      sx={{
-                        "&.Mui-checked": { color: "#BFB5FF" },
-                      }}
-                      checked={checkedRows.includes(params.row.id)}
-                      onChange={() =>
-                        handleCheckboxChange(params.row.id, params.row.assigned)
-                      }
-                      disabled={params.row.assigned} // Disable checkbox if row is assigned
-                    />
-                  ),
-                },
+                //   renderCell: (params) => (
+                //     <Checkbox
+                //       sx={{
+                //         "&.Mui-checked": { color: "#BFB5FF" },
+                //       }}
+                //       checked={checkedRows.includes(params.row.id)}
+                //       onChange={() =>
+                //         handleCheckboxChange(params.row.id, params.row.assigned)
+                //       }
+                //       disabled={params.row.assigned} // Disable checkbox if row is assigned
+                //     />
+                //   ),
+                // },
                 { field: "client_id", headerName: "Client ID", width: 70 },
                 {
                   field: "date_facture",
                   headerName: "Date Facture",
                   width: 110,
+                  renderCell: (params) => (
+                    <div>{format(new Date(params.value), "yyyy-MM-dd")}</div>
+                  ),
                 },
                 { field: "description", headerName: "Description", width: 150 },
                 { field: "nom_unite", headerName: "Nom Unite", width: 105 },

@@ -15,7 +15,13 @@ import {
   Box,
 } from "@mui/material";
 
-const AssignClientDialog = ({ admin, isOpen, onClose, onCancel }) => {
+const AssignClientDialog = ({
+  admin,
+  isOpen,
+  onClose,
+  onCancel,
+  setOnConfirmMessage,
+}) => {
   const [clients, setClients] = useState([]);
   const [selectedUser, setSelectedUser] = useState([]);
   useEffect(() => {
@@ -84,8 +90,9 @@ const AssignClientDialog = ({ admin, isOpen, onClose, onCancel }) => {
     );
 
     if (!response.ok) {
-      throw new Error("Failed to assign clients");
+      setOnConfirmMessage("Failed to assign clients");
     }
+    setOnConfirmMessage("Success");
     onClose();
   };
 
@@ -179,7 +186,7 @@ const AssignClientDialog = ({ admin, isOpen, onClose, onCancel }) => {
             borderRadius: "40px",
           }}
         >
-          Assign
+          Confirm
         </Button>
       </DialogActions>
     </Dialog>

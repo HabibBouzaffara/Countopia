@@ -6,7 +6,9 @@ import ConfirmationDialog from "../ConfirmationDialog";
 import FileUploadOutlinedIcon from "@mui/icons-material/FileUploadOutlined";
 import CustomSnackbar from "scenes/CustomSnackBar";
 import * as yup from "yup";
-import UserPicture from "components/UserPicture";
+// import UserPicture from "components/UserPicture";
+import { useDispatch } from "react-redux";
+import { setUser } from "state";
 
 const modifySchema = yup.object().shape({
   name: yup.string(),
@@ -46,6 +48,7 @@ const Profile = ({ user }) => {
   const [message, setMessage] = useState("");
   const [modifyValues, setModifyValues] = useState(initValues);
   const [modifyOnSubmitProps, setModifyOnSubmitProps] = useState(null);
+  const dispatch = useDispatch();
 
   const modifyProfile = async (values, onSubmitProps) => {
     try {
@@ -72,9 +75,7 @@ const Profile = ({ user }) => {
         setAlertMessage(data.msg || "updated successfully");
         setErrorMessage(false);
         setOpenAlert(true);
-        setTimeout(() => {
-          window.location.reload();
-        }, 3000);
+        dispatch(setUser({ user: data.user, token: data.token }));
       }
       onSubmitProps.resetForm();
     } catch (err) {
@@ -101,9 +102,7 @@ const Profile = ({ user }) => {
         setAlertMessage(data.msg || "Picture deleted successfully");
         setErrorMessage(false);
         setOpenAlert(true);
-        setTimeout(() => {
-          window.location.reload();
-        }, 3000);
+        dispatch(setUser({ user: data.user, token: data.token }));
       }
     } catch (err) {
       console.log(err);
@@ -181,13 +180,6 @@ const Profile = ({ user }) => {
     setOpenConfirmationDialog(false);
   };
 
-  const handleCloseAlert = (event, reason) => {
-    if (reason === "clickaway") {
-      return;
-    }
-    setOpenAlert(false);
-  };
-
   const handlePictureChange = (event) => {
     setSelectedPicture(event.target.files[0]);
   };
@@ -198,7 +190,7 @@ const Profile = ({ user }) => {
       <CustomSnackbar
         open={openAlert}
         autoHideDuration={3000}
-        onClose={handleCloseAlert}
+        onClose={() => setOpenAlert(false)}
         errorMessage={errorMessage}
         alertMessage={alertMessage}
       />
@@ -288,7 +280,7 @@ const Profile = ({ user }) => {
               />
               <Box></Box>
               <label htmlFor='picture-upload'>
-                <UserPicture
+                {/* <UserPicture
                   sx={{
                     objectFit: "cover",
                     gridColumn: "span 2",
@@ -298,21 +290,30 @@ const Profile = ({ user }) => {
                   }}
                   name={user.name}
                   picturePath={user.picturePath}
-                />
-                {/* <Box
-                  display="flex"
-                  justifyContent="center"
-                  alignItems="center"
-                  component="img"
+                /> */}
+                <Box
+                  display='flex'
+                  justifyContent='center'
+                  alignItems='center'
+                  component='img'
                   alt={user.name}
                   border={"3px solid #BFB5FF"}
-                  src={selectedPicture ? URL.createObjectURL(selectedPicture) : process.env.REACT_APP_BASE_URL + "/assets/" + user.picturePath}
-                  height="20vh"
-                  width="20vh"
-                  borderRadius="50%"
-                  
-                  sx={{ objectFit: "cover", gridColumn: "span 2", cursor: "pointer" }}
-                /> */}
+                  src={
+                    selectedPicture
+                      ? URL.createObjectURL(selectedPicture)
+                      : process.env.REACT_APP_BASE_URL +
+                        "/assets/" +
+                        user.picturePath
+                  }
+                  height='20vh'
+                  width='20vh'
+                  borderRadius='50%'
+                  sx={{
+                    objectFit: "cover",
+                    gridColumn: "span 2",
+                    cursor: "pointer",
+                  }}
+                />
               </label>
               <Box sx={{ gridColumn: "span 4" }}>
                 <Button

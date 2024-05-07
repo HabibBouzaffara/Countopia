@@ -1,12 +1,72 @@
-import React from "react";
+import React, { useState } from "react";
 import { Modal, Box, Typography, IconButton, Button } from "@mui/material";
 import { CloseFullscreen } from "@mui/icons-material";
-import { DataGrid } from "@mui/x-data-grid";
+import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import ProgressCircle from "scenes/ProgressCircle";
 import { format } from "date-fns";
-const InvoicesModal = ({ open, handleClose, invoices, loading }) => {
+import AssignmentOutlinedIcon from "@mui/icons-material/AssignmentOutlined";
+import FinancialReport from "./FinancialReport";
+import CustomSnackbar from "scenes/CustomSnackBar";
+
+const InvoicesModal = ({
+  open,
+  handleClose,
+  invoices,
+  clientName,
+  loading,
+}) => {
+  const [rowsFound, setRowsFound] = useState(null);
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
+  const [openExport, setOpenExport] = useState(false);
+  const [openAlert, setOpenAlert] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState(false);
+
+  const handleCloseExport = () => {
+    setOpenExport(false);
+    setEndDate(null);
+    setStartDate(null);
+    setRowsFound(null);
+  };
+
+  const handleExport = () => {
+    try {
+      if (startDate && endDate && startDate <= endDate) {
+        // Filter the rows based on the date range
+        const filteredRows = invoices.filter((invoice) => {
+          const invoiceDate = new Date(invoice.date_facture);
+          return invoiceDate >= startDate && invoiceDate <= endDate;
+        });
+
+        if (filteredRows.length === 0) {
+          console.log("No data found in the selected date range");
+          setAlertMessage("No data found in the selected date range");
+          setErrorMessage(true);
+          setOpenAlert(true);
+        } else {
+          setRowsFound(filteredRows);
+        }
+      } else {
+        console.log("Invalid date range");
+        setAlertMessage("Invalid date range");
+        setErrorMessage(true);
+        setOpenAlert(true);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <>
+      <CustomSnackbar
+        open={openAlert}
+        autoHideDuration={3000}
+        onClose={() => setOpenAlert(false)}
+        errorMessage={errorMessage}
+        alertMessage={alertMessage}
+      />
       <Modal
         open={open}
         onClose={handleClose}
@@ -31,20 +91,46 @@ const InvoicesModal = ({ open, handleClose, invoices, loading }) => {
             p: 4,
           }}
         >
-          {loading ? ( // Show ProgressCircle when loading
+          {loading ? (
             <ProgressCircle size='100px' />
           ) : (
             <>
               {invoices.length > 0 && (
-                <Typography
-                  id='modal-title'
-                  variant='h6'
-                  component='h2'
-                  gutterBottom
-                  marginLeft='10px'
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    marginTop: "15px",
+                    marginBottom: "15px",
+                  }}
                 >
-                  Invoices:
-                </Typography>
+                  <Typography
+                    id='modal-title'
+                    variant='h6'
+                    component='h2'
+                    gutterBottom
+                    marginLeft='10px'
+                  >
+                    Invoices:
+                  </Typography>
+                  <Button
+                    variant='contained'
+                    onClick={() => setOpenExport(true)}
+                    style={{
+                      fontWeight: "normal",
+                      borderRadius: "20px 5px 5px 20px",
+                      backgroundColor: "#BFB5FF",
+                      width: "170px",
+                      height: "40px",
+                    }}
+                  >
+                    <AssignmentOutlinedIcon
+                      style={{ marginRight: "10px", fontWeight: "normal" }}
+                    />
+                    Financial Report
+                  </Button>
+                </Box>
               )}
               {invoices.length > 0 ? (
                 <div style={{ maxWidth: "lg" }}>
@@ -53,8 +139,8 @@ const InvoicesModal = ({ open, handleClose, invoices, loading }) => {
                     onClick={handleClose}
                     sx={{
                       position: "fixed",
-                      right: 130,
-                      marginTop: "-40px",
+                      right: 120,
+                      marginTop: "-97px",
                       color: "grey",
                       backgroundColor: "rgba(191,181,255,0.5)",
                     }}
@@ -62,13 +148,25 @@ const InvoicesModal = ({ open, handleClose, invoices, loading }) => {
                     <CloseFullscreen />
                   </IconButton>
                   <DataGrid
+                    slots={{
+                      toolbar: GridToolbar,
+                    }}
+                    pageSizeOptions={[5, 10, 25, 50]}
+                    hideFooterSelectedRowCount
                     sx={{
+                      width: "1200px",
                       maxHeight: "600px",
                       marginBottom: "10px",
-                      borderRadius: "20px",
+                      borderRadius: "0 0 20px 20px",
                       boxShadow: "0px 0px 20px rgba(0, 0, 0, 0.1)",
                       "& .MuiDataGrid-columnHeaders": {
                         backgroundColor: "#BFB5FF",
+                      },
+                      "& .MuiDataGrid-toolbarContainer": {
+                        backgroundColor: "rgba(0, 0, 0, 0.15)",
+                        display: "flex",
+                        justifyContent: "flex-end",
+                        paddingRight: "20px",
                       },
                     }}
                     rows={invoices.map((item, index) => ({
@@ -155,6 +253,17 @@ const InvoicesModal = ({ open, handleClose, invoices, loading }) => {
           )}
         </Box>
       </Modal>
+      <FinancialReport
+        handleExport={handleExport}
+        handleCloseExport={handleCloseExport}
+        openExport={openExport}
+        startDate={startDate}
+        endDate={endDate}
+        setStartDate={setStartDate}
+        setEndDate={setEndDate}
+        rowsFound={rowsFound}
+        clientName={clientName}
+      />
     </>
   );
 };

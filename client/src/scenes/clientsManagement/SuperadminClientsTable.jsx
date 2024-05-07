@@ -6,6 +6,7 @@ import { Delete } from "@mui/icons-material";
 import ConfirmationDialog from "scenes/ConfirmationDialog";
 import DescriptionOutlinedIcon from "@mui/icons-material/DescriptionOutlined";
 import InvoicesModal from "components/InvoicesModal";
+import CustomSnackbar from "scenes/CustomSnackBar";
 
 const SuperadminClientsTable = ({ userData, handleChange }) => {
   const [adminNames, setAdminNames] = useState({});
@@ -15,6 +16,10 @@ const SuperadminClientsTable = ({ userData, handleChange }) => {
   const [open, setOpen] = useState(false);
   const [invoices, setInvoices] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [clientName, setClientName] = useState("");
+  const [openAlert, setOpenAlert] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState(false);
 
   const fetchInvoices = async (clientId) => {
     try {
@@ -37,8 +42,9 @@ const SuperadminClientsTable = ({ userData, handleChange }) => {
     }
   };
 
-  const handleViewItems = (clientId) => {
+  const handleViewItems = (clientId, companyName) => {
     fetchInvoices(clientId);
+    setClientName(companyName);
     setOpen(true);
   };
 
@@ -105,9 +111,14 @@ const SuperadminClientsTable = ({ userData, handleChange }) => {
       );
 
       if (!response.ok) {
-        throw new Error("Failed to delete user");
+        setErrorMessage(true);
+        setOpenAlert(true);
+        setAlertMessage("Failed to delete client");
       }
       const data = await response.json();
+      setErrorMessage(false);
+      setOpenAlert(true);
+      setAlertMessage("Client deleted successfully");
       return data;
     } catch (err) {
       console.log(err);
@@ -160,7 +171,11 @@ const SuperadminClientsTable = ({ userData, handleChange }) => {
       headerName: "Invoice",
       width: 70,
       renderCell: (params) => (
-        <IconButton onClick={() => handleViewItems(params.row._id)}>
+        <IconButton
+          onClick={() =>
+            handleViewItems(params.row._id, params.row.companyName)
+          }
+        >
           <DescriptionOutlinedIcon />
         </IconButton>
       ),
@@ -185,11 +200,22 @@ const SuperadminClientsTable = ({ userData, handleChange }) => {
 
   return (
     <>
+      <CustomSnackbar
+        open={openAlert}
+        autoHideDuration={3000}
+        onClose={() => setOpenAlert(false)}
+        errorMessage={errorMessage}
+        alertMessage={alertMessage}
+      />
       <Paper style={{ maxHeight: 700, mx: "auto", borderRadius: "20px" }}>
         <DataGrid
           rows={rows}
           columns={columns}
           autoHeight
+          initialState={{ pagination: { paginationModel: { pageSize: 10 } } }}
+          pageSizeOptions={[5, 10, 25, 50]}
+          hideFooterSelectedRowCount
+          disableRowSelectionOnClick
           sx={{
             borderRadius: "20px",
             boxShadow: "0px 0px 20px rgba(0, 0, 0, 0.1)",
@@ -211,6 +237,7 @@ const SuperadminClientsTable = ({ userData, handleChange }) => {
           handleClose={handleClose}
           invoices={invoices}
           loading={loading}
+          clientName={clientName}
         />
       )}
     </>

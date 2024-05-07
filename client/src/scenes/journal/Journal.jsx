@@ -8,11 +8,12 @@ import {
   Button,
 } from "@mui/material";
 import { CloseFullscreen } from "@mui/icons-material";
-import { DataGrid } from "@mui/x-data-grid";
+import { DataGrid, GridToolbar, GridToolbarContainer } from "@mui/x-data-grid";
 import OpenInNewOutlinedIcon from "@mui/icons-material/OpenInNewOutlined";
 import { Delete } from "@mui/icons-material";
 import AssignInvoices from "./AssignInvoices";
 import { format } from "date-fns";
+import CustomSnackbar from "scenes/CustomSnackBar";
 
 const Journal = ({ user }) => {
   const [journal, setJournal] = useState([]);
@@ -25,6 +26,20 @@ const Journal = ({ user }) => {
     assignInvoices: false,
   });
   const [selectedRows, setSelectedRows] = useState([]);
+  const [openAlert, setOpenAlert] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState(false);
+  const [confirmAssignMessage, setConfirmAssignMessage] = useState("");
+
+  if (confirmAssignMessage !== "" && !openAlert) {
+    setOpenAlert(true);
+    setAlertMessage(confirmAssignMessage);
+    if (confirmAssignMessage === "Invoices assigned successfully to client") {
+      setErrorMessage(false);
+    } else {
+      setErrorMessage(true);
+    }
+  }
 
   const handleAssignClick = useCallback(() => {
     const selectedRows = selectedItems.filter((item) =>
@@ -37,7 +52,9 @@ const Journal = ({ user }) => {
 
   const handleConfirmAssign = useCallback(() => {
     setDialogs((prevState) => ({ ...prevState, assignInvoices: false }));
-    window.location.reload();
+    setTimeout(() => {
+      window.location.reload();
+    }, 2000);
   }, []);
 
   const handleCancelAssign = useCallback(() => {
@@ -57,9 +74,14 @@ const Journal = ({ user }) => {
       );
       const result = await response.json();
       if (!response.ok) {
-        throw new Error(result.msg);
+        setAlertMessage(result.msg || "Failed to delete journal");
+        setErrorMessage(true);
+        setOpenAlert(true);
       }
       console.log(result);
+      setAlertMessage("Journal deleted successfully");
+      setErrorMessage(false);
+      setOpenAlert(true);
       setJournal(journal.filter((journal) => journal._id !== journalId));
     } catch (err) {
       console.log(err);
@@ -107,6 +129,14 @@ const Journal = ({ user }) => {
 
   const handleClose = () => {
     setOpen(false);
+  };
+
+  const customToolbar = () => {
+    return (
+      <GridToolbarContainer sx={{ backgroundColor: "rgba(0, 0, 0, 0.2)" }}>
+        <GridToolbar />
+      </GridToolbarContainer>
+    );
   };
 
   if (!journal) return null;
@@ -225,6 +255,7 @@ const Journal = ({ user }) => {
               <CloseFullscreen />
             </IconButton>
             <DataGrid
+              slots={{ toolbar: customToolbar }}
               initialState={{
                 pagination: { paginationModel: { pageSize: 10 } },
               }}
@@ -232,7 +263,7 @@ const Journal = ({ user }) => {
               autoHeight
               sx={{
                 marginBottom: "10px",
-                borderRadius: "20px",
+                borderRadius: "0 0 20px 20px",
                 boxShadow: "0px 0px 20px rgba(0, 0, 0, 0.1)",
                 "& .MuiDataGrid-columnHeaders": {
                   backgroundColor: "#BFB5FF",
@@ -263,30 +294,6 @@ const Journal = ({ user }) => {
                 setCheckedRows(updatedCheckedRows);
               }}
               columns={[
-                // {
-                //   field: "checkbox",
-                //   headerName: "Select",
-                //   width: 90,
-                //   disableColumnMenu: true,
-                //   disableColumnFilter: true,
-                //   hideSortIcons: true,
-                //   disableReorder: true,
-                //   disableExport: true,
-                //   sortable: false,
-
-                //   renderCell: (params) => (
-                //     <Checkbox
-                //       sx={{
-                //         "&.Mui-checked": { color: "#BFB5FF" },
-                //       }}
-                //       checked={checkedRows.includes(params.row.id)}
-                //       onChange={() =>
-                //         handleCheckboxChange(params.row.id, params.row.assigned)
-                //       }
-                //       disabled={params.row.assigned} // Disable checkbox if row is assigned
-                //     />
-                //   ),
-                // },
                 { field: "client_id", headerName: "Client ID", width: 70 },
                 {
                   field: "date_facture",
@@ -327,9 +334,20 @@ const Journal = ({ user }) => {
             onClose={handleConfirmAssign}
             onCancel={handleCancelAssign}
             invoiceId={invoiceId}
+            setConfirmAssignMessage={setConfirmAssignMessage}
           />
         </Box>
       </Modal>
+      <CustomSnackbar
+        open={openAlert}
+        autoHideDuration={3000}
+        onClose={() => {
+          setConfirmAssignMessage("");
+          setOpenAlert(false);
+        }}
+        errorMessage={errorMessage}
+        alertMessage={alertMessage}
+      />
     </>
   );
 };

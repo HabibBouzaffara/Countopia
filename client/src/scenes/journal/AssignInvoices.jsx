@@ -22,6 +22,7 @@ const AssignInvoices = ({
   invoiceId,
   onClose,
   onCancel,
+  setConfirmAssignMessage,
 }) => {
   const [clients, setClients] = useState([]);
   const [selectedUser, setSelectedUser] = useState("");
@@ -42,10 +43,11 @@ const AssignInvoices = ({
             headers: { "Content-Type": "application/json" },
           });
           if (!response.ok) {
-            throw new Error("Failed to fetch clients");
+            setConfirmAssignMessage(
+              response.statusText || "Failed to fetch clients"
+            );
           }
           const clients = await response.json();
-
           setClients(clients);
         }
       } catch (err) {
@@ -74,8 +76,11 @@ const AssignInvoices = ({
     );
 
     if (!response.ok) {
-      throw new Error("Failed to assign clients");
+      setConfirmAssignMessage(
+        response.statusText || "Failed to assign invoices to client"
+      );
     }
+    setConfirmAssignMessage("Invoices assigned successfully to client");
     onClose();
   };
 

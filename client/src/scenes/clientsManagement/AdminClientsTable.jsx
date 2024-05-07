@@ -5,14 +5,21 @@ import { Avatar, IconButton, MenuItem, Select } from "@mui/material";
 import DescriptionOutlinedIcon from "@mui/icons-material/DescriptionOutlined";
 
 import InvoicesModal from "components/InvoicesModal";
+import CustomSnackbar from "scenes/CustomSnackBar";
 
 const AdminClientsTable = ({ clientsData, handleChange }) => {
   const [selectedService, setSelectedService] = useState({});
   const [open, setOpen] = useState(false);
   const [invoices, setInvoices] = useState([]);
+  const [clientName, setClientName] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [openAlert, setOpenAlert] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState(false);
 
   const fetchInvoices = async (clientId) => {
     try {
+      setLoading(true);
       const response = await fetch(
         `${process.env.REACT_APP_BASE_URL}/getClientJournal?clientId=${clientId}`
       );
@@ -24,13 +31,16 @@ const AdminClientsTable = ({ clientsData, handleChange }) => {
       const { journal } = await response.json();
       console.log(journal);
       setInvoices(journal);
+      setLoading(false);
     } catch (err) {
       console.log(err);
+      setLoading(false);
     }
   };
-  const handleViewItems = (clientId) => {
+  const handleViewItems = (clientId, companyName) => {
     fetchInvoices(clientId);
     setOpen(true);
+    setClientName(companyName);
   };
 
   const handleClose = () => {
@@ -68,12 +78,17 @@ const AdminClientsTable = ({ clientsData, handleChange }) => {
         }
       );
       if (!response.ok) {
-        throw new Error("Failed to update service");
+        setErrorMessage(true);
+        setOpenAlert(true);
+        setAlertMessage("Failed to update service" + response.statusText);
       }
       console.log("Service updated successfully");
       handleChange();
     } catch (error) {
       console.error("Error updating service:", error);
+      setErrorMessage(true);
+      setOpenAlert(true);
+      setAlertMessage("Failed to update service");
     }
   };
 
@@ -134,7 +149,11 @@ const AdminClientsTable = ({ clientsData, handleChange }) => {
       headerName: "Invoices",
       width: 100,
       renderCell: (params) => (
-        <IconButton onClick={() => handleViewItems(params.row._id)}>
+        <IconButton
+          onClick={() =>
+            handleViewItems(params.row._id, params.row.companyName)
+          }
+        >
           <DescriptionOutlinedIcon />
         </IconButton>
       ),
@@ -145,6 +164,13 @@ const AdminClientsTable = ({ clientsData, handleChange }) => {
 
   return (
     <>
+      <CustomSnackbar
+        open={openAlert}
+        autoHideDuration={3000}
+        onClose={() => setOpenAlert(false)}
+        errorMessage={errorMessage}
+        alertMessage={alertMessage}
+      />
       <Paper
         style={{
           maxHeight: "500px",
@@ -158,6 +184,10 @@ const AdminClientsTable = ({ clientsData, handleChange }) => {
           rows={rows}
           columns={columns}
           autoHeight
+          initialState={{ pagination: { paginationModel: { pageSize: 10 } } }}
+          pageSizeOptions={[5, 10, 25, 50]}
+          hideFooterSelectedRowCount
+          disableRowSelectionOnClick
           sx={{
             borderRadius: "20px",
             boxShadow: "0px 0px 20px rgba(0, 0, 0, 0.1)",
@@ -171,6 +201,8 @@ const AdminClientsTable = ({ clientsData, handleChange }) => {
         open={open}
         handleClose={handleClose}
         invoices={invoices}
+        clientName={clientName}
+        loading={loading}
       />
     </>
   );

@@ -24,25 +24,25 @@ const persistConfig = { key: "root", storage, version: 1 };
 const persistedReducer = persistReducer(persistConfig, globalReducer);
 
 const store = configureStore({
-  
   reducer: persistedReducer,
 
-  middleware: (getDefault) => getDefault({
-    serializableCheck: {
-      ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
-    },
-  }).concat(api.middleware)
+  middleware: (getDefault) =>
+    getDefault({
+      serializableCheck: {
+        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+      },
+    }).concat(api.middleware),
 });
 
- setupListeners(store.dispatch);
+setupListeners(store.dispatch);
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <Provider store={store}>
-        <PersistGate loading={null} persistor={persistStore(store)}>    
-          <App />
-       </PersistGate>     
+      <PersistGate loading={null} persistor={persistStore(store)}>
+        <App />
+      </PersistGate>
     </Provider>
   </React.StrictMode>
 );

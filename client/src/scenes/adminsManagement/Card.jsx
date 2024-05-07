@@ -6,7 +6,7 @@ import DeleteConfirmationDialog from "./DeleteConfirmationDialog";
 import AssignClientDialog from "./AssignClientDialog";
 import UserPicture from "components/UserPicture";
 
-const AdminCard = ({ user, deletedAdmin, clientAssigned }) => {
+const AdminCard = ({ user, clientAssigned, setOnConfirmMessage }) => {
   const [dialogs, setDialogs] = useState({
     confirmation: false,
     assignClient: false,
@@ -16,7 +16,7 @@ const AdminCard = ({ user, deletedAdmin, clientAssigned }) => {
     pendingClients: 0,
   });
 
-  const handleRemoveUser = useCallback(async () => {
+  const handleRemoveUser = async () => {
     try {
       const response = await fetch(process.env.REACT_APP_BASE_URL + "/admin", {
         method: "DELETE",
@@ -28,11 +28,11 @@ const AdminCard = ({ user, deletedAdmin, clientAssigned }) => {
       }
       const data = await response.json();
       console.log(data);
-      deletedAdmin();
+      setOnConfirmMessage("Admin removed successfully");
     } catch (err) {
       console.log(err);
     }
-  }, [user, deletedAdmin]);
+  };
 
   const clientsStatus = useCallback(async () => {
     try {
@@ -134,7 +134,6 @@ const AdminCard = ({ user, deletedAdmin, clientAssigned }) => {
               fontWeight: "normal",
               borderRadius: "20px",
               backgroundColor: "#BFB5FF",
-              width: "180px",
               height: "40px",
               marginRight: "20px",
               marginBottom: "70px",
@@ -143,13 +142,14 @@ const AdminCard = ({ user, deletedAdmin, clientAssigned }) => {
             <PersonAddAltOutlinedIcon
               style={{ marginRight: "10px", fontWeight: "normal" }}
             />
-            Manage Clients
+            Manage {user.name}'s Clients
           </Button>
           <AssignClientDialog
             admin={user}
             isOpen={dialogs.assignClient}
             onClose={handleConfirmAssign}
             onCancel={handleCancelAssign}
+            setOnConfirmMessage={setOnConfirmMessage}
           />
           <Button
             onClick={handleRemoveClick}

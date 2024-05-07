@@ -1,36 +1,19 @@
 import React, { useEffect, useState } from "react";
-import {
-  Button,
-  Typography,
-  Divider,
-  InputBase,
-  IconButton,
-  Box,
-} from "@mui/material";
+import { Button, Typography, Divider, Box } from "@mui/material";
 import HourglassTopOutlinedIcon from "@mui/icons-material/HourglassTopOutlined";
-import SearchIcon from "@mui/icons-material/Search";
-import { styled } from "@mui/material/styles";
-import FlexBetween from "components/FlexBetween";
 import WaitingClients from "./WaitingClientsDialog";
 import SuperadminClientsTable from "./SuperadminClientsTable";
 import AdminClientsTable from "./AdminClientsTable";
 import ProgressCircle from "scenes/ProgressCircle";
-
-const Search = styled("div")({
-  position: "relative",
-  borderRadius: "20px",
-  backgroundColor: "#f0f0f0",
-  "&:hover": {
-    backgroundColor: "#e0e0e0",
-  },
-  marginLeft: "50px",
-  width: "300px", // Adjust width as needed
-});
+import CustomSnackbar from "scenes/CustomSnackBar";
 
 const Clients = ({ user }) => {
   const [clients, setClients] = useState(null);
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [openAlert, setOpenAlert] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState(false);
 
   const handleOpen = () => {
     setOpen(true);
@@ -40,6 +23,11 @@ const Clients = ({ user }) => {
     setOpen(false);
   };
 
+  const handleSnackbar = () => {
+    setErrorMessage(false);
+    setOpenAlert(true);
+    setAlertMessage("Service updated successfully");
+  };
   const getAllClients = async () => {
     try {
       setLoading(true);
@@ -65,10 +53,17 @@ const Clients = ({ user }) => {
 
   useEffect(() => {
     getAllClients();
-  }, []);
+  }, [user]);
 
   return (
     <>
+      <CustomSnackbar
+        open={openAlert}
+        autoHideDuration={3000}
+        onClose={() => setOpenAlert(false)}
+        errorMessage={errorMessage}
+        alertMessage={alertMessage}
+      />
       <div
         style={{ display: "flex", alignItems: "center", marginLeft: "50px" }}
       >
@@ -152,7 +147,7 @@ const Clients = ({ user }) => {
         {clients && user.role === "admin" && !loading && (
           <AdminClientsTable
             clientsData={clients}
-            handleChange={getAllClients}
+            handleChange={getAllClients && handleSnackbar}
           />
         )}
       </div>

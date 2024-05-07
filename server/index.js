@@ -5,35 +5,15 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 import helmet from "helmet";
 import morgan from "morgan";
-import managementRoutes from "./routes/adminManagement.js";
 import multer from "multer";
 import path from "path";
 import { fileURLToPath } from "url";
 import userRoutes from "./routes/users.js";
-// import postRoutes from "./routes/posts.js";
-import { login, register, setLogout, verifyEmail } from "./controllers/auth.js";
-import User from "./models/user.js";
-import { users } from "./data/index.js";
-import Client from "./models/client.js";
-import Admin from "./models/admin.js";
+import { register } from "./controllers/auth.js";
 import profileRoutes from "./routes/profile.js";
-import { deletePicture, modifyProfile } from "./controllers/profile.js";
-import {
-  assignClient,
-  getAdmins,
-  getAssignClients,
-  adminClientsStats,
-} from "./controllers/adminManagement.js";
-
-import clientAssignRoutes from "./routes/adminManagement.js";
-import {
-  approveClient,
-  getAdminNames,
-  getClients,
-  updateService,
-} from "./controllers/clientsManagement.js";
+import { modifyProfile } from "./controllers/profile.js";
+import { getClients } from "./controllers/clientsManagement.js";
 import clientsRoutes from "./routes/clientsManagement.js";
-import { deleteUser } from "./controllers/users.js";
 import {
   assignInvoices,
   convertToCsv,
@@ -46,6 +26,7 @@ import {
 } from "./controllers/invoices.js";
 import journalRoutes from "./routes/invoices.js";
 import adminsRoutes from "./routes/adminManagement.js";
+import authRoutes from "./routes/auth.js";
 
 /* Config */
 const __filename = fileURLToPath(import.meta.url);
@@ -89,70 +70,39 @@ app.post("/convertToCsv", storeInvoice.single("file"), convertToCsv);
 app.get("/invoices", getInvoices);
 
 //Upload Journals
-app.post("/uploadJournal", uploadJournal);
-app.use("/uploadJournal", journalRoutes);
-
-//Get Journals
-app.get("/getJournal", getJournal);
-app.use("/getJournal", journalRoutes);
-
-//Delete Journals
-app.delete("/deleteJournal", deleteJournal);
-app.use("/deleteJournal", journalRoutes);
-
-//assign invoices to clients
-app.patch("/clients-assign-invoices", assignInvoices);
-app.use("/clients-assign-invoices", journalRoutes);
-
-//clients dialog to assign
-app.get("/clientsToAssign", getClients);
-app.use("/clientsToAssign", journalRoutes);
-
-//get client journal
-app.get("/getClientJournal", getClientJournal);
-app.use("/getClientJournal", journalRoutes);
+app.get("/getClientJournal", journalRoutes);
+app.post("/uploadJournal", journalRoutes);
+app.get("/getJournal", journalRoutes);
+app.delete("/deleteJournal", journalRoutes);
+app.patch("/clients-assign-invoices", journalRoutes);
+app.get("/clientsToAssign", journalRoutes);
 
 //clients management
-app.get("/clients", getClients);
-app.post("/adminName", getAdminNames);
-app.delete("/clients", deleteUser);
-app.patch("/service", updateService);
-app.patch("/clients", approveClient);
+app.get("/clients", clientsRoutes);
+app.post("/adminName", clientsRoutes);
+app.delete("/clients", clientsRoutes);
+app.patch("/service", clientsRoutes);
+app.patch("/clients", clientsRoutes);
 
 // auth management
 app.post("/auth/register", storeImage.single("picture"), register);
-app.post("/auth/login", login);
-app.post("/auth/verify-email", verifyEmail);
-app.post("/setLogout", setLogout);
+app.post("/auth/login", authRoutes);
+app.post("/auth/verify-email", authRoutes);
+app.post("/setLogout", authRoutes);
 
 //profile management
 app.patch("/profile", storeImage.single("picture"), modifyProfile);
-app.patch("/profile/delete-picture", deletePicture);
+app.patch("/profile/delete-picture", profileRoutes);
 
 //admin management
-app.get("/admins", getAdmins);
-app.delete("/admin", deleteUser);
-app.get("/admin-clients-stats", adminClientsStats);
-app.patch("/clients-assign", assignClient);
-app.get("/clients-assign", getAssignClients);
+app.get("/admins", adminsRoutes);
+app.delete("/admin", adminsRoutes);
+app.get("/admin-clients-stats", adminsRoutes);
+app.patch("/clients-assign", adminsRoutes);
+app.get("/clients-assign", adminsRoutes);
 
-// app.use("/management", managementRoutes);
-// app.use("/users", userRoutes);
-// app.use("/client", clientRoutes);
-// app.use("/general", generalRoutes);
-// app.use("/sales", salesRoutes);
-// app.use("/auth", authRoutes);
-// app.use("/verify-email", verificationRoutes);
-// app.use("/setLogout", setLogoutRoutes);
+app.use("/users", userRoutes);
 app.use("/admin", adminsRoutes);
-// app.use("/profile", profileRoutes);
-app.use("/profile/delete-picture", profileRoutes);
-// app.use("/admin", deleteAdminRoutes);
-app.use("/clients", clientsRoutes);
-app.use("/adminName", clientsRoutes);
-app.use("/service", clientsRoutes);
-// app.use("/clients-assign", clientAssignRoutes);
-// app.use("/admin-clients-stats", clientAssignRoutes);
 
 /* Mongoose setup */
 const PORT = process.env.PORT || 9000;

@@ -19,7 +19,6 @@ import Admins from "scenes/adminsManagement";
 import Clients from "scenes/clientsManagement";
 import UploadInvoice from "scenes/Invoices";
 import Overview from "scenes/Overview";
-import Journal from "scenes/journal/Journal";
 
 function App() {
   const mode = useSelector((state) => state.mode);

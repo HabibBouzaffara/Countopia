@@ -6,6 +6,7 @@ import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
 import { format } from "date-fns";
 
 import { DeleteForever, Save } from "@mui/icons-material";
+import CustomSnackbar from "scenes/CustomSnackBar";
 
 const CleanedInvoice = ({
   adminId,
@@ -13,8 +14,12 @@ const CleanedInvoice = ({
   cleanedVersion,
   setCleanedVersion,
   setFileData,
+  setSuccessMessage,
 }) => {
   const [rowId, setRowId] = useState([]);
+  const [openAlert, setOpenAlert] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState(false);
   const uploadJournal = async () => {
     try {
       const response = await fetch(
@@ -28,7 +33,13 @@ const CleanedInvoice = ({
         }
       );
       const data = await response.json();
+      if (!response.ok) {
+        setErrorMessage(true);
+        setOpenAlert(true);
+        setAlertMessage(data.msg || "Failed to upload journal");
+      }
       console.log(data);
+      setSuccessMessage("Journal uploaded successfully");
       setCleanedVersion(null);
       setFileData(null);
     } catch (error) {
@@ -223,6 +234,13 @@ const CleanedInvoice = ({
 
   return (
     <>
+      <CustomSnackbar
+        open={openAlert}
+        autoHideDuration={3000}
+        onClose={() => setOpenAlert(false)}
+        errorMessage={errorMessage}
+        alertMessage={alertMessage}
+      />
       <Box sx={{ display: "flex", flexDirection: "row" }}>
         <Typography
           sx={{

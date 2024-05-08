@@ -67,12 +67,14 @@ const AdminClientsTable = ({ clientsData, handleChange }) => {
 
   const updateService = async (_id, service) => {
     try {
+      const token = localStorage.getItem("token");
       const response = await fetch(
-        `${process.env.REACT_APP_BASE_URL}/service`,
+        `${process.env.REACT_APP_BASE_URL}/clients/update-service`,
         {
           method: "PATCH",
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify({ _id, service }),
         }
@@ -80,7 +82,7 @@ const AdminClientsTable = ({ clientsData, handleChange }) => {
       if (!response.ok) {
         setErrorMessage(true);
         setOpenAlert(true);
-        setAlertMessage("Failed to update service" + response.statusText);
+        setAlertMessage(response.statusText || "Failed to update service");
       }
       console.log("Service updated successfully");
       handleChange();

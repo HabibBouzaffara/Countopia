@@ -57,6 +57,19 @@ const InvoicesModal = ({
       console.log(error);
     }
   };
+  const rowsWithDash = invoices.map((row, index) => ({
+    id: index + 1, // You can adjust the logic to generate unique ids based on your requirements
+    ...row,
+  }));
+  const tableHead = Object.keys(invoices[0] || {});
+  const columns = tableHead.map((key) => ({
+    field: key,
+    headerName: key,
+    flex: 1,
+    editable: true,
+    align: "center",
+    headerAlign: "center",
+  }));
 
   return (
     <>
@@ -169,62 +182,8 @@ const InvoicesModal = ({
                         paddingRight: "20px",
                       },
                     }}
-                    rows={invoices.map((item, index) => ({
-                      ...item,
-                      id: item._id,
-                    }))}
-                    columns={[
-                      {
-                        field: "date_facture",
-                        headerName: "date_facture",
-                        flex: 1,
-                        editable: true,
-                        align: "center",
-                        headerAlign: "center",
-                        type: "date",
-                        valueFormatter: (params) => {
-                          return format(new Date(params.value), "dd/MM/yyyy");
-                        },
-                      },
-                      {
-                        field: "description",
-                        headerName: "Description",
-                        width: 150,
-                      },
-                      {
-                        field: "nom_unite",
-                        headerName: "Nom Unite",
-                        width: 105,
-                      },
-                      {
-                        field: "nombre_unit",
-                        headerName: "Nombre Unit",
-                        width: 105,
-                      },
-                      {
-                        field: "prix_unit",
-                        headerName: "Prix Unit",
-                        width: 105,
-                      },
-                      {
-                        field: "total_unit",
-                        headerName: "Total Unit",
-                        width: 105,
-                      },
-                      {
-                        field: "total_net",
-                        headerName: "Total Net",
-                        width: 105,
-                      },
-                      { field: "taxe", headerName: "Taxe", width: 90 },
-                      { field: "total", headerName: "Total", width: 100 },
-                      {
-                        field: "num_facture",
-                        headerName: "Num Facture",
-                        width: 120,
-                      },
-                      { field: "category", headerName: "Categorie", width: 90 },
-                    ]}
+                    rows={rowsWithDash}
+                    columns={columns}
                   />
                 </div>
               ) : (

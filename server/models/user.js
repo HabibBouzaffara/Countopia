@@ -96,7 +96,7 @@ const UserSchema = new mongoose.Schema(
       type: Array,
       default: [],
     },
-    factures: [invoiceItemSchema],
+    factures: [Object],
     clients: Array,
     role: {
       type: String,

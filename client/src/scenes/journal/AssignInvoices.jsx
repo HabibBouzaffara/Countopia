@@ -30,6 +30,7 @@ const AssignInvoices = ({
   useEffect(() => {
     const fetchClients = async () => {
       try {
+        const token = localStorage.getItem("token");
         if (isOpen) {
           const url = new URL(
             process.env.REACT_APP_BASE_URL + "/clientsToAssign"
@@ -40,7 +41,10 @@ const AssignInvoices = ({
 
           const response = await fetch(url, {
             method: "GET",
-            headers: { "Content-Type": "application/json" },
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
           });
           if (!response.ok) {
             setConfirmAssignMessage(
@@ -63,6 +67,7 @@ const AssignInvoices = ({
 
   const handleAssignClients = async () => {
     const response = await fetch(
+      // console.log("sikou:" + JSON.stringify(invoices)),
       process.env.REACT_APP_BASE_URL + "/clients-assign-invoices",
       {
         method: "PATCH",

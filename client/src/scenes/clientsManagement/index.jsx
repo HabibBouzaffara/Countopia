@@ -32,14 +32,18 @@ const Clients = ({ user }) => {
     try {
       setLoading(true);
       const url = new URL(process.env.REACT_APP_BASE_URL + "/clients");
-      // Add user._id and user.role as query parameters
-      url.searchParams.append("userId", user?._id);
-      url.searchParams.append("role", user?.role);
+
+      const token = localStorage.getItem("token");
+      const headers = {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      };
 
       const clientsResponse = await fetch(url, {
         method: "GET",
-        headers: { "Content-Type": "application/json" },
+        headers: headers, // Pass headers object
       });
+
       const data = await clientsResponse.json();
       if (!clientsResponse.ok) {
         throw new Error(data.msg);

@@ -29,6 +29,7 @@ export const globalSlice = createSlice({
     setLogout: (state) => {
       state.user = null;
       state.token = null;
+      localStorage.token = null;
     },
   },
 });

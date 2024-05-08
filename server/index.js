@@ -79,10 +79,10 @@ app.get("/clientsToAssign", journalRoutes);
 
 //clients management
 app.get("/clients", clientsRoutes);
-app.post("/adminName", clientsRoutes);
-app.delete("/clients", clientsRoutes);
-app.patch("/service", clientsRoutes);
-app.patch("/clients", clientsRoutes);
+app.post("/clients/adminName", clientsRoutes);
+app.delete("/client-delete", clientsRoutes);
+app.patch("/clients/update-service", clientsRoutes);
+app.patch("/clients/approve", clientsRoutes);
 
 // auth management
 app.post("/auth/register", storeImage.single("picture"), register);

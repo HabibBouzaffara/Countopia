@@ -20,6 +20,7 @@ const CleanedInvoice = ({
   const [openAlert, setOpenAlert] = useState(false);
   const [alertMessage, setAlertMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState(false);
+
   const uploadJournal = async () => {
     try {
       const response = await fetch(
@@ -47,166 +48,63 @@ const CleanedInvoice = ({
     }
   };
 
-  console.log(cleanedVersion);
   // Ensure cleanedVersion exists and is not empty
-
-  // Define columns manually
-  const columns = [
-    {
-      field: "client_id",
-      headerName: "client_id",
-      flex: 1,
-      editable: false,
-      align: "center",
-      headerAlign: "center",
-    },
-    {
-      field: "date_facture",
-      headerName: "date_facture",
-      flex: 1,
-      editable: true,
-      align: "center",
-      headerAlign: "center",
-      type: "date",
-      valueFormatter: (params) => {
-        return format(new Date(params.value), "dd/MM/yyyy");
-      },
-    },
-    {
-      field: "description",
-      headerName: "description",
-      flex: 1,
-      editable: true,
-      align: "center",
-      headerAlign: "center",
-    },
-    {
-      field: "nom_unite",
-      headerName: "nom_unite",
-      flex: 1,
-      editable: true,
-      align: "center",
-      headerAlign: "center",
-    },
-    {
-      field: "nombre_unit",
-      headerName: "nombre_unit",
-      flex: 1,
-      editable: true,
-      align: "center",
-      headerAlign: "center",
-    },
-    {
-      field: "prix_unite",
-      headerName: "prix_unite",
-      flex: 1,
-      editable: true,
-      align: "center",
-      headerAlign: "center",
-    },
-    {
-      field: "total_unit",
-      headerName: "total_unit",
-      flex: 1,
-      editable: true,
-      align: "center",
-      headerAlign: "center",
-    },
-    {
-      field: "total_net",
-      headerName: "total_net",
-      flex: 1,
-      editable: true,
-      align: "center",
-      headerAlign: "center",
-    },
-    {
-      field: "taxe",
-      headerName: "taxe",
-      flex: 1,
-      editable: true,
-      align: "center",
-      headerAlign: "center",
-    },
-    {
-      field: "total",
-      headerName: "total",
-      flex: 1,
-      editable: true,
-      align: "center",
-      headerAlign: "center",
-    },
-    {
-      field: "num_facture",
-      headerName: "num_facture",
-      flex: 1,
-      editable: true,
-      align: "center",
-      headerAlign: "center",
-    },
-    {
-      field: "category",
-      headerName: "Categorie",
-      flex: 1,
-      editable: true,
-      type: "singleSelect",
-      valueOptions: ["V", "A"],
-      align: "center",
-      headerAlign: "center",
-    },
-    {
-      field: "actions",
-      cellClassName: "actions",
-      headerName: "Actions",
-      type: "actions",
-      align: "center",
-      headerAlign: "center",
-
-      renderCell: (params) => (
-        <>
-          <div style={{ textAlign: "center" }}>
-            <IconButton
-              sx={{
-                color: "#9D8DFE",
-              }}
-              disabled={params.row.id !== rowId}
-              onClick={() => handleEditClick(params.row.id, params.row)}
-            >
-              <Save />
-            </IconButton>
-            <div style={{ fontSize: "10px" }}>Save</div>
-          </div>
-          <div style={{ textAlign: "center" }}>
-            <IconButton
-              sx={{
-                color: "#C95F50",
-              }}
-              onClick={() => handleDeleteClick(params.row.id, params.row)}
-            >
-              <DeleteForever />
-            </IconButton>
-            <div style={{ fontSize: "10px" }}>Delete</div>
-          </div>
-        </>
-      ),
-    },
-  ];
   if (!cleanedVersion || cleanedVersion.length === 0) return null;
+
+  // Generate table headers based on keys of the first object in cleanedVersion
+  const tableHead = Object.keys(cleanedVersion[0]);
+
+  // Define columns excluding the action column
+  const columns = tableHead.map((key) => ({
+    field: key,
+    headerName: key,
+    flex: 1,
+    editable: true,
+    align: "center",
+    headerAlign: "center",
+  }));
+
+  // Add the action column
+  columns.push({
+    field: "actions",
+    cellClassName: "actions",
+    headerName: "Actions",
+    type: "actions",
+    align: "center",
+    headerAlign: "center",
+    renderCell: (params) => (
+      <>
+        <div style={{ textAlign: "center" }}>
+          <IconButton
+            sx={{
+              color: "#9D8DFE",
+            }}
+            disabled={params.row.id !== rowId}
+            onClick={() => handleEditClick(params.row.id, params.row)}
+          >
+            <Save />
+          </IconButton>
+          <div style={{ fontSize: "10px" }}>Save</div>
+        </div>
+        <div style={{ textAlign: "center" }}>
+          <IconButton
+            sx={{
+              color: "#C95F50",
+            }}
+            onClick={() => handleDeleteClick(params.row.id, params.row)}
+          >
+            <DeleteForever />
+          </IconButton>
+          <div style={{ fontSize: "10px" }}>Delete</div>
+        </div>
+      </>
+    ),
+  });
+
   // Replace empty values with dash (-) in rows
   const rowsWithDash = cleanedVersion.map((row, index) => ({
     id: index + 1, // You can adjust the logic to generate unique ids based on your requirements
-    client_id: row.client_id || "-",
-    date_facture: row.date_facture || "-",
-    description: row.description || "-",
-    nom_unite: row.nom_unite || "-",
-    nombre_unit: row.nombre_unit || "-",
-    prix_unit: row.prix_unit || "-",
-    total_unit: row.total_unit || "-",
-    total_net: row.total_net || "-",
-    taxe: row.taxe || "-",
-    total: row.total || "-",
-    num_facture: row.num_facture || "-",
-    category: row.category || "-",
+    ...row,
   }));
 
   const handleDeleteClick = (id) => {

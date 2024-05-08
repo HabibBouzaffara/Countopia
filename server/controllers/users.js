@@ -19,6 +19,10 @@ export const getUser = async (req, res) => {
 
 export const deleteUser = async (req, res) => {
   try {
+    const userRole = req.user.role; // Get the role from the token
+    if (userRole !== "superadmin") {
+      return res.status(401).json({ msg: "Unauthorized" });
+    }
     const { _id } = req.body;
     const user = await User.findById(_id);
     console.log(user);

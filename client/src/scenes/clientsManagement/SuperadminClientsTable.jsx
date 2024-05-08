@@ -56,11 +56,15 @@ const SuperadminClientsTable = ({ userData, handleChange }) => {
     const fetchAdminNames = async () => {
       try {
         const adminIds = userData.map((user) => user.assigned).flat();
+        const token = localStorage.getItem("token");
         const response = await fetch(
-          `${process.env.REACT_APP_BASE_URL}/adminName`,
+          `${process.env.REACT_APP_BASE_URL}/clients/adminName`,
           {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
             body: JSON.stringify({ adminIds }),
           }
         );
@@ -101,11 +105,15 @@ const SuperadminClientsTable = ({ userData, handleChange }) => {
 
   const deleteClient = async () => {
     try {
+      const token = localStorage.getItem("token");
       const response = await fetch(
-        `${process.env.REACT_APP_BASE_URL}/clients?action=delete`,
+        `${process.env.REACT_APP_BASE_URL}/client-delete?action=delete`,
         {
           method: "DELETE",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
           body: JSON.stringify({ _id: clientId }),
         }
       );

@@ -6,11 +6,25 @@ import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
 const OriginalInvoice = ({ file, setCleanedVersion, setFileData }) => {
   const [convertedVersion, setConvertedVersion] = useState([]);
   const [tableHead, setTableHead] = useState([]);
+  const [selectedCells, setSelectedCells] = useState([
+    "client_id",
+    "num_facture",
+    "date_facture",
+    "nom_unite",
+    "description",
+    "nombre_unit",
+    "prix_unit",
+    "total_net",
+    "taxe",
+    "total",
+  ]);
 
   const handleUpload = async () => {
     try {
+      console.log("el selected:" + selectedCells);
       const formData = new FormData();
       formData.append("file", file);
+      formData.append("selectedCells", JSON.stringify(selectedCells)); // Append selectedCells array
 
       const response = await fetch(
         `${process.env.REACT_APP_BASE_URL}/uploadInvoices`,
@@ -64,6 +78,14 @@ const OriginalInvoice = ({ file, setCleanedVersion, setFileData }) => {
     convertToCsv();
   }, [file]);
 
+  const toggleCellSelection = (cellValue) => {
+    if (selectedCells.includes(cellValue)) {
+      setSelectedCells(selectedCells.filter((value) => value !== cellValue));
+    } else {
+      setSelectedCells([...selectedCells, cellValue]);
+    }
+  };
+
   return (
     <>
       <Box sx={{ display: "flex", flexDirection: "row" }}>
@@ -94,7 +116,7 @@ const OriginalInvoice = ({ file, setCleanedVersion, setFileData }) => {
               fontSize: "15px",
             }}
           >
-            Observe your csv before cleaning
+            Select the cells you want to keep
           </Typography>
           <Typography
             sx={{
@@ -107,19 +129,42 @@ const OriginalInvoice = ({ file, setCleanedVersion, setFileData }) => {
         </Box>
       </Box>
 
-      <Box mt='20px' marginBottom='20px' width='98%' mx='auto'>
-        <div style={{ width: "100%" }}>
-          <DataGrid
-            rows={convertedVersion}
-            columns={tableHead.map((header) => ({
-              field: header,
-              headerName: header,
-              flex: 1,
-            }))}
-            initialState={{ pagination: { paginationModel: { pageSize: 10 } } }}
-            pageSizeOptions={[5, 10, 25, 50]}
-          />
-        </div>
+      <Box mt='20px' marginBottom='20px'>
+        <DataGrid
+          disableColumnFilter
+          disableColumnMenu
+          enableColumnSelect
+          rows={convertedVersion}
+          columns={tableHead.map((header) => ({
+            field: header,
+            headerName: header,
+            sortable: false,
+            flex: 1,
+            cellClassName: (params) => {
+              if (selectedCells.includes(params.value)) {
+                return "selected-cell";
+              }
+              return "";
+            },
+            headerClassName: (params) => {
+              if (selectedCells.includes(params.field)) {
+                return "selected-cell";
+              }
+              return "";
+            },
+          }))}
+          onCellClick={(cell) => toggleCellSelection(cell.value)}
+          onColumnHeaderClick={(cell) => toggleCellSelection(cell.field)}
+          initialState={{ pagination: { paginationModel: { pageSize: 10 } } }}
+          pageSizeOptions={[5, 10, 25, 50]}
+          sx={{}}
+        />
+        <style jsx>{`
+          .selected-cell {
+            background-color: rgb(238, 242, 246);
+            color: black;
+          }
+        `}</style>
       </Box>
 
       <Box

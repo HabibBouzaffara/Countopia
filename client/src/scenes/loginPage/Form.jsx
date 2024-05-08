@@ -188,6 +188,7 @@ const Form = ({ action }) => {
           })
         );
         dispatch(setUser({ user: loggedIn.user, token: loggedIn.token }));
+        localStorage.setItem("token", loggedIn.token);
         navigate("/profile");
       }
     } catch (error) {

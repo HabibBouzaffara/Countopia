@@ -293,27 +293,15 @@ const Journal = ({ user }) => {
                 });
                 setCheckedRows(updatedCheckedRows);
               }}
-              columns={[
-                { field: "client_id", headerName: "Client ID", width: 70 },
-                {
-                  field: "date_facture",
-                  headerName: "Date Facture",
-                  width: 110,
-                  renderCell: (params) => (
-                    <div>{format(new Date(params.value), "yyyy-MM-dd")}</div>
-                  ),
-                },
-                { field: "description", headerName: "Description", width: 150 },
-                { field: "nom_unite", headerName: "Nom Unite", width: 105 },
-                { field: "nombre_unit", headerName: "Nombre Unit", width: 105 },
-                { field: "prix_unit", headerName: "Prix Unit", width: 105 },
-                { field: "total_unit", headerName: "Total Unit", width: 105 },
-                { field: "total_net", headerName: "Total Net", width: 105 },
-                { field: "taxe", headerName: "Taxe", width: 90 },
-                { field: "total", headerName: "Total", width: 100 },
-                { field: "num_facture", headerName: "Num Facture", width: 120 },
-                { field: "category", headerName: "Category", width: 70 },
-              ]}
+              columns={
+                selectedItems[0] &&
+                Object.keys(selectedItems[0]).map((key) => ({
+                  field: key,
+                  headerName: key,
+                  width: 150,
+                  flex: 1,
+                }))
+              }
             />
           </div>
           <Button

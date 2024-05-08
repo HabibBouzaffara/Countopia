@@ -29,6 +29,8 @@ const FinancialReport = ({
   const [openAlert, setOpenAlert] = useState(false);
   const [alertMessage, setAlertMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState(false);
+  const [rows, setRows] = useState(null);
+  const [columns, setColumns] = useState(null);
   const handleExcelExport = () => {
     try {
       if (rowsFound.length > 0) {
@@ -65,6 +67,24 @@ const FinancialReport = ({
       console.log(error);
     }
   };
+
+  if (rowsFound && rowsFound.length > 0 && !columns && !rows) {
+    const rowsWithDash = rowsFound.map((row, index) => ({
+      id: index + 1, // You can adjust the logic to generate unique ids based on your requirements
+      ...row,
+    }));
+    setRows(rowsWithDash);
+    const tableHead = Object.keys(rowsFound[0] || {});
+    const columns = tableHead.map((key) => ({
+      field: key,
+      headerName: key,
+      flex: 1,
+      editable: true,
+      align: "center",
+      headerAlign: "center",
+    }));
+    setColumns(columns);
+  }
 
   const customExportButton = () => {
     return (
@@ -211,94 +231,42 @@ const FinancialReport = ({
               justifyContent: "end",
             }}
           >
-            <DataGrid
-              slots={{
-                toolbar: customExportButton,
-              }}
-              pageSizeOptions={[5, 10, 25, 50]}
-              hideFooterSelectedRowCount
-              sx={{
-                width: "1150px",
-                maxHeight: "600px",
-                marginBottom: "10px",
-                borderRadius: "0 0 20px 20px",
-                boxShadow: "0px 0px 20px rgba(0, 0, 0, 0.1)",
-                "& .MuiDataGrid-columnHeaders": {
-                  backgroundColor: "rgba(15,157,88,0.3)",
-                },
-                "& .MuiDataGrid-toolbarContainer": {
-                  backgroundColor: "rgba(0, 0, 0, 0.2)",
-                  display: "flex",
-                  justifyContent: "flex-end",
-                  paddingRight: "20px",
-                },
-                "& .MuiDataGrid-cell": {
-                  border: "1px solid rgba(0, 0, 0, 0.2)",
-                },
-                "& .MuiDataGrid-row:hover": {
-                  "&:hover": {
+            {" "}
+            {rowsFound && rows && columns && (
+              <DataGrid
+                slots={{
+                  toolbar: customExportButton,
+                }}
+                pageSizeOptions={[5, 10, 25, 50]}
+                hideFooterSelectedRowCount
+                sx={{
+                  width: "1150px",
+                  maxHeight: "600px",
+                  marginBottom: "10px",
+                  borderRadius: "0 0 20px 20px",
+                  boxShadow: "0px 0px 20px rgba(0, 0, 0, 0.1)",
+                  "& .MuiDataGrid-columnHeaders": {
                     backgroundColor: "rgba(15,157,88,0.3)",
                   },
-                },
-              }}
-              rows={rowsFound.map((item, index) => ({
-                ...item,
-                id: item._id,
-              }))}
-              columns={[
-                {
-                  width: 150,
-                  field: "date_facture",
-                  headerName: "date_facture",
-                  flex: 1,
-                  editable: true,
-                  align: "center",
-                  headerAlign: "center",
-                  type: "date",
-                  valueFormatter: (params) => {
-                    return format(new Date(params.value), "dd/MM/yyyy");
+                  "& .MuiDataGrid-toolbarContainer": {
+                    backgroundColor: "rgba(0, 0, 0, 0.2)",
+                    display: "flex",
+                    justifyContent: "flex-end",
+                    paddingRight: "20px",
                   },
-                },
-                {
-                  field: "description",
-                  headerName: "Description",
-                  width: 150,
-                },
-                {
-                  field: "nom_unite",
-                  headerName: "Nom Unite",
-                  width: 105,
-                },
-                {
-                  field: "nombre_unit",
-                  headerName: "Nombre Unit",
-                  width: 100,
-                },
-                {
-                  field: "prix_unit",
-                  headerName: "Prix Unit",
-                  width: 100,
-                },
-                {
-                  field: "total_unit",
-                  headerName: "Total Unit",
-                  width: 100,
-                },
-                {
-                  field: "total_net",
-                  headerName: "Total Net",
-                  width: 100,
-                },
-                { field: "taxe", headerName: "Taxe", width: 90 },
-                { field: "total", headerName: "Total", width: 100 },
-                {
-                  field: "num_facture",
-                  headerName: "Num Facture",
-                  width: 100,
-                },
-                { field: "category", headerName: "Categorie", width: 80 },
-              ]}
-            />
+                  "& .MuiDataGrid-cell": {
+                    border: "1px solid rgba(0, 0, 0, 0.2)",
+                  },
+                  "& .MuiDataGrid-row:hover": {
+                    "&:hover": {
+                      backgroundColor: "rgba(15,157,88,0.3)",
+                    },
+                  },
+                }}
+                rows={rows}
+                columns={columns}
+              />
+            )}
             <Box>
               <Button
                 sx={{

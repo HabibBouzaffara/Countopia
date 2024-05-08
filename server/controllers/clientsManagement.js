@@ -3,6 +3,10 @@ import { generateActivationEmailHTML, mailTransport } from "../utils/mail.js";
 
 export const getAdminNames = async (req, res) => {
   try {
+    const userRole = req.user.role; // Get the role from the token
+    if (userRole !== "superadmin") {
+      return res.status(403).json({ message: "Unauthorized" });
+    }
     let { adminIds } = req.body;
 
     // Filter out empty strings from adminIds
@@ -21,13 +25,14 @@ export const getAdminNames = async (req, res) => {
 };
 export const getClients = async (req, res) => {
   try {
-    const { role, userId } = req.query;
+    const userRole = req.user.role; // Get the role from the token
+    const userId = req.user.id; // Get the user ID from the token
 
-    if (role === "superadmin") {
+    if (userRole === "superadmin") {
       // For superadmin, return all users with role "client"
       const clients = await User.find({ role: "client" }, { clients: 0 });
       res.status(200).json(clients);
-    } else if (role === "admin") {
+    } else if (userRole === "admin") {
       // For admin, return clients associated with the admin user
       const adminUser = await User.findById(userId);
       if (!adminUser) {
@@ -70,6 +75,10 @@ export const getClients = async (req, res) => {
 
 export const approveClient = async (req, res) => {
   try {
+    const userRole = req.user.role; // Get the role from the token
+    if (userRole !== "superadmin") {
+      return res.status(403).json({ message: "Unauthorized" });
+    }
     const { _id } = req.body;
     const client = await User.findById({ _id: _id });
     await User.updateOne({ _id }, { $set: { approved: true } });
@@ -88,6 +97,10 @@ export const approveClient = async (req, res) => {
 
 export const updateService = async (req, res) => {
   try {
+    const userRole = req.user.role; // Get the role from the token
+    if (userRole !== "admin" && userRole !== "superadmin") {
+      return res.status(403).json({ message: "Unauthorized" });
+    }
     const { _id, service } = req.body;
     await User.updateOne({ _id }, { $set: { service: service } });
     res.status(200).json({ msg: "Service updated successfully" });

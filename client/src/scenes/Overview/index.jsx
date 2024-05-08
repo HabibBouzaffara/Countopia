@@ -290,7 +290,6 @@ const Overview = ({ user }) => {
         sx={{
           display: "flex",
           justifyContent: "space-between",
-          marginTop: "10px",
           padding: "20px",
           width: "  90%",
           marginLeft: " 40px",
@@ -397,7 +396,7 @@ const Overview = ({ user }) => {
         sx={{
           display: "flex",
           justifyContent: "space-between",
-          marginTop: "10px",
+          
           padding: "20px",
           width: "90%",
           marginLeft: "40px",

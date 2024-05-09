@@ -18,9 +18,13 @@ const AdminCard = ({ user, clientAssigned, setOnConfirmMessage }) => {
 
   const handleRemoveUser = async () => {
     try {
+      const token = localStorage.getItem("token");
       const response = await fetch(process.env.REACT_APP_BASE_URL + "/admin", {
         method: "DELETE",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
         body: JSON.stringify({ _id: user._id }),
       });
       if (!response.ok) {
@@ -36,11 +40,15 @@ const AdminCard = ({ user, clientAssigned, setOnConfirmMessage }) => {
 
   const clientsStatus = useCallback(async () => {
     try {
+      const token = localStorage.getItem("token");
       const response = await fetch(
         `${process.env.REACT_APP_BASE_URL}/admin-clients-stats?_id=${user._id}`,
         {
           method: "GET",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
         }
       );
       if (!response.ok) {

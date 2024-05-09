@@ -1,7 +1,5 @@
 import User from "../models/user.js";
-import Admin from "../models/admin.js";
 import {
-  generateActivationEmailHTML,
   generateDeleteHTML,
   generateRejectionHTML,
   mailTransport,

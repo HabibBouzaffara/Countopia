@@ -6,7 +6,7 @@ import {
   assignInvoices,
   getClientJournal,
 } from "../controllers/invoices.js";
-import { getClients } from "../controllers/clientsManagement.js";
+import { getClients } from "../controllers/clients.js";
 import { verifyToken } from "../middleware/auth.js";
 
 const router = express.Router();

@@ -4,7 +4,7 @@ import {
   getClients,
   getAdminNames,
   updateService,
-} from "../controllers/clientsManagement.js";
+} from "../controllers/clients.js";
 import { deleteUser } from "../controllers/users.js";
 import { verifyToken } from "../middleware/auth.js";
 

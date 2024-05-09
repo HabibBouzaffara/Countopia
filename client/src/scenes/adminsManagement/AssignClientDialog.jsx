@@ -27,13 +27,17 @@ const AssignClientDialog = ({
   useEffect(() => {
     const fetchClients = async () => {
       try {
+        const token = localStorage.getItem("token");
         if (isOpen) {
           // console.log(admin._id);
           const response = await fetch(
             `${process.env.REACT_APP_BASE_URL}/clients-assign?adminId=${admin._id}`,
             {
               method: "GET",
-              headers: { "Content-Type": "application/json" },
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+              },
             }
           );
           if (!response.ok) {
@@ -80,11 +84,15 @@ const AssignClientDialog = ({
   };
 
   const handleAssignClients = async () => {
+    const token = localStorage.getItem("token");
     const response = await fetch(
       process.env.REACT_APP_BASE_URL + "/clients-assign",
       {
         method: "PATCH",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
         body: JSON.stringify({ adminId: admin._id, clientsId: selectedUser }),
       }
     );

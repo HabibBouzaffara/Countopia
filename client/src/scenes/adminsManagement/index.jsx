@@ -55,9 +55,13 @@ const Admins = ({ superadmin }) => {
 
   const getAdmins = async () => {
     try {
+      const token = localStorage.getItem("token");
       const admins = await fetch(process.env.REACT_APP_BASE_URL + "/admins", {
         method: "GET",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
       });
       const data = await admins.json();
       if (!admins.ok) {

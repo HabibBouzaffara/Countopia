@@ -2,7 +2,6 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import User from "../models/user.js";
 import Client from "../models/client.js";
-import Admin from "../models/admin.js";
 import verificationToken from "../models/verificationToken.js";
 import {
   generateOTP,
@@ -99,13 +98,14 @@ export const register = async (req, res) => {
         html: generateVerificationEmailHTML(savedUser.name, OTP),
       });
       await newClient.save();
-    } else if (savedUser.role === "admin") {
-      const newAdmin = new Admin({
-        adminId: savedUser._id, // Reference to the newly saved user
-        clients,
-      });
-      await newAdmin.save();
     }
+    // else if (savedUser.role === "admin") {
+    //   const newAdmin = new Admin({
+    //     adminId: savedUser._id, // Reference to the newly saved user
+    //     clients,
+    //   });
+    //   await newAdmin.save();
+    // }
 
     // Generate OTP and save verification token
 

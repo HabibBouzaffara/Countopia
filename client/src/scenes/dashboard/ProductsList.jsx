@@ -7,17 +7,35 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 
-function createData(name, quantity, price, top) {
-  return { name, quantity, price, top };
-}
-
-const rows = [
-  createData("Frozen yoghurt", 159, 6.0, 1),
-  createData("Ice cream sandwich", 237, 9.0, 2),
-  createData("Eclair", 262, 16.0, 3),
-];
-
 export default function ProductsList() {
+  const [bestSeller, setBestSeller] = React.useState([]);
+
+  React.useEffect(() => {
+    const fetchBestSeller = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await fetch(
+          process.env.REACT_APP_BASE_URL + "/bestSeller",
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        const { top3BestSellers } = await response.json();
+        if (!response.ok) {
+          throw new Error(top3BestSellers.msg);
+        }
+        setBestSeller(top3BestSellers);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchBestSeller();
+  }, []);
+
   return (
     <TableContainer
       component={Paper}
@@ -58,14 +76,14 @@ export default function ProductsList() {
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map((row) => (
-            <TableRow key={row.name} sx={{ border: "none" }}>
+          {bestSeller.map((row, index) => (
+            <TableRow key={row.nom_unit} sx={{ border: "none" }}>
               <TableCell component="th" scope="row">
-                {row.name}
+                {row.nom_unit}
               </TableCell>
-              <TableCell align="right">{row.quantity}</TableCell>
-              <TableCell align="right">{row.price}</TableCell>
-              <TableCell align="right">{row.top}</TableCell>
+              <TableCell align="right">{row.totalNombreUnit}</TableCell>
+              <TableCell align="right">{row.prix_unit}</TableCell>
+              <TableCell align="right">{index + 1}</TableCell>
             </TableRow>
           ))}
         </TableBody>

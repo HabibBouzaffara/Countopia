@@ -17,27 +17,58 @@ const chartSetting = {
   },
 };
 
-const dataset = [
-  { month: "Jan", revenue: 1500 },
-  { month: "Feb", revenue: 1600 },
-  { month: "Mar", revenue: 1450 },
-  { month: "Apr", revenue: 1540 },
-  { month: "May", revenue: 1650 },
-  { month: "June", revenue: 1800 },
-  { month: "July", revenue: 1950 },
-  { month: "Aug", revenue: 2105 },
-  { month: "Sept", revenue: 1770 },
-  { month: "Oct", revenue: 1850 },
-  { month: "Nov", revenue: 1575 },
-  { month: "Dec", revenue: 1900 },
-];
-
 const valueFormatter = (value) => `${value}TND`;
 
 export default function RevenueRateBar() {
+  const [revenueRate, setRevenueRate] = React.useState([]);
+  React.useEffect(() => {
+    const revenueRate = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const revenueRateRate = await fetch(
+          process.env.REACT_APP_BASE_URL + "/revenueRate",
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        const { revenueRate } = await revenueRateRate.json();
+        if (!revenueRateRate.ok) {
+          throw new Error(revenueRate.msg);
+        }
+        console.log(revenueRate);
+        setRevenueRate(revenueRate);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    revenueRate();
+  }, []);
+
+  const months = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+  ];
+
   return (
     <BarChart
-      dataset={dataset}
+      dataset={revenueRate.map((value, index) => ({
+        month: months[index],
+        revenue: value,
+      }))}
       xAxis={[{ scaleType: "band", dataKey: "month" }]}
       series={[
         {
@@ -45,7 +76,6 @@ export default function RevenueRateBar() {
           label: "Revenue Rate",
           valueFormatter,
           color: " #D5CEFF",
-          
         },
       ]}
       {...chartSetting}

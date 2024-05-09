@@ -145,7 +145,7 @@ const Journal = ({ user }) => {
     <>
       <div
         style={{
-          maxHeight: "600px",
+          maxHeight: "800px",
           width: "71%",
           margin: "auto",
           marginTop: "10px",
@@ -153,7 +153,11 @@ const Journal = ({ user }) => {
         }}
       >
         <DataGrid
+          initialState={{ pagination: { paginationModel: { pageSize: 5 } } }}
+          pageSizeOptions={[5, 10, 25, 50]}
+          hideFooterSelectedRowCount
           sx={{
+            maxHeight: "700px",
             borderRadius: "20px",
             "& .MuiDataGrid-columnHeaders": {
               backgroundColor: "#BFB5FF",
@@ -208,8 +212,8 @@ const Journal = ({ user }) => {
       <Modal
         open={open}
         onClose={handleClose}
-        aria-labelledby='modal-title'
-        aria-describedby='modal-description'
+        aria-labelledby="modal-title"
+        aria-describedby="modal-description"
         sx={{
           display: "flex",
           flexDirection: "column",
@@ -232,17 +236,17 @@ const Journal = ({ user }) => {
           }}
         >
           <Typography
-            id='modal-title'
-            variant='h6'
-            component='h2'
+            id="modal-title"
+            variant="h6"
+            component="h2"
             gutterBottom
-            marginLeft='10px'
+            marginLeft="10px"
           >
             Invoices:
           </Typography>
           <div style={{ maxWidth: "lg" }}>
             <IconButton
-              aria-label='close'
+              aria-label="close"
               onClick={handleClose}
               sx={{
                 position: "fixed",

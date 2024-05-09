@@ -520,7 +520,7 @@ const Form = ({ action }) => {
                           multiple={false}
                           onDrop={(acceptedFiles) => {
                             const file = acceptedFiles[0];
-                            if (file && file.size > 200000) {
+                            if (file && file.size > 300000) {
                               alert("Image size should not exceed 200KB");
                               return;
                             }

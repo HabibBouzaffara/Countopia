@@ -10,7 +10,7 @@ const OriginalInvoice = ({ file, setCleanedVersion, setFileData }) => {
     "client_id",
     "num_facture",
     "date_facture",
-    "nom_unite",
+    "nom_unit",
     "description",
     "nombre_unit",
     "prix_unit",
@@ -129,7 +129,7 @@ const OriginalInvoice = ({ file, setCleanedVersion, setFileData }) => {
         </Box>
       </Box>
 
-      <Box mt='20px' marginBottom='20px'>
+      <Box mt="20px" marginBottom="20px">
         <DataGrid
           disableColumnFilter
           disableColumnMenu
@@ -177,7 +177,7 @@ const OriginalInvoice = ({ file, setCleanedVersion, setFileData }) => {
         }}
       >
         <Button
-          variant='contained'
+          variant="contained"
           endIcon={<CloseOutlinedIcon />}
           sx={{
             backgroundColor: "#BFB5FF",
@@ -193,7 +193,7 @@ const OriginalInvoice = ({ file, setCleanedVersion, setFileData }) => {
           Change File
         </Button>
         <Button
-          variant='contained'
+          variant="contained"
           endIcon={<ArrowForwardOutlinedIcon />}
           sx={{
             marginLeft: "20px",

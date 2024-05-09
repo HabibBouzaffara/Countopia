@@ -11,6 +11,7 @@ import LinearProgress, {
   linearProgressClasses,
 } from "@mui/material/LinearProgress";
 import UserPicture from "components/UserPicture";
+import { Token } from "@mui/icons-material";
 
 const BorderLinearProgress = styled(LinearProgress)(() => ({
   height: 10,
@@ -57,13 +58,13 @@ const Overview = ({ user }) => {
       >
         <UserPicture name={name} picturePath={avatarUrl} />
 
-        <Typography variant='body1'>{name}</Typography>
+        <Typography variant="body1">{name}</Typography>
         <BorderLinearProgress
-          variant='determinate'
+          variant="determinate"
           value={invoicesLength}
           sx={{ width: "55%" }}
         />
-        <Typography variant='body1'>{invoicesLength}%</Typography>
+        <Typography variant="body1">{invoicesLength}%</Typography>
       </Box>
     </Box>
   );
@@ -71,14 +72,15 @@ const Overview = ({ user }) => {
   useEffect(() => {
     const getAllClients = async () => {
       try {
+        const token = localStorage.getItem("token");
         const url = new URL(process.env.REACT_APP_BASE_URL + "/clients");
-        // Add user._id and user.role as query parameters
-        url.searchParams.append("userId", user?._id);
-        url.searchParams.append("role", user?.role);
 
         const clientsResponse = await fetch(url, {
           method: "GET",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
         });
         const data = await clientsResponse.json();
         if (!clientsResponse.ok) {
@@ -150,10 +152,10 @@ const Overview = ({ user }) => {
       >
         <UserPicture name={name} picturePath={avatarUrl} />
 
-        <Typography variant='body1' marginRight='70px'>
+        <Typography variant="body1" marginRight="70px">
           {name}
         </Typography>
-        <Typography variant='body1'>{invoicesLength} invoices</Typography>
+        <Typography variant="body1">{invoicesLength} invoices</Typography>
       </Box>
     </Box>
   );
@@ -172,7 +174,7 @@ const Overview = ({ user }) => {
         style={{ display: "flex", alignItems: "center", marginLeft: "50px" }}
       >
         <Typography
-          variant='h2'
+          variant="h2"
           sx={{
             color: "#263238",
             fontWeight: "bold",
@@ -207,7 +209,7 @@ const Overview = ({ user }) => {
           <AssignmentIcon
             style={{ marginRight: "10px", fontWeight: "normal" }}
           />
-          <Typography variant='h6'>
+          <Typography variant="h6">
             Projects:{" "}
             {clients.filter((client) => client.approved === true).length}
           </Typography>
@@ -225,7 +227,7 @@ const Overview = ({ user }) => {
           }}
         >
           <TaskIcon style={{ marginRight: "10px", fontWeight: "normal" }} />
-          <Typography variant='h6'>
+          <Typography variant="h6">
             Tasks:{clients.filter((client) => client.approved === true).length}
           </Typography>
         </Box>
@@ -245,7 +247,7 @@ const Overview = ({ user }) => {
             <AssignmentIndIcon
               style={{ marginRight: "10px", fontWeight: "normal" }}
             />
-            <Typography variant='h6'>Admins: {admins.length}</Typography>
+            <Typography variant="h6">Admins: {admins.length}</Typography>
           </Box>
         )}
         {user.role === "admin" && admins && (
@@ -264,7 +266,7 @@ const Overview = ({ user }) => {
             <AssignmentIndIcon
               style={{ marginRight: "10px", fontWeight: "normal" }}
             />
-            <Typography variant='h6'>Financial Report: </Typography>
+            <Typography variant="h6">Financial Report: </Typography>
           </Box>
         )}
         <Box
@@ -280,7 +282,7 @@ const Overview = ({ user }) => {
           }}
         >
           <PeopleIcon style={{ marginRight: "10px", fontWeight: "normal" }} />
-          <Typography variant='h6'>
+          <Typography variant="h6">
             Clients:{" "}
             {clients.filter((client) => client.approved === true).length}
           </Typography>
@@ -309,7 +311,7 @@ const Overview = ({ user }) => {
             alignItems: "center",
           }}
         >
-          <Typography variant='h5' sx={{ fontWeight: "bold" }}>
+          <Typography variant="h5" sx={{ fontWeight: "bold" }}>
             Service Status
           </Typography>
 
@@ -361,7 +363,7 @@ const Overview = ({ user }) => {
                       borderRadius: "50%",
                     }}
                   ></div>
-                  <Typography variant='body1'>
+                  <Typography variant="body1">
                     {dataItem.name} - {dataItem.value}%
                   </Typography>
 
@@ -386,7 +388,7 @@ const Overview = ({ user }) => {
             alignItems: "center",
           }}
         >
-          <Typography variant='h5' sx={{ fontWeight: "bold" }}>
+          <Typography variant="h5" sx={{ fontWeight: "bold" }}>
             Invoices Rate
           </Typography>
           <InvoicesRateBar />
@@ -396,7 +398,7 @@ const Overview = ({ user }) => {
         sx={{
           display: "flex",
           justifyContent: "space-between",
-          
+
           padding: "20px",
           width: "90%",
           marginLeft: "40px",
@@ -430,14 +432,14 @@ const Overview = ({ user }) => {
           >
             <div style={{ textAlign: "center" }}>
               <Typography
-                variant='h5'
+                variant="h5"
                 sx={{ fontWeight: "bold", marginBottom: "20px" }}
               >
                 Waiting Clients
               </Typography>
             </div>
             <Typography
-              variant='h1'
+              variant="h1"
               sx={{ fontWeight: "bold", marginBottom: "40px" }}
             >
               {clients.filter((client) => client.approved === false).length}
@@ -462,7 +464,7 @@ const Overview = ({ user }) => {
           >
             <div style={{ textAlign: "center" }}>
               <Typography
-                variant='h5'
+                variant="h5"
                 sx={{ fontWeight: "bold", marginBottom: "20px" }}
               >
                 Completed invoices
@@ -470,7 +472,7 @@ const Overview = ({ user }) => {
             </div>
 
             <Typography
-              variant='h1'
+              variant="h1"
               sx={{ fontWeight: "bold", marginBottom: "40px" }}
             >
               145
@@ -493,7 +495,7 @@ const Overview = ({ user }) => {
           }}
         >
           <Typography
-            variant='h5'
+            variant="h5"
             sx={{ fontWeight: "bold", marginBottom: "10px" }}
           >
             Clients Activities
@@ -542,7 +544,7 @@ const Overview = ({ user }) => {
             }}
           >
             <Typography
-              variant='h5'
+              variant="h5"
               sx={{ fontWeight: "bold", marginBottom: "10px" }}
             >
               Admin Performance
@@ -589,7 +591,7 @@ const Overview = ({ user }) => {
             }}
           >
             <Typography
-              variant='h5'
+              variant="h5"
               sx={{ fontWeight: "bold", marginBottom: "10px" }}
             >
               Clients Review
@@ -632,7 +634,7 @@ const Overview = ({ user }) => {
                         borderRadius: "50%",
                       }}
                     ></div>
-                    <Typography variant='body1'>
+                    <Typography variant="body1">
                       {item.category} - {item.value}%
                     </Typography>
                   </div>

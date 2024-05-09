@@ -81,10 +81,13 @@ const InvoicesModal = ({
         alertMessage={alertMessage}
       />
       <Modal
+        initialState={{ pagination: { paginationModel: { pageSize: 5 } } }}
+        pageSizeOptions={[5, 10, 25, 50]}
+        hideFooterSelectedRowCount
         open={open}
         onClose={handleClose}
-        aria-labelledby='modal-title'
-        aria-describedby='modal-description'
+        aria-labelledby="modal-title"
+        aria-describedby="modal-description"
         sx={{
           display: "flex",
           flexDirection: "column",
@@ -105,7 +108,7 @@ const InvoicesModal = ({
           }}
         >
           {loading ? (
-            <ProgressCircle size='100px' />
+            <ProgressCircle size="100px" />
           ) : (
             <>
               {invoices.length > 0 && (
@@ -119,16 +122,16 @@ const InvoicesModal = ({
                   }}
                 >
                   <Typography
-                    id='modal-title'
-                    variant='h6'
-                    component='h2'
+                    id="modal-title"
+                    variant="h6"
+                    component="h2"
                     gutterBottom
-                    marginLeft='10px'
+                    marginLeft="10px"
                   >
                     Invoices:
                   </Typography>
                   <Button
-                    variant='contained'
+                    variant="contained"
                     onClick={() => setOpenExport(true)}
                     style={{
                       fontWeight: "normal",
@@ -148,7 +151,7 @@ const InvoicesModal = ({
               {invoices.length > 0 ? (
                 <div style={{ maxWidth: "lg" }}>
                   <IconButton
-                    aria-label='close'
+                    aria-label="close"
                     onClick={handleClose}
                     sx={{
                       position: "fixed",
@@ -163,6 +166,9 @@ const InvoicesModal = ({
                   <DataGrid
                     slots={{
                       toolbar: GridToolbar,
+                    }}
+                    initialState={{
+                      pagination: { paginationModel: { pageSize: 10 } },
                     }}
                     pageSizeOptions={[5, 10, 25, 50]}
                     hideFooterSelectedRowCount
@@ -188,13 +194,13 @@ const InvoicesModal = ({
                 </div>
               ) : (
                 <div>
-                  <Typography fontSize='16px' textAlign='center'>
+                  <Typography fontSize="16px" textAlign="center">
                     This client has no invoices yet.
                   </Typography>
-                  <Box display='flex' justifyContent='center'>
+                  <Box display="flex" justifyContent="center">
                     <Button
                       onClick={handleClose}
-                      variant='contained'
+                      variant="contained"
                       sx={{
                         backgroundColor: "#BFB5FF",
                         color: "white",

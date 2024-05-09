@@ -1,0 +1,26 @@
+﻿NomEntreprise,,,,,,,,total_net,,,,
+,client_id,num_facture,date_facture,,,unit,test,50,taxe,total,checkSum,check run 
+,25,308,10/1/2024,nom_unit,description,nombre_unit,prix_unit,45,2.5,55,4012015,31715
+,25,309,10/2/2024,Charm Necklace,Handcrafted stainless necklace,2,25,40,1.5,49.5,4162015,5436035
+,25,310,10/3/2024,XOXO Bracelet,Hand-stitched leather cuff bracelet,3,15,40,2,44,4162015,54356644
+,25,311,10/4/2024,Ribbon Earrings,Ribbon earrings with pearls,2,20,100,4,44,7302015,1293267
+,25,312,10/5/2024,Stellar Necklace,Pendant necklace,1,40,40,2.5,110,8062015,73115
+,25,313,10/6/2024,Charm Necklace,Handcrafted stainless necklace,4,25,90,2,44,3162017,1
+,25,314,10/7/2024,blue daisy Bracelet,Custom-designed beaded bracelet,2,20,60,1.8,99,12062018,101718
+,25,315,10/8/2024,Serenity Necklace,Gold-plated chain necklace,5,18,80,3,66,12062018,937570
+,25,316,10/9/2024,Lilly Bracelet,Crystal bracelet,2,30,-100,2,88,12062018,694560
+,25,317,10/10/2024,Ribbon Earrings,Ribbon earrings with pearls,4,20,20,10,-110,7152010,840
+,25,318,10/11/2024, Material Purchase,Crafting materials,1,100,80,2,22,8052010,864
+,25,319,10/12/2024,blue daisy Bracelet,Custom-designed beaded bracelet,1,20,75,4,88,8122010,868
+,25,320,10/13/2024,Stellar Necklace,Pendant necklace,2,40,-200,2.5,82.5,11182010,936
+,25,321,10/14/2024,Charm Necklace,Handcrafted stainless necklace,3,25,60,20,-220,3032011,970
+,25,322,10/15/2024, Material Purchase,Crafting materials,1,200,72,2,66,4072011,982
+,25,323,10/16/2024,Ribbon Earrings,Ribbon earrings with pearls,3,20,40,1.8,79.2,4072011,982A
+,25,324,10/17/2024,Serenity Necklace,Gold-plated chain necklace,4,18,20,2,44,3242011,981
+,25,325,10/18/2024,Van Cleef Earrings,Stainless Steel earrings,2,20,50,2,22,5122011,1000
+,25,326,10/19/2024,Ribbon Earrings,Ribbon earrings with pearls,1,20,90,2.5,55,5122011,1001
+,25,327,10/20/2024,Charm Necklace,Handcrafted stainless necklace,2,25,40,3,99,5192011,1004
+,25,328,10/21/2024,Lilly Bracelet,Crystal bracelet,3,30,120,2,44,5262011,1021
+,25,329,10/22/2024,Ribbon Earrings,Ribbon earrings with pearls,2,20,60,3,132,5262011,1025
+,25,330,10/23/2024,Blossom Earrings,Sterling silver earrings,4,30,,2,66,6182015,7001026499
+,,,,blue daisy Bracelet,Custom-designed beaded bracelet,3,20,,,,,

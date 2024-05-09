@@ -1,0 +1,33 @@
+﻿NomEntreprise,,,,,,,,total_net,,,,
+,client_id,num_facture,date_facture,,,unit,test,50,taxe,total,checkSum,check run 
+,25,110,4/1/2024 00:00:00+00,nom_unit,description,nombre_unit,prix_unit,60,2.5,55,4012015,31715
+,25,111,4/1/2024 00:00:00+00,Charm Necklace, Handcrafted stainless necklace     ,2,25,30,2,66,4162015,5436035
+,25,112,4/1/2024 00:00:00+00,blue daisy Bracelet,Custom-designed beaded bracelet ,3,20,200,3,33,4162015,54356644
+,25,113,4/3/2024 00:00:00+00,Blossom  Earrings,Sterling silver earrings,1,30,30,4,220,7302015,1293267
+,25,114,4/3/2024 00:00:00+00,Stellar Necklace,Pendant necklace,5,40,20,1.5,33,8062015,73115
+,25,115,4/5/2024 00:00:00+00,XOXO Bracelet,Hand-stitched leather cuff bracelet,2,15,72,2,22,3162017,1
+,25,116,4/6/2024 00:00:00+00,Ribbon Earrings         ,Ribbon earrings with  pearls,1,20,30,1.8,79.2,12062018,101718
+,25,117,4/7/2024 00:00:00+00,Serenity Necklace,Gold-plated chain necklace,4,18,40,3,33,12062018,937570
+,25,118,4/9/2024 00:00:00+00,Lilly Bracelet,crystal  bracelet,1,30,60,2,44,12062018,694560
+,25,119,4/9/2024 00:00:00+00,Ribbon Earrings         ,Ribbon earrings with  pearls,2,20,60,6,66,7152010,840
+,25,120,4/9/2024 00:00:00+00,Blair Necklace,Hand-carved wooden pendant necklace,1,60,40,2,66,8052010,864
+,25,121,4/11/2024 00:00:00+00,blue daisy Bracelet,Custom-designed beaded bracelet,3,20,25,2,44,8122010,868
+,25,122,4/12/2024 00:00:00+00,Ribbon Earrings         ,Ribbon earrings with  pearls,2,20,60,2.5,27.5,11182010,936
+,25,123,4/12/2024 00:00:00+00,Charm Necklace,Handcrafted stainless necklace    ,1,25,60,1.5,66,3032011,970
+,25,124,4/14/2024 00:00:00+00,XOXO Bracelet,Hand-stitched leather cuff bracelet,4,15,-50,2,132,4072011,982
+,25,125,4/14/2024 00:00:00+00,Van Cleef Earrings,stainless Steel earrings,3,20,-200,5,-55,4072011,982A
+,25,126,4/14/2024 00:00:00+00,Office Supplies,"Printer paper, pens, stapler, etc.",1,50,-300,20,-220,3242011,981
+,25,127,4/17/2024 00:00:00+00,Material Purchase,"Pearls, Stainless Steal, pendants, etc.",1,200,40,30,-330,5122011,1000
+,25,128,4/18/2024 00:00:00+00,Marketing Services,Social media advertising campaign,1,300,60,4,44,5122011,1001
+,25,129,4/19/2024 00:00:00+00,Stellar Necklace,Pendant necklace          ,1,40,60,3,66,5192011,1004
+,25,130,4/19/2024 00:00:00+00,Lilly Bracelet,crystal  bracelet,2,30,75,2,66,5262011,1021
+,25,131,4/21/2024 00:00:00+00,Ribbon Earrings           , Ribbon earrings with  pearls ,3,20,20,2.5,82.5,5262011,1025
+,25,132,4/21/2024 00:00:00+00,Charm Necklace,Handcrafted stainless necklace,3,25,80,2,22,6182015,7001026499
+,25,133,4/21/2024 00:00:00+00,blue daisy Bracelet,Custom-designed beaded bracelet       ,1,20,80,2,88,4012015,31715
+,25,134,4/21/2024 00:00:00+00,Ribbon Earrings         ,Ribbon earrings with  pearls,4,20,30,4,88,4162015,5436035
+,25,135,4/25/2024 00:00:00+00,Stellar Necklace,Pendant necklace,2,40,60,3,33,4162015,54356644
+,25,136,4/26/2024 00:00:00+00,Lilly Bracelet,crystal  bracelet,1,30,50,2,66,7302015,1293267
+,25,137,4/28/2024 00:00:00+00,Ribbon Earrings         ,Ribbon earrings with  pearls,3,20,15,2.5,55,8062015,73115
+,25,138,4/28/2024 00:00:00+00,Charm Necklace,Handcrafted stainless necklace,2,25,120,1.5,16.5,3162017,1
+,25,139,4/30/2024 00:00:00+00,XOXO Bracelet, Hand-stitched leather cuff bracelet,1,15,,3,132,12062018,101718
+,,,,Blossom  Earrings,Sterling silver earrings,4,30,,,,,

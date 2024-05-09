@@ -52,7 +52,7 @@ const imageStorage = multer.diskStorage({
     cb(null, file.originalname);
   },
 });
-const storeImage = multer({ imageStorage });
+const storeImage = multer({ storage: imageStorage });
 // Invoice STORAGE
 const invoicesStorage = multer.diskStorage({
   destination: function (req, file, cb) {

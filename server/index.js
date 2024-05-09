@@ -12,14 +12,14 @@ import userRoutes from "./routes/users.js";
 import { register } from "./controllers/auth.js";
 import profileRoutes from "./routes/profile.js";
 import { modifyProfile } from "./controllers/profile.js";
-import clientsRoutes from "./routes/clientsManagement.js";
+import clientsRoutes from "./routes/clients.js";
 import {
   convertToCsv,
   getInvoices,
   uploadInvoice,
 } from "./controllers/invoices.js";
 import journalRoutes from "./routes/invoices.js";
-import adminsRoutes from "./routes/adminManagement.js";
+import adminsRoutes from "./routes/admins.js";
 import authRoutes from "./routes/auth.js";
 
 /* Config */

@@ -21,6 +21,8 @@ import {
 import journalRoutes from "./routes/invoices.js";
 import adminsRoutes from "./routes/admins.js";
 import authRoutes from "./routes/auth.js";
+import statsRoutes from "./routes/stats.js";
+import User from "./models/user.js";
 
 /* Config */
 const __filename = fileURLToPath(import.meta.url);
@@ -98,6 +100,11 @@ app.get("/clients-assign", adminsRoutes);
 app.use("/users", userRoutes);
 app.use("/admin", adminsRoutes);
 
+//stats
+app.get("/profitAndExpenses", statsRoutes);
+app.get("/revenueRate", statsRoutes);
+app.get("/bestSeller", statsRoutes);
+
 /* Mongoose setup */
 const PORT = process.env.PORT || 9000;
 mongoose.set("strictQuery", true);
@@ -115,6 +122,33 @@ mongoose
     //Admin.insertMany(admins);
     // users.updateMany({ role: 'user' }, { role: 'client' });
     // await User.updateMany({ role: 'client' }, { approved: false });
+    // User.update(
+    //   { userId: "663bcca8c4266d281e97f86b" }, // Filter for the specific user
+    //   {
+    //     $set: {
+    //       "factures.$[].date_facture": {
+    //         $function: {
+    //           body: function (date) {
+    //             var parts = date.split("/");
+    //             var month = parseInt(parts[0]);
+    //             var day = parseInt(parts[1]);
+    //             var year = parseInt(parts[2]);
+    //             return (
+    //               (month < 10 ? "0" + month : month) +
+    //               "/" +
+    //               (day < 10 ? "0" + day : day) +
+    //               "/" +
+    //               year
+    //             );
+    //           },
+    //           args: ["$date_facture"],
+    //           lang: "js",
+    //         },
+    //       },
+    //     },
+    //   },
+    //   { multi: true } // To update all documents in the array
+    // );
   })
   .catch((error) => {
     console.log(`${error} did not connect`);

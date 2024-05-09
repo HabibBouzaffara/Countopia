@@ -1,43 +1,43 @@
-﻿NomEntreprise,,,,,,,,total_net,,,,
-,client_id,num_facture,date_facture,,,unit,test,60,taxe,total,checkSum,check run 
-,25,70,3/1/2024,nom_unit,description,nombre_unit,prix_unit,30,2,66,4012015,31715
-,25,71,3/2/2024,Van Cleef Earrings,Stainless Steel earrings,3,20,40,3,33,4162015,5436035
-,25,72,3/2/2024,Lilly Bracelet,Crystal bracelet,1,30,40,2,44,4162015,54356644
-,25,73,3/3/2024,Ribbon Earrings,Ribbon earrings with pearls,2,20,75,4,44,7302015,1293267
-,25,74,3/3/2024,Stellar Necklace,Pendant necklace,1,40,20,2.5,82.5,8062015,73115
-,25,75,3/4/2024,Charm Necklace,Handcrafted stainless necklace,3,25,72,2,22,3162017,1
-,25,76,3/5/2024,blue daisy Bracelet,Custom-designed beaded bracelet,1,20,-30,1.8,79.2,12062018,101718
-,25,77,3/5/2024,Serenity Necklace,Gold-plated chain necklace,4,18,-150,3,-33,12062018,937570
-,25,78,3/6/2024,Office Supplies,"Paper, pens, stapler, etc.",1,30,-200,15,-165,12062018,694560
-,25,79,3/7/2024,Material Purchase,"Pearls, Stainless Steel, pendants, etc.",1,150,60,20,-220,7152010,840
-,25,80,3/8/2024,Marketing Services,Online advertising campaign,1,200,90,2,66,8052010,864
-,25,81,3/9/2024,Ribbon Earrings,Ribbon earrings with pearls,3,20,40,3,99,8122010,868
-,25,82,3/9/2024,Blossom Earrings,Sterling silver earrings,3,30,30,2,44,11182010,936
-,25,83,3/10/2024,blue daisy Bracelet,Custom-designed beaded bracelet,2,20,50,1.5,33,3032011,970
-,25,84,3/10/2024,XOXO Bracelet,Hand-stitched leather cuff bracelet,2,15,80,2.5,55,4072011,982
-,25,85,3/11/2024,Charm Necklace,Handcrafted stainless necklace,2,25,36,2,88,4072011,982A
-,25,86,3/11/2024,Ribbon Earrings,Ribbon earrings with pearls,4,20,60,1.8,39.6,3242011,981
-,25,87,3/12/2024,Serenity Necklace,Gold-plated chain necklace,2,18,40,2,132,5122011,1000
-,25,88,3/14/2024,Van Cleef Earrings,Stainless Steel earrings,3,20,120,2,44,5122011,1001
-,25,89,3/15/2024,Ribbon Earrings,Ribbon earrings with pearls,2,20,50,4,132,5192011,1004
-,25,90,3/15/2024,Stellar Necklace,Pendant necklace,3,40,60,2.5,55,5262011,1021
-,25,91,3/16/2024,Charm Necklace,Handcrafted stainless necklace,2,25,20,3,66,5262011,1025
-,25,92,3/16/2024,Lilly Bracelet,Crystal bracelet,2,30,-35,2,22,6182015,7001026499
-,25,93,3/17/2024,blue daisy Bracelet,Custom-designed beaded bracelet,1,20,60,3.5,-38.5,4012015,31715
-,25,94,3/19/2024,Office Supplies,Stationery items,1,35,120,2,66,4162015,5436035
-,25,95,3/20/2024,Ribbon Earrings,Ribbon earrings with pearls,3,20,36,3,132,4162015,54356644
-,25,96,3/20/2024,Blossom Earrings,Sterling silver earrings,4,30,60,1.8,39.6,7302015,1293267
-,25,97,3/21/2024,Serenity Necklace,Gold-plated chain necklace,2,18,25,2,132,8062015,73115
-,25,98,3/21/2024,Van Cleef Earrings,Stainless Steel earrings,3,20,60,2.5,27.5,3162017,1
-,25,99,3/22/2024,Charm Necklace,Handcrafted stainless necklace,1,25,20,1.5,66,12062018,101718
-,25,100,3/22/2024,XOXO Bracelet,Hand-stitched leather cuff bracelet,4,15,75,2,22,12062018,937570
-,25,101,3/24/2024,Ribbon Earrings,Ribbon earrings with pearls,1,20,30,2.5,82.5,12062018,694560
-,25,102,3/24/2024,Charm Necklace,Handcrafted stainless necklace,3,25,-70,3,33,7152010,840
-,25,103,3/25/2024,Lilly Bracelet,Crystal bracelet,1,30,-250,3.5,-77,8052010,864
-,25,104,3/25/2024,Office Supplies,Office stationery,2,35,40,25,-275,8122010,868
-,25,105,3/26/2024,Material Purchase,Crafting materials,1,250,40,2,44,11182010,936
-,25,106,3/27/2024,Ribbon Earrings,Ribbon earrings with pearls,2,20,60,4,44,3032011,970
-,25,107,3/27/2024,Stellar Necklace,Pendant necklace,1,40,80,2,66,4072011,982
-,25,108,3/29/2024,blue daisy Bracelet,Custom-designed beaded bracelet,3,20,45,2,88,4072011,982A
-,25,109,3/30/2024,Ribbon Earrings,Ribbon earrings with pearls,4,20,,1.5,49.5,3242011,981
-,,,,XOXO Bracelet,Hand-stitched leather cuff bracelet,3,15,,,,,
+﻿NomEntreprise,,,,,,,,,,,,
+,client_id,num_facture,date_facture,,,unit,test,,,,checkSum,check run 
+,25,70,3/1/2024,nom_unit,description,nombre_unit,prix_unit,total,taxe,total_net,4012015,31715
+,25,71,3/2/2024,Van Cleef Earrings,Stainless Steel earrings,3,20,60,2,54,4162015,5436035
+,25,72,3/2/2024,Lilly Bracelet,Crystal bracelet,1,30,30,3,27,4162015,54356644
+,25,73,3/3/2024,Ribbon Earrings,Ribbon earrings with pearls,2,20,40,2,36,7302015,1293267
+,25,74,3/3/2024,Stellar Necklace,Pendant necklace,1,40,40,4,36,8062015,73115
+,25,75,3/4/2024,Charm Necklace,Handcrafted stainless necklace,3,25,75,2.5,69.5,3162017,1
+,25,76,3/5/2024,blue daisy Bracelet,Custom-designed beaded bracelet,1,20,20,2,18,12062018,101718
+,25,77,3/5/2024,Serenity Necklace,Gold-plated chain necklace,4,18,72,1.8,66.8,12062018,937570
+,25,78,3/6/2024,Office Supplies,"Paper, pens, stapler, etc.",1,30,-30,0,-30,12062018,694560
+,25,79,3/7/2024,Material Purchase,"Pearls, Stainless Steel, pendants, etc.",1,150,-150,0,-150,7152010,840
+,25,80,3/8/2024,Marketing Services,Online advertising campaign,1,200,-200,0,-200,8052010,864
+,25,81,3/9/2024,Ribbon Earrings,Ribbon earrings with pearls,3,20,60,2,54,8122010,868
+,25,82,3/9/2024,Blossom Earrings,Sterling silver earrings,3,30,90,3,81,11182010,936
+,25,83,3/10/2024,blue daisy Bracelet,Custom-designed beaded bracelet,2,20,40,2,36,3032011,970
+,25,84,3/10/2024,XOXO Bracelet,Hand-stitched leather cuff bracelet,2,15,30,1.5,28.5,4072011,982
+,25,85,3/11/2024,Charm Necklace,Handcrafted stainless necklace,2,25,50,2.5,45,4072011,982A
+,25,86,3/11/2024,Ribbon Earrings,Ribbon earrings with pearls,4,20,80,2,66,3242011,981
+,25,87,3/12/2024,Serenity Necklace,Gold-plated chain necklace,2,18,36,1.8,32,5122011,1000
+,25,88,3/14/2024,Van Cleef Earrings,Stainless Steel earrings,3,20,60,2,54,5122011,1001
+,25,89,3/15/2024,Ribbon Earrings,Ribbon earrings with pearls,2,20,40,2,36,5192011,1004
+,25,90,3/15/2024,Stellar Necklace,Pendant necklace,3,40,120,4,36,5262011,1021
+,25,91,3/16/2024,Charm Necklace,Handcrafted stainless necklace,2,25,50,2.5,108,5262011,1025
+,25,92,3/16/2024,Lilly Bracelet,Crystal bracelet,2,30,60,3,45,6182015,7001026499
+,25,93,3/17/2024,blue daisy Bracelet,Custom-designed beaded bracelet,1,20,20,2,54,4012015,31715
+,25,94,3/19/2024,Office Supplies,Stationery items,1,35,-35,0,18,4162015,5436035
+,25,95,3/20/2024,Ribbon Earrings,Ribbon earrings with pearls,3,20,60,2,-35,4162015,54356644
+,25,96,3/20/2024,Blossom Earrings,Sterling silver earrings,4,30,120,3,54,7302015,1293267
+,25,97,3/21/2024,Serenity Necklace,Gold-plated chain necklace,2,18,36,1.8,108,8062015,73115
+,25,98,3/21/2024,Van Cleef Earrings,Stainless Steel earrings,3,20,60,2,32,3162017,1
+,25,99,3/22/2024,Charm Necklace,Handcrafted stainless necklace,1,25,25,2.5,54,12062018,101718
+,25,100,3/22/2024,XOXO Bracelet,Hand-stitched leather cuff bracelet,4,15,60,1.5,22.5,12062018,937570
+,25,101,3/24/2024,Ribbon Earrings,Ribbon earrings with pearls,1,20,20,2,57,12062018,694560
+,25,102,3/24/2024,Charm Necklace,Handcrafted stainless necklace,3,25,75,2.5,18,7152010,840
+,25,103,3/25/2024,Lilly Bracelet,Crystal bracelet,1,30,30,3,69.5,8052010,864
+,25,104,3/25/2024,Office Supplies,Office stationery,2,35,-70,0,27,8122010,868
+,25,105,3/26/2024,Material Purchase,Crafting materials,1,250,-250,0,-70,11182010,936
+,25,106,3/27/2024,Ribbon Earrings,Ribbon earrings with pearls,2,20,40,2,-250,3032011,970
+,25,107,3/27/2024,Stellar Necklace,Pendant necklace,1,40,40,4,36,4072011,982
+,25,108,3/29/2024,blue daisy Bracelet,Custom-designed beaded bracelet,3,20,60,2,36,4072011,982A
+,25,109,3/30/2024,Ribbon Earrings,Ribbon earrings with pearls,4,20,80,2,54,3242011,981
+,,,,XOXO Bracelet,Hand-stitched leather cuff bracelet,3,15,45,1.5,72,,

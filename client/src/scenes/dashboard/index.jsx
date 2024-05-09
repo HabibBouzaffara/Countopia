@@ -2,7 +2,7 @@ import React from "react";
 import { Typography, Box, Grid } from "@mui/material";
 import RevenueRateBar from "./RevenueRateBar";
 import RevenuePie from "./RevenuePie";
-import ProfitLoss from "./ProfitLoss";
+import ProfitExpenses from "./ProfitExpenses";
 import ProductsList from "./ProductsList";
 import TaxPie from "./TaxPie";
 import SalesQuantityChart from "./SalesQuantityChart";
@@ -13,7 +13,7 @@ const Dashboard = () => {
     <>
       <Typography
         variant="h2"
-        sx={{
+        sx={{ 
           color: "#263238",
           fontWeight: "bold",
           marginLeft: "50px",
@@ -36,10 +36,13 @@ const Dashboard = () => {
               alignItems: "center",
             }}
           >
-            <Typography variant="h5" sx={{ fontWeight: "bold",marginTop: "10px" }}>
-              Profit & Loss
+            <Typography
+              variant="h5"
+              sx={{ fontWeight: "bold", marginTop: "10px" }}
+            >
+              Profit & Expenses
             </Typography>
-            <ProfitLoss />
+            <ProfitExpenses />
           </Box>
         </Grid>
 
@@ -56,7 +59,10 @@ const Dashboard = () => {
               alignItems: "center",
             }}
           >
-            <Typography variant="h5" sx={{ fontWeight: "bold",marginTop: "10px" }}>
+            <Typography
+              variant="h5"
+              sx={{ fontWeight: "bold", marginTop: "10px" }}
+            >
               Total Revenue
             </Typography>
             <RevenueRateBar />
@@ -75,7 +81,10 @@ const Dashboard = () => {
               alignItems: "center",
             }}
           >
-            <Typography variant="h5" sx={{ fontWeight: "bold",marginTop: "10px" }}>
+            <Typography
+              variant="h5"
+              sx={{ fontWeight: "bold", marginTop: "10px" }}
+            >
               Sales VS Purchases
             </Typography>
             <RevenuePie />
@@ -94,7 +103,10 @@ const Dashboard = () => {
               alignItems: "center",
             }}
           >
-            <Typography variant="h5" sx={{ fontWeight: "bold" ,marginBottom: "10px"}}>
+            <Typography
+              variant="h5"
+              sx={{ fontWeight: "bold", marginBottom: "10px" }}
+            >
               Best Sellers
             </Typography>
             <ProductsList />
@@ -113,12 +125,19 @@ const Dashboard = () => {
               alignItems: "center",
             }}
           >
-            <Typography variant="h5" sx={{ fontWeight: "bold", marginBottom: "15px", marginTop: "-10px" }}>
+            <Typography
+              variant="h5"
+              sx={{
+                fontWeight: "bold",
+                marginBottom: "15px",
+                marginTop: "-10px",
+              }}
+            >
               Invoices
             </Typography>
             <Grid item xs={12} md={6}>
               <Invoices />
-              </Grid>
+            </Grid>
           </Box>
         </Grid>
         <Grid item xs={12} md={4}>
@@ -134,7 +153,10 @@ const Dashboard = () => {
               alignItems: "center",
             }}
           >
-            <Typography variant="h5" sx={{ fontWeight: "bold" ,marginTop: "10px"}}>
+            <Typography
+              variant="h5"
+              sx={{ fontWeight: "bold", marginTop: "10px" }}
+            >
               Tax Distributions
             </Typography>
             <TaxPie />
@@ -153,7 +175,10 @@ const Dashboard = () => {
               alignItems: "center",
             }}
           >
-            <Typography variant="h5" sx={{ fontWeight: "bold" ,marginTop: "10px"}}>
+            <Typography
+              variant="h5"
+              sx={{ fontWeight: "bold", marginTop: "10px" }}
+            >
               Products Vs Quantities
             </Typography>
             <SalesQuantityChart />

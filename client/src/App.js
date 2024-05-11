@@ -35,47 +35,47 @@ function App() {
   };
 
   return (
-    <div className='app'>
+    <div className="app">
       <BrowserRouter>
         <ThemeProvider theme={theme}>
           <CssBaseline />
           <Routes>
-            <Route path='/' element={<LandingPage />} />
+            <Route path="/" element={<LandingPage />} />
             <Route
-              path='/auth'
+              path="/auth"
               element={
                 isAuth ? (
-                  <Navigate to='/profile' />
+                  <Navigate to="/profile" />
                 ) : (
-                  <LoginPage action='login' />
+                  <LoginPage action="login" />
                 )
               }
             />
-            <Route path='/register' element={<LoginPage action='register' />} />
-            <Route path='/login' element={<LoginPage action='login' />} />
-            <Route path='/verify' element={<LoginPage action='verify' />} />
+            <Route path="/register" element={<LoginPage action="register" />} />
+            <Route path="/login" element={<LoginPage action="login" />} />
+            <Route path="/verify" element={<LoginPage action="verify" />} />
             {isAuth && user ? (
               <Route element={<Layout user={user} />}>
-                <Route path='/profile' element={<Profile user={user} />} />
-                <Route path='/dashboard' element={<Dashboard />} />
+                <Route path="/profile" element={<Profile user={user} />} />
+                <Route path="/dashboard" element={<Dashboard user={user} />} />
                 {user.role === "superadmin" && (
                   <Route
-                    path='/admins'
+                    path="/admins"
                     element={<Admins superadmin={user} />}
                   />
                 )}
                 {(user.role === "superadmin" || user.role === "admin") && (
                   <>
-                    <Route path='/clients' element={<Clients user={user} />} />
-                    <Route path='/invoices' element={<InvoicePage />} />
+                    <Route path="/clients" element={<Clients user={user} />} />
+                    <Route path="/invoices" element={<InvoicePage />} />
                     {/* <Route path='/journal' element={<Journal user={user} />} /> */}
                   </>
                 )}
 
-                <Route path='/overview' element={<Overview user={user} />} />
+                <Route path="/overview" element={<Overview user={user} />} />
               </Route>
             ) : (
-              <Route path='/auth' element={<LoginPage />} />
+              <Route path="/auth" element={<LoginPage />} />
             )}
           </Routes>
         </ThemeProvider>

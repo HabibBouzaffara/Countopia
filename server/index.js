@@ -12,14 +12,14 @@ import userRoutes from "./routes/users.js";
 import { register } from "./controllers/auth.js";
 import profileRoutes from "./routes/profile.js";
 import { modifyProfile } from "./controllers/profile.js";
-import clientsRoutes from "./routes/clientsManagement.js";
+import clientsRoutes from "./routes/clients.js";
 import {
   convertToCsv,
   getInvoices,
   uploadInvoice,
 } from "./controllers/invoices.js";
 import journalRoutes from "./routes/invoices.js";
-import adminsRoutes from "./routes/adminManagement.js";
+import adminsRoutes from "./routes/admins.js";
 import authRoutes from "./routes/auth.js";
 import statsRoutes from "./routes/stats.js";
 import User from "./models/user.js";
@@ -104,6 +104,9 @@ app.use("/admin", adminsRoutes);
 app.get("/profitAndExpenses", statsRoutes);
 app.get("/revenueRate", statsRoutes);
 app.get("/bestSeller", statsRoutes);
+app.get("/salesAndPurchases", statsRoutes);
+app.get("/calculateTaxesAndExpenses", statsRoutes);
+app.get("/calculateMonthlyInvoices", statsRoutes);
 
 /* Mongoose setup */
 const PORT = process.env.PORT || 9000;

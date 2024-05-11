@@ -1,37 +1,37 @@
 import User from "../models/user.js";
 
-export const profitAndExpenses = async (req, res) => {
-  const userId = req.user.id; // Get the user ID from the token
+// export const profitAndExpenses = async (req, res) => {
+//   const userId = req.user.id; // Get the user ID from the token
 
-  try {
-    const user = await User.findById(userId);
+//   try {
+//     const user = await User.findById(userId);
 
-    // Initialize arrays to store monthly losses and profits
-    const monthlyExpenses = new Array(12).fill(0); // Array with 12 months initialized to 0
-    const monthlyProfit = new Array(12).fill(0); // Array with 12 months initialized to 0
+//     // Initialize arrays to store monthly losses and profits
+//     const monthlyExpenses = new Array(12).fill(0); // Array with 12 months initialized to 0
+//     const monthlyProfit = new Array(12).fill(0); // Array with 12 months initialized to 0
 
-    // Iterate over each item in the facture array
-    user.factures.forEach((invoice) => {
-      // Preprocess date_facture to ensure it has the format mm/dd/yyyy
-      const formattedDate = invoice.date_facture.split(" ")[0]; // Remove extra characters after the year
-      const parts = formattedDate.split("/");
-      const month = parseInt(parts[0]) - 1; // Months are zero-based, so subtract 1
-      // Calculate total amount for the invoice
-      const taxes = invoice.taxe * invoice.nombre_unit;
-      const negativeTotal = invoice.total < 0 ? Math.abs(invoice.total) : 0;
-      const total = taxes + negativeTotal;
-      const totalNet = parseFloat(invoice.total_net);
-      // Add total to corresponding month in arrays
-      monthlyExpenses[month] += Math.abs(total);
-      monthlyProfit[month] += totalNet;
-    });
+//     // Iterate over each item in the facture array
+//     user.factures.forEach((invoice) => {
+//       // Preprocess date_facture to ensure it has the format mm/dd/yyyy
+//       const formattedDate = invoice.date_facture.split(" ")[0]; // Remove extra characters after the year
+//       const parts = formattedDate.split("/");
+//       const month = parseInt(parts[0]) - 1; // Months are zero-based, so subtract 1
+//       // Calculate total amount for the invoice
+//       const taxes = invoice.taxe * invoice.nombre_unit;
+//       const negativeTotal = invoice.total < 0 ? Math.abs(invoice.total) : 0;
+//       const total = taxes + negativeTotal;
+//       const totalNet = parseFloat(invoice.total_net);
+//       // Add total to corresponding month in arrays
+//       monthlyExpenses[month] += Math.abs(total);
+//       monthlyProfit[month] += totalNet;
+//     });
 
-    res.status(200).json({ monthlyExpenses, monthlyProfit });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Internal server error" });
-  }
-};
+//     res.status(200).json({ monthlyExpenses, monthlyProfit });
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ message: "Internal server error" });
+//   }
+// };
 export const revenueRate = async (req, res) => {
   const userId = req.user.id; // Get the user ID from the token
 
@@ -53,7 +53,7 @@ export const revenueRate = async (req, res) => {
         monthlyRevenue[month] += total;
       }
     });
-    console.log(monthlyRevenue);
+    // console.log(monthlyRevenue);
     res.status(200).json({ revenueRate: monthlyRevenue });
   } catch (error) {
     console.error(error);
@@ -106,8 +106,104 @@ export const bestSeller = async (req, res) => {
 
     // Get the top 3 best sellers
     const top3BestSellers = bestSellerArray.slice(0, 3);
-    console.log(top3BestSellers);
+    // console.log(top3BestSellers);
     res.status(200).json({ top3BestSellers });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+export const salesAndPurchases = async (req, res) => {
+  // Get the user ID from the token
+
+  try {
+    const userId = req.user.id;
+    // Find the user by ID
+    const user = await User.findById(userId);
+
+    // Initialize arrays to store monthly purchases and sales
+    const monthlyPurchases = new Array(12).fill(0); // Array with 12 months initialized to 0
+    const monthlySales = new Array(12).fill(0); // Array with 12 months initialized to 0
+
+    // Iterate over each item in the user's facture (invoice) array
+    user.factures.forEach((invoice) => {
+      // Preprocess date_facture to ensure it has the format mm/dd/yyyy
+      const formattedDate = invoice.date_facture.split(" ")[0]; // Remove extra characters after the year
+      const parts = formattedDate.split("/");
+      const month = parseInt(parts[0]) - 1; // Months are zero-based, so subtract 1
+
+      // Calculate total amount for the invoice
+      const taxes = parseFloat(invoice.taxe) * parseFloat(invoice.nombre_unit);
+      const total = parseFloat(invoice.total) + taxes;
+
+      // Separate positive and negative totals
+      if (total >= 0) {
+        // If the total is positive, add it to monthly sales for the corresponding month
+        monthlySales[month] += parseFloat(invoice.total);
+      } else {
+        // If the total is negative, add its absolute value to monthly purchases for the corresponding month
+        monthlyPurchases[month] += Math.abs(total);
+      }
+    });
+
+    // Send the response containing the monthly sales and purchases
+    res.status(200).json({ monthlyPurchases, monthlySales });
+  } catch (error) {
+    // Handle errors by logging them and sending an internal server error response
+    console.error(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+export const calculateTaxesAndExpenses = async (req, res) => {
+  const userId = req.user.id; // Get the user ID from the token
+
+  try {
+    const user = await User.findById(userId);
+
+    let totalTaxes = 0;
+    let totalExpenses = 0;
+
+    // Iterate over each item in the facture array
+    user.factures.forEach((invoice) => {
+      // Calculate taxes for the invoice
+      const taxes = invoice.taxe * invoice.nombre_unit;
+      totalTaxes += taxes;
+
+      // Calculate expenses for the invoice
+      const total = invoice.total < 0 ? Math.abs(invoice.total) : 0;
+      totalExpenses += total;
+    });
+
+    res.status(200).json({ totalTaxes, totalExpenses });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+export const calculateMonthlyInvoices = async (req, res) => {
+  const userId = req.user.id; // Get the user ID from the token
+
+  try {
+    const user = await User.findById(userId);
+
+    // Initialize an array to store the count of invoices for each month
+    const monthlyInvoiceCounts = new Array(12).fill(0);
+
+    // Iterate over each item in the facture array
+    user.factures.forEach((invoice) => {
+      // Preprocess date_facture to ensure it has the format mm/dd/yyyy
+      const formattedDate = invoice.date_facture.split(" ")[0];
+      const parts = formattedDate.split("/");
+      const month = parseInt(parts[0]) - 1; // Months are zero-based, so subtract 1
+
+      // Increment the count of invoices for the corresponding month in the array
+      monthlyInvoiceCounts[month]++;
+    });
+
+    // Send the response containing the monthly invoice counts
+    res.status(200).json({ monthlyInvoiceCounts });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Internal server error" });

@@ -7,35 +7,8 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 
-export default function ProductsList() {
-  const [bestSeller, setBestSeller] = React.useState([]);
-
-  React.useEffect(() => {
-    const fetchBestSeller = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        const response = await fetch(
-          process.env.REACT_APP_BASE_URL + "/bestSeller",
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        const { top3BestSellers } = await response.json();
-        if (!response.ok) {
-          throw new Error(top3BestSellers.msg);
-        }
-        setBestSeller(top3BestSellers);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    fetchBestSeller();
-  }, []);
-
+export default function ProductsList({ bestSeller }) {
+  if (!bestSeller) return null;
   return (
     <TableContainer
       component={Paper}

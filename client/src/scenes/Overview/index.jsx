@@ -11,7 +11,7 @@ import LinearProgress, {
   linearProgressClasses,
 } from "@mui/material/LinearProgress";
 import UserPicture from "components/UserPicture";
-import { Token } from "@mui/icons-material";
+
 
 const BorderLinearProgress = styled(LinearProgress)(() => ({
   height: 10,
@@ -33,9 +33,13 @@ const Overview = ({ user }) => {
 
   const getAdmins = async () => {
     try {
+      const token = localStorage.getItem("token");
       const admins = await fetch(process.env.REACT_APP_BASE_URL + "/admins", {
         method: "GET",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
       });
       const data = await admins.json();
       if (!admins.ok) {
@@ -420,7 +424,7 @@ const Overview = ({ user }) => {
                   ? "linear-gradient(to top,   #F7A9A0 50%, white 90%)"
                   : null,
               color: "#000000",
-              padding: "20px",
+              padding: "20px 20px 0px 20px",
               borderRadius: "30px",
               width: "10%",
               height: "200px",
@@ -449,10 +453,10 @@ const Overview = ({ user }) => {
         {user.role === "admin" && admins && (
           <Box
             sx={{
-              background: "linear-gradient(to top,   #9EF0E3 5%, white 40%)",
+              background: "linear-gradient(to top,   #81D9ED 5%, white 40%)",
 
               color: "#000000",
-              padding: "20px",
+              padding: "20px 20px 0px 20px",
               borderRadius: "30px",
               width: "10%",
               height: "200px",
@@ -484,7 +488,7 @@ const Overview = ({ user }) => {
           sx={{
             backgroundColor: "#FFFFFF",
             color: "#000000",
-            padding: "20px",
+            padding: "20px 20px 0px 20px",
             borderRadius: "20px",
             width: "34%",
             height: "200px",
@@ -580,7 +584,7 @@ const Overview = ({ user }) => {
             sx={{
               backgroundColor: "#FFFFFF",
               color: "#000000",
-              padding: "20px",
+              padding: "20px 20px 0px 20px",
               borderRadius: "20px",
               width: "48%",
               height: "200px",

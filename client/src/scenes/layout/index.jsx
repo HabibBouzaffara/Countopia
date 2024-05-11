@@ -10,11 +10,11 @@ const Layout = ({ user }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true); // [isSidebarOpen, setIsSidebarOpen]
 
   return (
-    <Box display={isNonMobile ? "flex" : "block"} width='100%' height='100%'>
+    <Box display={isNonMobile ? "flex" : "block"} width="100%" height="100%">
       <Sidebar
         user={user || {}}
         isNonMobile={isNonMobile}
-        drawerWidth='250px'
+        drawerWidth="250px"
         isSidebarOpen={isSidebarOpen}
         setIsSidebarOpen={setIsSidebarOpen}
       />

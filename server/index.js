@@ -104,6 +104,9 @@ app.use("/admin", adminsRoutes);
 app.get("/profitAndExpenses", statsRoutes);
 app.get("/revenueRate", statsRoutes);
 app.get("/bestSeller", statsRoutes);
+app.get("/salesAndPurchases", statsRoutes);
+app.get("/calculateTaxesAndExpenses", statsRoutes);
+app.get("/calculateMonthlyInvoices", statsRoutes);
 
 /* Mongoose setup */
 const PORT = process.env.PORT || 9000;

@@ -3,7 +3,7 @@ import Dropzone from "react-dropzone";
 import UploadFileOutlinedIcon from "@mui/icons-material/UploadFileOutlined";
 import ArrowForwardOutlinedIcon from "@mui/icons-material/ArrowForwardOutlined";
 import { Box, Button, Typography } from "@mui/material";
-import Journal from "scenes/journal/Journal";
+import Journal from "scenes/Invoices/Journal";
 
 const UploadCsv = ({ user, setFileData }) => {
   const [file, setFile] = useState(null);

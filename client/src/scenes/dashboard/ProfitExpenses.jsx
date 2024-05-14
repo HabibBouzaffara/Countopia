@@ -39,8 +39,8 @@ export default function ProfitExpenses({ factures }) {
         const total = taxes + negativeTotal;
         const totalNet = parseFloat(invoice.total_net);
         // Add total to corresponding month in arrays
-        monthlyExpenses[month] += Math.abs(total);
-        monthlyProfit[month] += totalNet;
+        monthlyExpenses[month] += Math.round(Math.abs(total));
+        monthlyProfit[month] += Math.round(totalNet);
       });
 
       // Update state outside the loop

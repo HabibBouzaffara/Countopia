@@ -135,7 +135,7 @@ const SuperadminClientsTable = ({ userData, handleChange }) => {
 
   // Define columns for DataGrid
   const columns = [
-    { field: "id", headerName: "ID", width: 60 },
+    { field: "id", headerName: "ID", width: 50 },
     {
       field: "companyName",
       headerName: "Client",
@@ -162,13 +162,13 @@ const SuperadminClientsTable = ({ userData, handleChange }) => {
       ),
     },
     { field: "email", headerName: "Email", width: 200 },
-    { field: "codeFiscale", headerName: "Fiscal Code", width: 120 },
-    { field: "phoneNumber", headerName: "Phone Number", width: 150 },
+    { field: "codeFiscale", headerName: "Fiscal Code", width: 110 },
+    { field: "phoneNumber", headerName: "Phone Number", width: 130 },
     { field: "location", headerName: "Location", width: 220 },
     {
       field: "assigned",
       headerName: "Assigned To",
-      width: 130,
+      width: 120,
       renderCell: (params) =>
         params.row.assigned.length === 0
           ? "Unassigned"
@@ -215,7 +215,15 @@ const SuperadminClientsTable = ({ userData, handleChange }) => {
         errorMessage={errorMessage}
         alertMessage={alertMessage}
       />
-      <Paper style={{ maxHeight: 700, mx: "auto", borderRadius: "20px" }}>
+      <Paper
+        style={{
+          maxHeight: 700,
+
+          mx: "auto",
+          marginLeft: "25px",
+          marginRight: "20px",
+        }}
+      >
         <DataGrid
           rows={rows}
           columns={columns}
@@ -225,7 +233,8 @@ const SuperadminClientsTable = ({ userData, handleChange }) => {
           hideFooterSelectedRowCount
           disableRowSelectionOnClick
           sx={{
-            borderRadius: "20px",
+            display: "flex",
+
             boxShadow: "0px 0px 20px rgba(0, 0, 0, 0.1)",
             "& .MuiDataGrid-columnHeaders": {
               backgroundColor: "#BFB5FF",

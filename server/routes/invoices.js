@@ -5,6 +5,7 @@ import {
   deleteJournal,
   assignInvoices,
   getClientJournal,
+  getAllJournal,
 } from "../controllers/invoices.js";
 import { getClients } from "../controllers/clients.js";
 import { verifyToken } from "../middleware/auth.js";
@@ -17,4 +18,5 @@ router.delete("/deleteJournal", deleteJournal);
 router.patch("/clients-assign-invoices", assignInvoices);
 router.get("/clientsToAssign", verifyToken, getClients);
 router.get("/getClientJournal", getClientJournal);
+router.get("/getAllJournal", verifyToken, getAllJournal);
 export default router;

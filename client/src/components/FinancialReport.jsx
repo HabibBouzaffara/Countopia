@@ -10,7 +10,6 @@ import {
   GridPrintExportMenuItem,
 } from "@mui/x-data-grid";
 import AssignmentOutlinedIcon from "@mui/icons-material/AssignmentOutlined";
-import { format } from "date-fns";
 import * as XLSX from "xlsx";
 import { Close } from "@mui/icons-material";
 import CustomSnackbar from "scenes/CustomSnackBar";
@@ -74,7 +73,9 @@ const FinancialReport = ({
       ...row,
     }));
     setRows(rowsWithDash);
-    const tableHead = Object.keys(rowsFound[0] || {});
+    const tableHead = Object.keys(rowsFound[0] || {}).filter(
+      (key) => key !== "assigned" && key !== "_id" && key !== "client_id"
+    );
     const columns = tableHead.map((key) => ({
       field: key,
       headerName: key,
@@ -103,6 +104,7 @@ const FinancialReport = ({
             backgroundColor: "transparent",
             "&:hover": { backgroundColor: "rgba(15,157,88,0.3)" },
           }}
+          options={{ hideToolbar: true }}
         />
         <GridCsvExportMenuItem
           label='Export as CSV'
@@ -237,6 +239,7 @@ const FinancialReport = ({
                 slots={{
                   toolbar: customExportButton,
                 }}
+                printOptions={{ disableToolbarButton: true }}
                 pageSizeOptions={[5, 10, 25, 50]}
                 hideFooterSelectedRowCount
                 sx={{

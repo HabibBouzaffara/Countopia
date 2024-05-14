@@ -21,7 +21,6 @@ import {
 import journalRoutes from "./routes/invoices.js";
 import adminsRoutes from "./routes/admins.js";
 import authRoutes from "./routes/auth.js";
-import statsRoutes from "./routes/stats.js";
 import User from "./models/user.js";
 
 /* Config */
@@ -99,14 +98,6 @@ app.get("/clients-assign", adminsRoutes);
 
 app.use("/users", userRoutes);
 app.use("/admin", adminsRoutes);
-
-//stats
-app.get("/profitAndExpenses", statsRoutes);
-app.get("/revenueRate", statsRoutes);
-app.get("/bestSeller", statsRoutes);
-app.get("/salesAndPurchases", statsRoutes);
-app.get("/calculateTaxesAndExpenses", statsRoutes);
-app.get("/calculateMonthlyInvoices", statsRoutes);
 
 /* Mongoose setup */
 const PORT = process.env.PORT || 9000;

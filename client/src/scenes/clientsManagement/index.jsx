@@ -45,9 +45,7 @@ const Clients = ({ user }) => {
       });
 
       const data = await clientsResponse.json();
-      if (!clientsResponse.ok) {
-        throw new Error(data.msg);
-      }
+
       setLoading(false);
       setClients(data);
     } catch (err) {

@@ -8,6 +8,11 @@ import SalesQuantityChart from "./SalesQuantityChart";
 import InvoicesCountChart from "./InvoicesCountChart";
 import ExpensesPie from "./ExpensesPie";
 import ClientCard from "./ClientCard";
+import TrendingUpIcon from "@mui/icons-material/TrendingUp";
+import TrendingDownIcon from "@mui/icons-material/TrendingDown";
+import MonetizationOnIcon from "@mui/icons-material/MonetizationOn";
+import CompositionExample from "./GaugePointer";
+
 
 const Dashboard = ({ user }) => {
   const [allClients, setAllClients] = useState(null);
@@ -103,8 +108,9 @@ const Dashboard = ({ user }) => {
     <Box
       sx={{
         paddingBottom: "30px",
+        marginTop: "-10px",
       }}
-      >
+    >
       <Typography
         variant="h2"
         sx={{
@@ -116,7 +122,185 @@ const Dashboard = ({ user }) => {
       >
         Statistics
       </Typography>
+
       <Grid container spacing={2} sx={{ paddingLeft: "40px" }}>
+        <Grid item xs={12} md={4}>
+          <Box
+            sx={{
+              backgroundColor: "#7DC7FD",
+              color: "#FFFFFF",
+              borderRadius: "20px",
+              height: "100px",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "start",
+              paddingLeft: "20px",
+              position: "relative", // Add this to set position for quarter
+            }}
+          >
+            <Typography variant="h5" sx={{ fontWeight: "bold" }}>
+              Total Revenue
+            </Typography>
+            <Typography
+              variant="h2"
+              sx={{
+                fontWeight: "medium",
+                color: "#298FD9",
+                fontFamily: "Roboto",
+              }}
+            >
+              {selectedClient.factures
+                .reduce(
+                  (total, invoice) => {
+                    // Check if the total value of the invoice is positive
+                    if (parseFloat(invoice.total) > 0) {
+                      return total + parseFloat(invoice.total);
+                    }
+                    // If not positive, return the current total without adding the invoice total
+                    return total;
+                  },
+                  0 // Initial total value
+                )
+                .toLocaleString("en-US") + " TND"}
+            </Typography>
+            {/* White quarter box */}
+            <Box
+              sx={{
+                position: "absolute",
+                top: 0,
+                right: 0,
+                width: "25%", // Adjust width as needed
+                height: "100%",
+                backgroundColor: "#41A5EE",
+                borderRadius: "0 20px 20px 0", // Rounded right corner
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <TrendingUpIcon sx={{ fontSize: "4rem", color: "#298FD9" }} />
+            </Box>
+          </Box>
+        </Grid>
+
+        <Grid item xs={12} md={3.7}>
+          <Box
+            sx={{
+              backgroundColor: "#FFA8A7",
+              color: "#FFFFFF",
+              borderRadius: "20px",
+              height: "100px",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "start",
+              paddingLeft: "20px",
+              position: "relative",
+            }}
+          >
+            <Typography variant="h5" sx={{ fontWeight: "bold" }}>
+              Total Expense
+            </Typography>
+            <Typography
+              variant="h2"
+              sx={{
+                fontWeight: "medium",
+                color: "#CD5645",
+                fontFamily: "Roboto",
+              }}
+            >
+              {selectedClient.factures
+                .reduce(
+                  (total, invoice) => {
+                    const taxeAmount =
+                      parseFloat(invoice.taxe) *
+                      parseFloat(invoice.nombre_unit);
+                    if (parseFloat(invoice.total) >= 0) {
+                      return total + taxeAmount;
+                    } else {
+                      return Math.round(
+                        total + Math.abs(parseFloat(invoice.total))
+                      );
+                    }
+                  },
+                  0 // Initial total value
+                )
+                .toLocaleString("en-US") + " TND"}
+            </Typography>
+            <Box
+              sx={{
+                position: "absolute",
+                top: 0,
+                right: 0,
+                width: "25%", // Adjust width as needed
+                height: "100%",
+                backgroundColor: "#FF8685",
+                borderRadius: "0 20px 20px 0", // Rounded right corner
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <TrendingDownIcon sx={{ fontSize: "4rem", color: "#CD5645" }} />
+            </Box>
+          </Box>
+        </Grid>
+        <Grid item xs={12} md={3.9}>
+          <Box
+            sx={{
+              backgroundColor: "#D5CEFF",
+              color: "#EEFFFF",
+              borderRadius: "20px",
+              height: "100px",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "start",
+              paddingLeft: "20px",
+              position: "relative",
+            }}
+          >
+            <Typography variant="h5" sx={{ fontWeight: "bold" }}>
+              Total Profit
+            </Typography>
+            <Typography
+              variant="h2"
+              sx={{
+                fontWeight: "medium",
+                color: "#9D8DFE",
+                fontFamily: "Roboto",
+              }}
+            >
+              {selectedClient.factures
+                .reduce(
+                  (total_net, invoice) => {
+                    return Math.round(
+                      total_net + parseFloat(invoice.total_net)
+                    );
+                  },
+                  0 // Initial total value
+                )
+                .toLocaleString("en-US") + " TND"}
+            </Typography>
+            <Box
+              sx={{
+                position: "absolute",
+                top: 0,
+                right: 0,
+                width: "25%", // Adjust width as needed
+                height: "100%",
+                backgroundColor: "#BFB5FF",
+                borderRadius: "0 20px 20px 0", // Rounded right corner
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <MonetizationOnIcon sx={{ fontSize: "4rem", color: "#9D8DFE" }} />
+            </Box>
+          </Box>
+        </Grid>
         {user.role !== "client" && (
           <Grid item xs={12} md={4}>
             <Box
@@ -124,7 +308,7 @@ const Dashboard = ({ user }) => {
                 backgroundColor: "#FFFFFF",
                 color: "#000000",
                 borderRadius: "20px",
-                height: "300px",
+                height: "250px",
                 display: "flex",
                 flexDirection: "column",
                 justifyContent: "center",
@@ -135,8 +319,8 @@ const Dashboard = ({ user }) => {
               {allClients && (
                 <Box
                   position="absolute"
-                  marginTop={"-200px"}
-                  marginLeft={"250px"}
+                  marginTop={"-180px"}
+                  marginLeft={"280px"}
                   fontWeight="bold"
                   borderRadius="20px"
                   padding="5px"
@@ -148,7 +332,6 @@ const Dashboard = ({ user }) => {
                       fontWeight: "bold",
                       color: "#323DB3",
                       borderRadius: "20px",
-                  
                     }}
                   >
                     {allClients.map((client) => (
@@ -169,7 +352,7 @@ const Dashboard = ({ user }) => {
               backgroundColor: "#FFFFFF",
               color: "#000000",
               borderRadius: "20px",
-              height: "300px",
+              height: "250px",
               display: "flex",
               flexDirection: "column",
               justifyContent: "center",
@@ -192,7 +375,7 @@ const Dashboard = ({ user }) => {
               backgroundColor: "#FFFFFF",
               color: "#000000",
               borderRadius: "20px",
-              height: "250px",
+              height: "230px",
               display: "flex",
               flexDirection: "column",
               justifyContent: "center",
@@ -214,7 +397,7 @@ const Dashboard = ({ user }) => {
               backgroundColor: "#FFFFFF",
               color: "#000000",
               borderRadius: "20px",
-              height: "250px",
+              height: "230px",
               display: "flex",
               flexDirection: "column",
               justifyContent: "center",
@@ -323,6 +506,93 @@ const Dashboard = ({ user }) => {
             </Typography>
 
             <SalesQuantityChart quantitiesRate={bestSeller} />
+          </Box>
+        </Grid>
+        <Grid item xs={12} md={2.2}>
+          <Box
+            sx={{
+              backgroundColor: "#FFFFFF",
+              color: "#000000",
+              borderRadius: "20px",
+              height: "250px",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Typography
+              variant="h5"
+              sx={{ fontWeight: "bold", marginTop: "10px" }}
+            >
+              Financial Success Rate
+            </Typography>
+           < CompositionExample/>
+          </Box>
+        </Grid>
+        <Grid item xs={12} md={2.2}>
+          <Box
+            sx={{
+              backgroundColor: "#FFFFFF",
+              color: "#000000",
+              borderRadius: "20px",
+              height: "250px",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Typography
+              variant="h5"
+              sx={{ fontWeight: "bold", marginTop: "10px" ,textAlign: "center",}}
+            >
+              Operational Success Rate
+            </Typography>
+            < CompositionExample/>
+          </Box>
+        </Grid>
+        <Grid item xs={12} md={2.2}>
+          <Box
+            sx={{
+              backgroundColor: "#FFFFFF",
+              color: "#000000",
+              borderRadius: "20px",
+              height: "250px",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Typography
+              variant="h5"
+              sx={{ fontWeight: "bold", marginTop: "10px" }}
+            >
+              Growth Success Rate
+            </Typography>
+            < CompositionExample/>
+          </Box>
+        </Grid>
+        <Grid item xs={12} md={5}>
+          <Box
+            sx={{
+              backgroundColor: "#FFFFFF",
+              color: "#000000",
+              borderRadius: "20px",
+              height: "250px",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Typography
+              variant="h5"
+              sx={{ fontWeight: "bold", marginTop: "10px" }}
+            >
+             
+            </Typography>
           </Box>
         </Grid>
       </Grid>

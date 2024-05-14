@@ -34,34 +34,45 @@ export const modifyProfile = async (req, res) => {
     // Password section
     if (oldPassword && newPassword) {
       const isMatch = await bcrypt.compare(oldPassword, user.password);
+
       if (!isMatch) return res.status(400).json({ msg: "Invalid credentials" });
       // Hash the new password
       const salt = await bcrypt.genSalt();
       const hashedPassword = await bcrypt.hash(newPassword, salt);
       // Update user's password in the database
       await User.updateOne({ _id }, { password: hashedPassword });
-      return res.status(200).json({ msg: "Password updated successfully" });
+      const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
+      return res.status(200).json({
+        msg: "Password updated successfully",
+        user: user,
+        token: token,
+      });
     }
 
     // Update user fields
     if (name) {
       user.name = name;
+      await user.save();
     }
     if (email) {
       user.email = email;
+      await user.save();
     }
     if (location) {
       user.location = location;
+      await user.save();
     }
     if (phoneNumber) {
       user.phoneNumber = phoneNumber;
+      await user.save();
     }
     if (picturePath) {
       user.picturePath = picturePath;
+      await user.save();
     }
 
     // Save the updated user
-    await user.save();
+
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
 
     // Send back the updated user object in the response

@@ -8,11 +8,14 @@ import SalesQuantityChart from "./SalesQuantityChart";
 import InvoicesCountChart from "./InvoicesCountChart";
 import ExpensesPie from "./ExpensesPie";
 import ClientCard from "./ClientCard";
+import ProgressCircle from "scenes/ProgressCircle";
+import wait from "../../assets/stats.png";
 
 const Dashboard = ({ user }) => {
   const [allClients, setAllClients] = useState(null);
   const [selectedClient, setSelectedClient] = useState(null);
   const [bestSeller, setBestSeller] = useState(null);
+  const [loading, setLoading] = useState(true);
   useEffect(() => {
     if (user.role !== "client") {
       const getAllClients = async () => {
@@ -92,241 +95,325 @@ const Dashboard = ({ user }) => {
   }
   const handleClientChange = (event) => {
     const clientId = event.target.value;
-    const selectedClient = allClients.find((client) => client.id === clientId);
+    const selectedClient = allClients.find((client) => client._id === clientId);
     setSelectedClient(selectedClient);
   };
-
-  if (!selectedClient) {
-    return null;
+  if (selectedClient && bestSeller && loading) {
+    setLoading(false);
   }
-  return (
-    <Box
-      sx={{
-        paddingBottom: "30px",
-      }}
-      >
-      <Typography
-        variant="h2"
-        sx={{
-          color: "#263238",
-          fontWeight: "bold",
-          marginLeft: "50px",
-          marginBottom: "10px",
-        }}
-      >
-        Statistics
-      </Typography>
-      <Grid container spacing={2} sx={{ paddingLeft: "40px" }}>
+
+  if (selectedClient && !loading && selectedClient.factures.length === 0) {
+    return (
+      <Box textAlign='center' mt={8}>
         {user.role !== "client" && (
-          <Grid item xs={12} md={4}>
-            <Box
-              sx={{
-                backgroundColor: "#FFFFFF",
-                color: "#000000",
-                borderRadius: "20px",
-                height: "300px",
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "center",
-                alignItems: "center",
-                padding: "20px",
-              }}
-            >
-              {allClients && (
-                <Box
-                  position="absolute"
-                  marginTop={"-200px"}
-                  marginLeft={"250px"}
-                  fontWeight="bold"
-                  borderRadius="20px"
-                  padding="5px"
-                >
-                  <Select
-                    defaultValue={selectedClient ? selectedClient._id : ""}
-                    onChange={handleClientChange}
-                    style={{
-                      fontWeight: "bold",
-                      color: "#323DB3",
-                      borderRadius: "20px",
-                  
-                    }}
-                  >
-                    {allClients.map((client) => (
-                      <MenuItem key={client._id} value={client._id}>
-                        {client.name}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </Box>
-              )}
-              <ClientCard selectedClient={selectedClient} />
-            </Box>
-          </Grid>
-        )}
-        <Grid item xs={12} md={user.role !== "client" ? 7.6 : 11.6}>
-          <Box
-            sx={{
-              backgroundColor: "#FFFFFF",
-              color: "#000000",
-              borderRadius: "20px",
-              height: "300px",
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <Typography
-              variant="h5"
-              sx={{ fontWeight: "bold", marginTop: "10px" }}
-            >
-              Profit & Expenses
-            </Typography>
-            <ProfitExpenses factures={selectedClient.factures} />
-          </Box>
-        </Grid>
-
-        <Grid item xs={12} md={7.6}>
-          <Box
-            sx={{
-              backgroundColor: "#FFFFFF",
-              color: "#000000",
-              borderRadius: "20px",
-              height: "250px",
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <Typography
-              variant="h5"
-              sx={{ fontWeight: "bold", marginTop: "10px" }}
-            >
-              Total Revenue
-            </Typography>
-            <RevenueRateBar factures={selectedClient.factures} />
-          </Box>
-        </Grid>
-        <Grid item xs={12} md={4}>
-          <Box
-            sx={{
-              backgroundColor: "#FFFFFF",
-              color: "#000000",
-              borderRadius: "20px",
-              height: "250px",
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <Typography
-              variant="h5"
-              sx={{ fontWeight: "bold", marginBottom: "30px" }}
-            >
-              Sales VS Purchases
-            </Typography>
-            <RevenuePie factures={selectedClient.factures} />
-          </Box>
-        </Grid>
-        <Grid item xs={12} md={6.6}>
-          <Box
-            sx={{
-              backgroundColor: "#FFFFFF",
-              color: "#000000",
-              borderRadius: "20px",
-              height: "250px",
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <Typography
-              variant="h5"
-              sx={{ fontWeight: "bold", marginBottom: "10px" }}
-            >
-              Best Sellers
-            </Typography>
-            <ProductsList bestSeller={bestSeller} />
-          </Box>
-        </Grid>
-        <Grid item xs={12} md={5}>
-          <Box
-            sx={{
-              backgroundColor: "#FFFFFF",
-              color: "#000000",
-              borderRadius: "20px",
-              height: "250px",
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <Typography
-              variant="h5"
-              sx={{
+          <Box>
+            <Select
+              defaultValue={selectedClient._id}
+              onChange={handleClientChange}
+              style={{
                 fontWeight: "bold",
-                marginBottom: "15px",
-                marginTop: "-10px",
+                color: "#323DB3",
+                borderRadius: "20px",
+                width: "150px",
+                marginBottom: "20px",
               }}
             >
-              Invoices
-            </Typography>
-            <Grid item xs={12} md={6}>
-              <InvoicesCountChart factures={selectedClient.factures} />
-            </Grid>
-          </Box>
-        </Grid>
-        <Grid item xs={12} md={4}>
-          <Box
-            sx={{
-              backgroundColor: "#FFFFFF",
-              color: "#000000",
-              borderRadius: "20px",
-              height: "250px",
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
+              {allClients.map((client) => (
+                <MenuItem key={client._id} value={client._id}>
+                  {client.name}
+                </MenuItem>
+              ))}
+            </Select>
             <Typography
-              variant="h5"
-              sx={{ fontWeight: "bold", marginTop: "10px" }}
+              variant='h4'
+              gutterBottom
+              style={{ color: "#BFB5FF", fontWeight: "bold" }}
             >
-              Expenses Distributions
+              Chnage Client
             </Typography>
-            <ExpensesPie factures={selectedClient.factures} />
           </Box>
-        </Grid>
-        <Grid item xs={12} md={7.6}>
-          <Box
-            sx={{
-              backgroundColor: "#FFFFFF",
-              color: "#000000",
-              borderRadius: "20px",
-              height: "250px",
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <Typography
-              variant="h5"
-              sx={{ fontWeight: "bold", marginTop: "10px" }}
-            >
-              Products Vs Quantities
-            </Typography>
+        )}
+        <img width={340} src={wait} alt='logo' />
+        <Typography
+          variant='h1'
+          gutterBottom
+          style={{ color: "#BFB5FF", fontWeight: "bold" }}
+        >
+          Status Pending
+        </Typography>
+        <Typography
+          variant='h2'
+          style={{ color: "#323DB3", fontWeight: "bold", fontSize: "30px" }}
+        >
+          This Client either have no Invoices yet
+        </Typography>
+        <Typography
+          variant='h2'
+          style={{ color: "#323DB3", fontWeight: "bold", fontSize: "30px" }}
+        >
+          or Invoices are being processed by the admin.
+        </Typography>
+      </Box>
+    );
+  }
 
-            <SalesQuantityChart quantitiesRate={bestSeller} />
-          </Box>
-        </Grid>
-      </Grid>
-    </Box>
+  return (
+    <>
+      {loading && (
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+            alignSelf: "center",
+            height: "80vh",
+          }}
+        >
+          <ProgressCircle size={170} />
+          <Typography
+            variant='body1'
+            sx={{ marginTop: "20px", fontSize: "30px" }}
+          >
+            Loading...
+          </Typography>
+          <Typography
+            variant='body1'
+            sx={{ marginTop: "20px", fontSize: "30px" }}
+          >
+            Retriving Client Data ...
+          </Typography>
+        </Box>
+      )}
+      {!loading && (
+        <Box
+          sx={{
+            paddingBottom: "30px",
+          }}
+        >
+          <Typography
+            variant='h2'
+            sx={{
+              color: "#263238",
+              fontWeight: "bold",
+              marginLeft: "50px",
+              marginBottom: "10px",
+            }}
+          >
+            Statistics
+          </Typography>
+          <Grid container spacing={2} sx={{ paddingLeft: "40px" }}>
+            {user.role !== "client" && (
+              <Grid item xs={12} md={4}>
+                <Box
+                  sx={{
+                    backgroundColor: "#FFFFFF",
+                    color: "#000000",
+                    borderRadius: "20px",
+                    height: "300px",
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    padding: "20px",
+                  }}
+                >
+                  {allClients && (
+                    <Box
+                      position='absolute'
+                      marginTop={"-200px"}
+                      marginLeft={"250px"}
+                      fontWeight='bold'
+                      borderRadius='20px'
+                      padding='5px'
+                    >
+                      <Select
+                        defaultValue={selectedClient ? selectedClient._id : ""}
+                        onChange={handleClientChange}
+                        style={{
+                          fontWeight: "bold",
+                          color: "#323DB3",
+                          borderRadius: "20px",
+                        }}
+                      >
+                        {allClients.map((client) => (
+                          <MenuItem key={client._id} value={client._id}>
+                            {client.name}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </Box>
+                  )}
+                  <ClientCard selectedClient={selectedClient} />
+                </Box>
+              </Grid>
+            )}
+            <Grid item xs={12} md={user.role !== "client" ? 7.6 : 11.6}>
+              <Box
+                sx={{
+                  backgroundColor: "#FFFFFF",
+                  color: "#000000",
+                  borderRadius: "20px",
+                  height: "300px",
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Typography
+                  variant='h5'
+                  sx={{ fontWeight: "bold", marginTop: "10px" }}
+                >
+                  Profit & Expenses
+                </Typography>
+                <ProfitExpenses factures={selectedClient.factures} />
+              </Box>
+            </Grid>
+
+            <Grid item xs={12} md={7.6}>
+              <Box
+                sx={{
+                  backgroundColor: "#FFFFFF",
+                  color: "#000000",
+                  borderRadius: "20px",
+                  height: "250px",
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Typography
+                  variant='h5'
+                  sx={{ fontWeight: "bold", marginTop: "10px" }}
+                >
+                  Total Revenue
+                </Typography>
+                <RevenueRateBar factures={selectedClient.factures} />
+              </Box>
+            </Grid>
+            <Grid item xs={12} md={4}>
+              <Box
+                sx={{
+                  backgroundColor: "#FFFFFF",
+                  color: "#000000",
+                  borderRadius: "20px",
+                  height: "250px",
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Typography
+                  variant='h5'
+                  sx={{ fontWeight: "bold", marginBottom: "30px" }}
+                >
+                  Sales VS Purchases
+                </Typography>
+                <RevenuePie factures={selectedClient.factures} />
+              </Box>
+            </Grid>
+            <Grid item xs={12} md={6.6}>
+              <Box
+                sx={{
+                  backgroundColor: "#FFFFFF",
+                  color: "#000000",
+                  borderRadius: "20px",
+                  height: "250px",
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Typography
+                  variant='h5'
+                  sx={{ fontWeight: "bold", marginBottom: "10px" }}
+                >
+                  Best Sellers
+                </Typography>
+                <ProductsList bestSeller={bestSeller} />
+              </Box>
+            </Grid>
+            <Grid item xs={12} md={5}>
+              <Box
+                sx={{
+                  backgroundColor: "#FFFFFF",
+                  color: "#000000",
+                  borderRadius: "20px",
+                  height: "250px",
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Typography
+                  variant='h5'
+                  sx={{
+                    fontWeight: "bold",
+                    marginBottom: "15px",
+                    marginTop: "-10px",
+                  }}
+                >
+                  Invoices
+                </Typography>
+                <Grid item xs={12} md={6}>
+                  <InvoicesCountChart factures={selectedClient.factures} />
+                </Grid>
+              </Box>
+            </Grid>
+            <Grid item xs={12} md={4}>
+              <Box
+                sx={{
+                  backgroundColor: "#FFFFFF",
+                  color: "#000000",
+                  borderRadius: "20px",
+                  height: "250px",
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Typography
+                  variant='h5'
+                  sx={{ fontWeight: "bold", marginTop: "10px" }}
+                >
+                  Expenses Distributions
+                </Typography>
+                <ExpensesPie factures={selectedClient.factures} />
+              </Box>
+            </Grid>
+            <Grid item xs={12} md={7.6}>
+              <Box
+                sx={{
+                  backgroundColor: "#FFFFFF",
+                  color: "#000000",
+                  borderRadius: "20px",
+                  height: "250px",
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Typography
+                  variant='h5'
+                  sx={{ fontWeight: "bold", marginTop: "10px" }}
+                >
+                  Products Vs Quantities
+                </Typography>
+
+                <SalesQuantityChart quantitiesRate={bestSeller} />
+              </Box>
+            </Grid>
+          </Grid>
+        </Box>
+      )}
+    </>
   );
 };
 

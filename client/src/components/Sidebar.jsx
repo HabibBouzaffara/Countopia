@@ -76,7 +76,7 @@ const navItems = [
     role: ["superadmin", "admin"],
   },
   {
-    text: "Journal",
+    text: "Financial Journals",
     icon: null,
     role: ["client", "admin", "superadmin"],
   },
@@ -89,7 +89,7 @@ const navItems = [
   {
     text: "Journal",
     icon: <TocOutlinedIcon />,
-    role: ["client"],
+    role: ["client", "admin", "superadmin"],
   },
   {
     text: "Next Feature",
@@ -125,13 +125,13 @@ const Sidebar = ({
   if (!user) return <CircularProgress />;
 
   return (
-    <Box component="nav" bgcolor="white">
+    <Box component='nav' bgcolor='white'>
       {isSidebarOpen && (
         <Drawer
           open={isSidebarOpen}
           onClose={() => setIsSidebarOpen(false)}
-          variant="persistent"
-          anchor="left"
+          variant='persistent'
+          anchor='left'
           sx={{
             width: drawerWidth,
             "& .MuiDrawer-paper": {
@@ -142,10 +142,10 @@ const Sidebar = ({
             },
           }}
         >
-          <Box width="100%">
-            <Box m="1.5rem 2rem 2rem 3rem">
-              <Box ml="1.5rem" display="flex" alignItems="center" gap="0.5rem">
-                <Typography variant="h4" fontWeight="bold" color="#9D8DFE">
+          <Box width='100%'>
+            <Box m='1.5rem 2rem 1rem 3rem'>
+              <Box ml='1.5rem' display='flex' alignItems='center' gap='0.5rem'>
+                <Typography variant='h4' fontWeight='bold' color='#9D8DFE'>
                   Countopia
                 </Typography>
                 {!isNonMobile && (
@@ -161,7 +161,7 @@ const Sidebar = ({
                   return (
                     <Typography
                       key={text}
-                      sx={{ m: "2.25rem 0 1rem 3rem", color: "#C7C7C7" }}
+                      sx={{ m: "2rem 0 1rem 4rem", color: "#C7C7C7" }}
                     >
                       {text}
                     </Typography>
@@ -204,20 +204,20 @@ const Sidebar = ({
             </List>
           </Box>
 
-          <Box position="absolute" bottom="2rem" width="100%">
+          <Box position='absolute' bottom='2rem' width='100%'>
             <Divider />
-            <FlexBetween textTransform="none" gap="1rem" m="1.5rem 2rem 0 3rem">
+            <FlexBetween textTransform='none' gap='1rem' m='1.5rem 2rem 0 3rem'>
               <UserPicture name={user.name} picturePath={user.picturePath} />
 
-              <Box textAlign="left">
+              <Box textAlign='left'>
                 <Typography
-                  fontWeight="bold"
-                  fontSize="0.9rem"
+                  fontWeight='bold'
+                  fontSize='0.9rem'
                   sx={{ color: "#9D8DFE" }}
                 >
                   {user.name}
                 </Typography>
-                <Typography fontSize="0.8rem" sx={{ color: "#3F4BC9" }}>
+                <Typography fontSize='0.8rem' sx={{ color: "#3F4BC9" }}>
                   {user.role === "admin"
                     ? "Admin"
                     : user.role === "superadmin"

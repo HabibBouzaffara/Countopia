@@ -1,6 +1,6 @@
 ﻿NomEntreprise,,,,,,,,total,,,,
 ,client_id,num_facture,date_facture,,,unit,test,60,taxe,total_net,checkSum,check run 
-,25,365,12/1/2024,nom_unite,description,nombre_unit,prix_unit,80,2,54,4012015,31715
+,25,365,12/1/2024,nom_unit,description,nombre_unit,prix_unit,80,2,54,4012015,31715
 ,25,366,12/2/2024,blue daisy Bracelet,Custom-designed beaded bracelet,3,20,40,2,72,4162015,5436035
 ,25,367,12/2/2024,Ribbon Earrings,Ribbon earrings with pearls,4,20,125,4,36,4162015,54356644
 ,25,368,12/3/2024,Stellar Necklace,Pendant necklace,1,40,30,2.5,112.5,7302015,1293267

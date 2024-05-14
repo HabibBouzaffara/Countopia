@@ -22,7 +22,6 @@ const InvoicesModal = ({
   const [openAlert, setOpenAlert] = useState(false);
   const [alertMessage, setAlertMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState(false);
-
   const handleCloseExport = () => {
     setOpenExport(false);
     setEndDate(null);
@@ -45,7 +44,16 @@ const InvoicesModal = ({
           setErrorMessage(true);
           setOpenAlert(true);
         } else {
-          setRowsFound(filteredRows);
+          // Create an array to hold all rows found
+          const allRowsFound = [];
+          // Iterate over invoices and add them to allRowsFound
+          invoices.forEach((invoice) => {
+            const invoiceDate = new Date(invoice.date_facture.split(" ")[0]);
+            if (invoiceDate >= startDate && invoiceDate <= endDate) {
+              allRowsFound.push(invoice);
+            }
+          });
+          setRowsFound(allRowsFound);
         }
       } else {
         console.log("Invalid date range");
@@ -57,19 +65,33 @@ const InvoicesModal = ({
       console.log(error);
     }
   };
+
   const rowsWithDash = invoices.map((row, index) => ({
     id: index + 1, // You can adjust the logic to generate unique ids based on your requirements
     ...row,
   }));
-  const tableHead = Object.keys(invoices[0] || {});
-  const columns = tableHead.map((key) => ({
-    field: key,
-    headerName: key,
-    flex: 1,
-    editable: true,
-    align: "center",
-    headerAlign: "center",
-  }));
+  const tableHead = Object.keys(invoices[0] || {}).filter(
+    (key) => key !== "assigned"
+  );
+  const columns = tableHead.map((key) => {
+    let column = {
+      field: key,
+      headerName: key,
+      flex: 1,
+      align: "center",
+      headerAlign: "center",
+    };
+
+    // Check if the column is named "date_facture"
+    if (key === "date_facture") {
+      column.type = "date";
+      column.valueFormatter = (params) => {
+        return format(new Date(params.value.split(" ")[0]), "MM/dd/yyyy");
+      };
+    }
+
+    return column;
+  });
 
   return (
     <>
@@ -86,8 +108,8 @@ const InvoicesModal = ({
         hideFooterSelectedRowCount
         open={open}
         onClose={handleClose}
-        aria-labelledby="modal-title"
-        aria-describedby="modal-description"
+        aria-labelledby='modal-title'
+        aria-describedby='modal-description'
         sx={{
           display: "flex",
           flexDirection: "column",
@@ -108,7 +130,7 @@ const InvoicesModal = ({
           }}
         >
           {loading ? (
-            <ProgressCircle size="100px" />
+            <ProgressCircle size='100px' />
           ) : (
             <>
               {invoices.length > 0 && (
@@ -122,16 +144,16 @@ const InvoicesModal = ({
                   }}
                 >
                   <Typography
-                    id="modal-title"
-                    variant="h6"
-                    component="h2"
+                    id='modal-title'
+                    variant='h6'
+                    component='h2'
                     gutterBottom
-                    marginLeft="10px"
+                    marginLeft='10px'
                   >
                     Invoices:
                   </Typography>
                   <Button
-                    variant="contained"
+                    variant='contained'
                     onClick={() => setOpenExport(true)}
                     style={{
                       fontWeight: "normal",
@@ -151,7 +173,7 @@ const InvoicesModal = ({
               {invoices.length > 0 ? (
                 <div style={{ maxWidth: "lg" }}>
                   <IconButton
-                    aria-label="close"
+                    aria-label='close'
                     onClick={handleClose}
                     sx={{
                       position: "fixed",
@@ -194,13 +216,13 @@ const InvoicesModal = ({
                 </div>
               ) : (
                 <div>
-                  <Typography fontSize="16px" textAlign="center">
+                  <Typography fontSize='16px' textAlign='center'>
                     This client has no invoices yet.
                   </Typography>
-                  <Box display="flex" justifyContent="center">
+                  <Box display='flex' justifyContent='center'>
                     <Button
                       onClick={handleClose}
-                      variant="contained"
+                      variant='contained'
                       sx={{
                         backgroundColor: "#BFB5FF",
                         color: "white",

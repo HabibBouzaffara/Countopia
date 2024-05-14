@@ -108,6 +108,8 @@ app.get("/salesAndPurchases", statsRoutes);
 app.get("/calculateTaxesAndExpenses", statsRoutes);
 app.get("/calculateMonthlyInvoices", statsRoutes);
 
+app.get("/getAllJournal", journalRoutes);
+
 /* Mongoose setup */
 const PORT = process.env.PORT || 9000;
 mongoose.set("strictQuery", true);

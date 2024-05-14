@@ -1,4 +1,12 @@
-import { Box, Button, TextField, Typography, Input } from "@mui/material";
+import {
+  Box,
+  Button,
+  TextField,
+  Typography,
+  Input,
+  InputAdornment,
+  IconButton,
+} from "@mui/material";
 import { Formik } from "formik";
 import React, { useState } from "react";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
@@ -8,7 +16,9 @@ import CustomSnackbar from "scenes/CustomSnackBar";
 import * as yup from "yup";
 // import UserPicture from "components/UserPicture";
 import { useDispatch } from "react-redux";
-import { setUser } from "state";
+import { setLogin, setUser } from "state";
+
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 
 const modifySchema = yup.object().shape({
   name: yup.string(),
@@ -48,7 +58,32 @@ const Profile = ({ user }) => {
   const [message, setMessage] = useState("");
   const [modifyValues, setModifyValues] = useState(initValues);
   const [modifyOnSubmitProps, setModifyOnSubmitProps] = useState(null);
+  const [showOldPassword, setShowOldPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const dispatch = useDispatch();
+
+  const handleClickShowOldPassword = () => {
+    setShowOldPassword(!showOldPassword);
+  };
+
+  const handleMouseDownOldPassword = (event) => {
+    event.preventDefault();
+  };
+  const handleClickShowNewPassword = () => {
+    setShowNewPassword(!showNewPassword);
+  };
+
+  const handleMouseDownNewPassword = (event) => {
+    event.preventDefault();
+  };
+  const handleClickShowConfirmPassword = () => {
+    setShowConfirmPassword(!showConfirmPassword);
+  };
+
+  const handleMouseDownConfirmPassword = (event) => {
+    event.preventDefault();
+  };
 
   const modifyProfile = async (values, onSubmitProps) => {
     try {
@@ -68,14 +103,17 @@ const Profile = ({ user }) => {
       );
       const data = await response.json();
       if (!response.ok) {
-        setAlertMessage(data.msg);
+        setAlertMessage(data.error || data.msg);
         setErrorMessage(true);
         setOpenAlert(true);
       } else {
         setAlertMessage(data.msg || "updated successfully");
         setErrorMessage(false);
         setOpenAlert(true);
-        dispatch(setUser({ user: data.user, token: data.token }));
+        dispatch(
+          setUser({ user: data.user, token: data.token }),
+          setLogin({ user: data.user, token: data.token })
+        );
       }
       onSubmitProps.resetForm();
     } catch (err) {
@@ -400,9 +438,9 @@ const Profile = ({ user }) => {
                 placeholder={user.email}
               />
               <TextField
-                id='address'
-                name='address'
-                label='Address'
+                id='location'
+                name='location'
+                label='location'
                 variant='outlined'
                 value={values.location}
                 onChange={handleChange}
@@ -411,10 +449,11 @@ const Profile = ({ user }) => {
                 helperText={touched.location && errors.location}
                 sx={{ gridColumn: "span 3" }}
                 InputProps={{ style: { borderRadius: "20px" } }}
+                placeholder={user.location}
               />
               <TextField
-                id='phone'
-                name='phone'
+                id='phoneNumber'
+                name='phoneNumber'
                 label='Phone'
                 variant='outlined'
                 value={values.phoneNumber}
@@ -426,6 +465,7 @@ const Profile = ({ user }) => {
                 helperText={touched.phoneNumber && errors.phoneNumber}
                 sx={{ gridColumn: "span 3" }}
                 InputProps={{ style: { borderRadius: "20px" } }}
+                placeholder={user.phoneNumber}
               />
               {/* Submit and reset buttons */}
               <Box
@@ -536,7 +576,7 @@ const Profile = ({ user }) => {
                 >
                   <TextField
                     id='old-password'
-                    type='password'
+                    type={showOldPassword ? "text" : "password"}
                     name='oldPassword'
                     label='Old Password'
                     variant='outlined'
@@ -549,11 +589,28 @@ const Profile = ({ user }) => {
                     }
                     helperText={touched.oldPassword && errors.oldPassword}
                     style={{ marginBottom: "10px", width: "90%" }}
-                    InputProps={{ style: { borderRadius: "20px" } }}
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment>
+                          <IconButton
+                            onClick={handleClickShowOldPassword}
+                            onMouseDown={handleMouseDownOldPassword}
+                            edge='end'
+                          >
+                            {showOldPassword ? (
+                              <Visibility />
+                            ) : (
+                              <VisibilityOff />
+                            )}
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                      style: { borderRadius: "20px" },
+                    }}
                   />
                   <TextField
                     id='new-password'
-                    type='password'
+                    type={showNewPassword ? "text" : "password"}
                     name='newPassword'
                     label='New Password'
                     variant='outlined'
@@ -566,12 +623,29 @@ const Profile = ({ user }) => {
                     }
                     helperText={touched.newPassword && errors.newPassword}
                     style={{ marginBottom: "10px", width: "90%" }}
-                    InputProps={{ style: { borderRadius: "20px" } }}
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment>
+                          <IconButton
+                            onClick={handleClickShowNewPassword}
+                            onMouseDown={handleMouseDownNewPassword}
+                            edge='end'
+                          >
+                            {showNewPassword ? (
+                              <Visibility />
+                            ) : (
+                              <VisibilityOff />
+                            )}
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                      style: { borderRadius: "20px" },
+                    }}
                   />
                   <TextField
                     id='confirm-password'
                     name='confirmPassword'
-                    type='password'
+                    type={showConfirmPassword ? "text" : "password"}
                     label='Confirm Password'
                     variant='outlined'
                     value={values.confirmPassword}
@@ -585,7 +659,24 @@ const Profile = ({ user }) => {
                       touched.confirmPassword && errors.confirmPassword
                     }
                     style={{ marginBottom: "10px", width: "90%" }}
-                    InputProps={{ style: { borderRadius: "20px" } }}
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment>
+                          <IconButton
+                            onClick={handleClickShowConfirmPassword}
+                            onMouseDown={handleMouseDownConfirmPassword}
+                            edge='end'
+                          >
+                            {showConfirmPassword ? (
+                              <Visibility />
+                            ) : (
+                              <VisibilityOff />
+                            )}
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                      style: { borderRadius: "20px" },
+                    }}
                   />
                 </div>
 

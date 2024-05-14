@@ -13,7 +13,9 @@ import {
   Avatar,
   ListItemText,
   Box,
+  Typography,
 } from "@mui/material";
+import ProgressCircle from "scenes/ProgressCircle";
 
 const AssignInvoices = ({
   admin,
@@ -25,7 +27,8 @@ const AssignInvoices = ({
   setConfirmAssignMessage,
 }) => {
   const [clients, setClients] = useState([]);
-  const [selectedUser, setSelectedUser] = useState("");
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchClients = async () => {
@@ -61,11 +64,13 @@ const AssignInvoices = ({
     fetchClients();
   }, [isOpen, admin]);
 
-  const handleCheckboxChange = (clientId) => {
-    setSelectedUser(clientId);
+  const handleCheckboxChange = (client) => {
+    setSelectedUser(client);
   };
 
   const handleAssignClients = async () => {
+    setLoading(true);
+
     const response = await fetch(
       // console.log("sikou:" + JSON.stringify(invoices)),
       process.env.REACT_APP_BASE_URL + "/clients-assign-invoices",
@@ -74,7 +79,7 @@ const AssignInvoices = ({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           invoices: invoices,
-          clientId: selectedUser,
+          clientId: selectedUser._id,
           invoiceId: invoiceId,
         }),
       }
@@ -85,10 +90,16 @@ const AssignInvoices = ({
         response.statusText || "Failed to assign invoices to client"
       );
     }
+    setLoading(false);
+
     setConfirmAssignMessage("Invoices assigned successfully to client");
     onClose();
   };
-
+  useEffect(() => {
+    if (isOpen) {
+      setSelectedUser(null);
+    }
+  }, [isOpen]);
   return (
     <Dialog
       open={isOpen}
@@ -120,36 +131,58 @@ const AssignInvoices = ({
         Assign Clients
       </DialogTitle>
       <DialogContent>
-        <FormGroup>
-          {clients.map(
-            (client) =>
-              ((admin.role === "superadmin" && client.approved) ||
-                admin.clients.includes(client._id)) && (
-                <ListItem key={client._id} disablePadding>
-                  <ListItemButton>
-                    <ListItemAvatar>
-                      <Avatar
-                        alt={client.name}
-                        src={
-                          process.env.REACT_APP_BASE_URL +
-                          "/assets/" +
-                          client.picturePath
-                        }
-                      />
-                    </ListItemAvatar>
-                    <ListItemText primary={client.name} />
-                    <Box display='flex' alignItems='center'>
-                      <Checkbox
-                        style={{ color: "#BFB5FF", marginLeft: "20px" }}
-                        checked={selectedUser === client._id}
-                        onChange={() => handleCheckboxChange(client._id)}
-                      />
-                    </Box>
-                  </ListItemButton>
-                </ListItem>
-              )
-          )}
-        </FormGroup>
+        {loading ? (
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              flexDirection: "column",
+            }}
+          >
+            <ProgressCircle size={90} />
+            <Typography variant='body1' sx={{ marginTop: "10px" }}>
+              Please Wait ...
+            </Typography>
+            <Typography
+              variant='body1'
+              sx={{ marginTop: "10px", color: "#BFB5FF", fontWeight: "bold" }}
+            >
+              Assigning Invoices to {selectedUser?.companyName} ...
+            </Typography>
+          </Box>
+        ) : (
+          <FormGroup>
+            {clients.map(
+              (client) =>
+                ((admin.role === "superadmin" && client.approved) ||
+                  admin.clients.includes(client._id)) && (
+                  <ListItem key={client._id} disablePadding>
+                    <ListItemButton>
+                      <ListItemAvatar>
+                        <Avatar
+                          alt={client.name}
+                          src={
+                            process.env.REACT_APP_BASE_URL +
+                            "/assets/" +
+                            client.picturePath
+                          }
+                        />
+                      </ListItemAvatar>
+                      <ListItemText primary={client.name} />
+                      <Box display='flex' alignItems='center'>
+                        <Checkbox
+                          style={{ color: "#BFB5FF", marginLeft: "20px" }}
+                          checked={selectedUser === client}
+                          onChange={() => handleCheckboxChange(client)}
+                        />
+                      </Box>
+                    </ListItemButton>
+                  </ListItem>
+                )
+            )}
+          </FormGroup>
+        )}
       </DialogContent>
       <DialogActions>
         <Button
@@ -164,12 +197,15 @@ const AssignInvoices = ({
           Cancel
         </Button>
         <Button
+          disabled={!selectedUser || loading}
           onClick={handleAssignClients}
           variant='contained'
           style={{
-            color: "#FFFFFF",
-            backgroundColor: "#BFB5FF",
             borderRadius: "40px",
+            ...(selectedUser && {
+              backgroundColor: "#BFB5FF",
+              color: "white",
+            }),
           }}
         >
           Assign

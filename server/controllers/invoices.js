@@ -195,3 +195,32 @@ export const getClientJournal = async (req, res) => {
     res.status(404).json({ message: err.message });
   }
 };
+
+export const getAllJournal = async (req, res) => {
+  try {
+    const userRole = req.user.role; // Get the role from the token
+    const userId = req.user.id; // Get the user ID from the token
+    const allInvoices = [];
+    if (userRole === "superadmin") {
+      const journals = await Invoice.find();
+      for (const journal of journals) {
+        for (const item of journal.items) {
+          allInvoices.push(item);
+        }
+      }
+      res.status(200).json({ allInvoices });
+    } else if (userRole === "admin") {
+      // const journals = await Invoice.find({ adminId: userId });
+      // console.log(journals);
+      const journals = await Invoice.find();
+      for (const journal of journals) {
+        for (const item of journal.items) {
+          allInvoices.push(item);
+        }
+      }
+      res.status(200).json({ allInvoices });
+    }
+  } catch (err) {
+    res.status(404).json({ msg: err.message });
+  }
+};

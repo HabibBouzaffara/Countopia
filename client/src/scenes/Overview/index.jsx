@@ -12,7 +12,6 @@ import LinearProgress, {
 } from "@mui/material/LinearProgress";
 import UserPicture from "components/UserPicture";
 
-
 const BorderLinearProgress = styled(LinearProgress)(() => ({
   height: 10,
   borderRadius: 5,
@@ -50,8 +49,14 @@ const Overview = ({ user }) => {
       console.log(err);
     }
   };
-
-  const AdminBox = ({ name, avatarUrl, invoicesLength }) => (
+  const TotalInvoices = () => {
+    const totalInvoicesCount = clients.reduce(
+      (accumulator, client) => accumulator + client.factures.length,
+      0
+    );
+    return totalInvoicesCount;
+  };
+  const AdminBox = ({ name, avatarUrl, adminInvoicePercentage }) => (
     <Box sx={{ width: "90%", marginBottom: "10px" }}>
       <Box
         sx={{
@@ -65,10 +70,10 @@ const Overview = ({ user }) => {
         <Typography variant="body1">{name}</Typography>
         <BorderLinearProgress
           variant="determinate"
-          value={invoicesLength}
+          value={adminInvoicePercentage}
           sx={{ width: "55%" }}
         />
-        <Typography variant="body1">{invoicesLength}%</Typography>
+        <Typography variant="body1">{adminInvoicePercentage}%</Typography>
       </Box>
     </Box>
   );
@@ -411,18 +416,19 @@ const Overview = ({ user }) => {
         {user.role === "superadmin" && admins && (
           <Box
             sx={{
-              background:
-                clients.filter((client) => client.approved === false).length < 3
-                  ? "linear-gradient(to top,  #F7A9A0 5%, white 40%)"
-                  : clients.filter((client) => client.approved === false)
-                      .length >= 3 &&
-                    clients.filter((client) => client.approved === false)
-                      .length <= 6
-                  ? "linear-gradient(to top, #F7A9A0 30%, white 60%)"
-                  : clients.filter((client) => client.approved === false)
-                      .length > 6
-                  ? "linear-gradient(to top,   #F7A9A0 50%, white 90%)"
-                  : null,
+              background: `linear-gradient(to top, #F7A9A0 ${Math.min(
+                (clients.filter((client) => !client.approved).length /
+                  clients.length) *
+                  100,
+                100
+              )}%, white ${
+                Math.min(
+                  (clients.filter((client) => !client.approved).length /
+                    clients.length) *
+                    100,
+                  100
+                ) + 10
+              }%)`,
               color: "#000000",
               padding: "20px 20px 0px 20px",
               borderRadius: "30px",
@@ -479,7 +485,7 @@ const Overview = ({ user }) => {
               variant="h1"
               sx={{ fontWeight: "bold", marginBottom: "40px" }}
             >
-              145
+             {TotalInvoices()}
             </Typography>
           </Box>
         )}
@@ -521,6 +527,7 @@ const Overview = ({ user }) => {
             ) : (
               clients
                 .filter((client) => client.approved === true)
+                .sort((a, b) => b.factures.length - a.factures.length)
                 .map((client) => (
                   <ClientBox
                     key={client._id}
@@ -572,7 +579,10 @@ const Overview = ({ user }) => {
                     key={admin._id}
                     name={admin.name}
                     avatarUrl={admin.picturePath}
-                    invoicesLength={admin.factures.length}
+                    adminInvoicePercentage={Math.round(
+                      (admin.clients.length / clients.length) * 100,
+                      2
+                    )}
                   />
                 ))
               )}
@@ -584,7 +594,7 @@ const Overview = ({ user }) => {
             sx={{
               backgroundColor: "#FFFFFF",
               color: "#000000",
-              padding: "20px 20px 0px 20px",
+              padding: "20px",
               borderRadius: "20px",
               width: "48%",
               height: "200px",

@@ -99,6 +99,8 @@ app.get("/clients-assign", adminsRoutes);
 app.use("/users", userRoutes);
 app.use("/admin", adminsRoutes);
 
+app.get("/getAllJournal", journalRoutes);
+
 /* Mongoose setup */
 const PORT = process.env.PORT || 9000;
 mongoose.set("strictQuery", true);

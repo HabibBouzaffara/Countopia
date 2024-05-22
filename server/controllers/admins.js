@@ -92,3 +92,13 @@ export const assignClient = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+
+export const incrementExportCount = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    await User.updateOne({ _id: userId }, { $inc: { exports: 1 } });
+    res.status(200).json({ msg: "Export count incremented successfully" });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};

@@ -146,7 +146,7 @@ const Journal = ({ user }) => {
       <div
         style={{
           maxHeight: "800px",
-          width: "71%",
+          width: "81%",
           margin: "auto",
           marginTop: "10px",
           marginBottom: "30px",
@@ -170,8 +170,16 @@ const Journal = ({ user }) => {
           }))}
           columns={[
             { field: "id", headerName: "Id", width: 190 },
-            { field: "date", headerName: "Date", width: 170 },
-            { field: "adminName", headerName: "Admin Name", width: 160 },
+            {
+              field: "date",
+              headerName: "Date",
+              width: 130,
+              valueFormatter: (params) => {
+                return format(new Date(params.value), "MM/dd/yyyy");
+              },
+            },
+            { field: "fileName", headerName: "File Name", width: 170 },
+            { field: "adminName", headerName: "Admin Name", width: 140 },
             {
               field: "itemsLength",
               headerName: "Informations",
@@ -304,6 +312,12 @@ const Journal = ({ user }) => {
                   headerName: key,
                   width: 150,
                   flex: 1,
+                  valueFormatter: (params) => {
+                    if (key === "date_facture") {
+                      return format(new Date(params.value), "MM/dd/yyyy");
+                    }
+                    return params.value;
+                  },
                 }))
               }
             />

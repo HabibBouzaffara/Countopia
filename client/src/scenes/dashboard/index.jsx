@@ -13,9 +13,11 @@ import TrendingDownIcon from "@mui/icons-material/TrendingDown";
 import MonetizationOnIcon from "@mui/icons-material/MonetizationOn";
 import CompositionExample from "./GaugePointer";
 import wait from "../../assets/stats.png";
-import ProgressCircle from "scenes/ProgressCircle";
+// import ProgressCircle from "scenes/ProgressCircle";
+import { helix } from "ldrs";
 
 const Dashboard = ({ user }) => {
+  helix.register();
   const [allClients, setAllClients] = useState(null);
   const [selectedClient, setSelectedClient] = useState(null);
   const [bestSeller, setBestSeller] = useState(null);
@@ -41,7 +43,8 @@ const Dashboard = ({ user }) => {
           if (!clientsResponse.ok) {
             throw new Error(data.msg);
           }
-          setSelectedClient(data[data.length - 1]);
+          setSelectedClient(data[data.length - 2]);
+          console.log(data);
           setAllClients(data);
         } catch (err) {
           console.log(err);
@@ -62,9 +65,9 @@ const Dashboard = ({ user }) => {
         return; // Skip this invoice if nom_unit is empty or undefined
       }
       // Preprocess date_facture to ensure it has the format mm/dd/yyyy
-      const formattedDate = invoice.date_facture.split(" ")[0]; // Remove extra characters after the year
-      const parts = formattedDate.split("/");
-      const month = parseInt(parts[0]) - 1; // Months are zero-based, so subtract 1
+      const formattedDate = invoice.date_facture.split("T")[0]; // Remove extra characters after the year
+      const parts = formattedDate.split("-");
+      const month = parseInt(parts[1] - 1); // Months are zero-based, so subtract 1
       // Accumulate nombre_unit for each nom_unit
       const { nom_unit, nombre_unit, prix_unit } = invoice;
       const parsedNombreUnit = parseFloat(nombre_unit);
@@ -174,16 +177,16 @@ const Dashboard = ({ user }) => {
             height: "80vh",
           }}
         >
-          <ProgressCircle size={170} />
+          <l-helix size='130' speed='2.5' color='#323DB3'></l-helix>
           <Typography
             variant='body1'
-            sx={{ marginTop: "20px", fontSize: "30px" }}
+            sx={{ marginTop: "20px", fontSize: "25px", color: "#BFB5FF" }}
           >
             Loading...
           </Typography>
           <Typography
             variant='body1'
-            sx={{ marginTop: "20px", fontSize: "30px" }}
+            sx={{ marginTop: "20px", fontSize: "25px", color: "#323DB3" }}
           >
             Retriving Client Data ...
           </Typography>
@@ -454,6 +457,7 @@ const Dashboard = ({ user }) => {
                 >
                   Profit & Expenses
                 </Typography>
+
                 <ProfitExpenses factures={selectedClient.factures} />
               </Box>
             </Grid>
@@ -597,7 +601,7 @@ const Dashboard = ({ user }) => {
                 <SalesQuantityChart quantitiesRate={bestSeller} />
               </Box>
             </Grid>
-            <Grid item xs={12} md={2.2}>
+            {/* <Grid item xs={12} md={2.2}>
               <Box
                 sx={{
                   backgroundColor: "#FFFFFF",
@@ -685,7 +689,7 @@ const Dashboard = ({ user }) => {
                   sx={{ fontWeight: "bold", marginTop: "10px" }}
                 ></Typography>
               </Box>
-            </Grid>
+            </Grid> */}
           </Grid>
         </Box>
       )}

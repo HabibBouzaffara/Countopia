@@ -14,9 +14,9 @@ export default function RevenuePie({ factures }) {
       const monthlySales = new Array(12).fill(0);
 
       factures.forEach((invoice) => {
-        const formattedDate = invoice.date_facture.split(" ")[0];
-        const parts = formattedDate.split("/");
-        const month = parseInt(parts[0]) - 1;
+        const formattedDate = invoice.date_facture.split("T")[0];
+        const parts = formattedDate.split("-");
+        const month = parseInt(parts[1] - 1);
 
         const taxes =
           parseFloat(invoice.taxe) * parseFloat(invoice.nombre_unit);
@@ -54,7 +54,7 @@ export default function RevenuePie({ factures }) {
   ];
 
   return (
-    <Box position="relative">
+    <Box position='relative'>
       <PieChart
         series={[
           {
@@ -80,12 +80,12 @@ export default function RevenuePie({ factures }) {
         width={300}
       />
       <Box
-        position="absolute"
+        position='absolute'
         top={-25}
         right={10}
-        fontWeight="bold"
-        borderRadius="20px"
-        padding="5px"
+        fontWeight='bold'
+        borderRadius='20px'
+        padding='5px'
       >
         <Select
           value={selectedMonth}

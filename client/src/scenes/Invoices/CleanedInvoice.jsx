@@ -15,6 +15,7 @@ const CleanedInvoice = ({
   setCleanedVersion,
   setFileData,
   setSuccessMessage,
+  fileName,
 }) => {
   const [rowId, setRowId] = useState([]);
   const [openAlert, setOpenAlert] = useState(false);
@@ -30,7 +31,7 @@ const CleanedInvoice = ({
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ journal: cleanedVersion }), // Pass journal data in the body
+          body: JSON.stringify({ journal: cleanedVersion, fileName: fileName }), // Pass journal data in the body
         }
       );
       const data = await response.json();
@@ -62,6 +63,16 @@ const CleanedInvoice = ({
     editable: true,
     align: "center",
     headerAlign: "center",
+    valueOptions: key === "category" ? ["V", "A"] : null,
+    type:
+      key === "category"
+        ? "singleSelect"
+        : key === "date_facture"
+        ? "date"
+        : "string",
+    valueFormatter: (params) => {
+      key === "date_facture" && format(new Date(params.value), "MM/dd/yyyy");
+    },
   }));
 
   // Add the action column

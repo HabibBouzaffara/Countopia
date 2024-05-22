@@ -30,9 +30,12 @@ export default function ProfitExpenses({ factures }) {
       // Iterate over each item in the facture array
       factures.forEach((invoice) => {
         // Preprocess date_facture to ensure it has the format mm/dd/yyyy
-        const formattedDate = invoice.date_facture.split(" ")[0]; // Remove extra characters after the year
-        const parts = formattedDate.split("/");
-        const month = parseInt(parts[0]) - 1; // Months are zero-based, so subtract 1
+
+        const formattedDate = invoice.date_facture.split("T")[0]; // Remove extra characters after the year
+
+        const parts = formattedDate.split("-");
+        const month = parseInt(parts[1] - 1); // Months are zero-based, so subtract 1
+
         // Calculate total amount for the invoice
         const taxes = invoice.taxe * invoice.nombre_unit;
         const negativeTotal = invoice.total < 0 ? Math.abs(invoice.total) : 0;
@@ -42,9 +45,10 @@ export default function ProfitExpenses({ factures }) {
         monthlyExpenses[month] += Math.round(Math.abs(total));
         monthlyProfit[month] += Math.round(totalNet);
       });
-
+      console.log(monthlyExpenses);
       // Update state outside the loop
       setMonthlyExpenses(monthlyExpenses);
+
       setMonthlyProfit(monthlyProfit);
     };
     profitAndExpenses();

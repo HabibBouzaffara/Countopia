@@ -56,7 +56,7 @@ const Item = ({ count }) => {
         cursor: "pointer",
       }}
     >
-      {hovered && <Typography variant="body1">{count}</Typography>}
+      {hovered && <Typography variant='body1'>{count}</Typography>}
     </Paper>
   );
 };
@@ -90,9 +90,9 @@ const InvoicesCountChart = ({ factures }) => {
       // Iterate over each item in the facture array
       factures.forEach((invoice) => {
         // Preprocess date_facture to ensure it has the format mm/dd/yyyy
-        const formattedDate = invoice.date_facture.split(" ")[0];
-        const parts = formattedDate.split("/");
-        const month = parseInt(parts[0]) - 1; // Months are zero-based, so subtract 1
+        const formattedDate = invoice.date_facture.split("T")[0];
+        const parts = formattedDate.split("-");
+        const month = parseInt(parts[1] - 1); // Months are zero-based, so subtract 1
 
         // Increment the count of invoices for the corresponding month in the array
         monthlyInvoiceCounts[month]++;
@@ -152,7 +152,7 @@ const InvoicesCountChart = ({ factures }) => {
                   borderRadius: "5px",
                 }}
               ></div>
-              <Typography variant="body2" sx={{ color: "#A6A6A6" }}>
+              <Typography variant='body2' sx={{ color: "#A6A6A6" }}>
                 0-10
               </Typography>
             </div>
@@ -174,7 +174,7 @@ const InvoicesCountChart = ({ factures }) => {
                   borderRadius: "5px",
                 }}
               ></div>
-              <Typography variant="body2" sx={{ color: "#A6A6A6" }}>
+              <Typography variant='body2' sx={{ color: "#A6A6A6" }}>
                 11-25
               </Typography>
             </div>
@@ -196,7 +196,7 @@ const InvoicesCountChart = ({ factures }) => {
                   borderRadius: "5px",
                 }}
               ></div>
-              <Typography variant="body2" sx={{ color: "#A6A6A6" }}>
+              <Typography variant='body2' sx={{ color: "#A6A6A6" }}>
                 26-50
               </Typography>
             </div>
@@ -218,7 +218,7 @@ const InvoicesCountChart = ({ factures }) => {
                   borderRadius: "5px",
                 }}
               ></div>
-              <Typography variant="body2" sx={{ color: "#A6A6A6" }}>
+              <Typography variant='body2' sx={{ color: "#A6A6A6" }}>
                 51-
               </Typography>
             </div>

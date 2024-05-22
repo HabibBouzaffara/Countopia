@@ -2,11 +2,18 @@ import { Box, Button } from "@mui/material";
 import React, { useCallback, useEffect, useState } from "react";
 import PersonAddAltOutlinedIcon from "@mui/icons-material/PersonAddAltOutlined";
 import PersonRemoveOutlinedIcon from "@mui/icons-material/PersonRemoveOutlined";
+import DeveloperBoardRoundedIcon from "@mui/icons-material/DeveloperBoardRounded";
 import DeleteConfirmationDialog from "./DeleteConfirmationDialog";
 import AssignClientDialog from "./AssignClientDialog";
 import UserPicture from "components/UserPicture";
+import { useDispatch, useSelector } from "react-redux";
+import { setLogin, setUser, setSimulation } from "state";
+import { useNavigate } from "react-router-dom";
 
 const AdminCard = ({ user, clientAssigned, setOnConfirmMessage }) => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const simulation = useSelector((state) => state.simulation);
   const [dialogs, setDialogs] = useState({
     confirmation: false,
     assignClient: false,
@@ -91,6 +98,49 @@ const AdminCard = ({ user, clientAssigned, setOnConfirmMessage }) => {
     setDialogs((prevState) => ({ ...prevState, assignClient: false }));
   }, []);
 
+  const handleSimulate = async (email) => {
+    try {
+      const token = localStorage.getItem("token");
+      const loggedInResponse = await fetch(
+        process.env.REACT_APP_BASE_URL + "/simulate",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+
+          body: JSON.stringify({ email }),
+        }
+      );
+
+      const loggedIn = await loggedInResponse.json();
+      if (!loggedInResponse.ok) {
+        // Handle server error
+        console.log(loggedIn.msg || "Error occurred during login");
+        return;
+      }
+
+      if (loggedIn) {
+        dispatch(setSimulation({ simulation: true }));
+        dispatch(
+          setLogin({
+            user: loggedIn.user,
+            token: loggedIn.token,
+          })
+        );
+        dispatch(setUser({ user: loggedIn.user, token: loggedIn.token }));
+
+        console.log(simulation);
+        localStorage.setItem("token", loggedIn.token);
+        navigate("/profile");
+      }
+    } catch (error) {
+      // Handle other errors (e.g., network error)
+      console.log(error);
+    }
+  };
+
   return (
     <Box
       width={"100%"}
@@ -135,51 +185,73 @@ const AdminCard = ({ user, clientAssigned, setOnConfirmMessage }) => {
 
         {/* Buttons aligned to the right */}
         <Box>
+          <Box>
+            <Button
+              variant='contained'
+              onClick={handleAssignClick}
+              style={{
+                fontWeight: "normal",
+                borderRadius: "20px",
+                backgroundColor: "#BFB5FF",
+                height: "40px",
+                marginRight: "20px",
+                marginBottom: "30px",
+              }}
+            >
+              <PersonAddAltOutlinedIcon
+                style={{ marginRight: "10px", fontWeight: "normal" }}
+              />
+              Manage Clients
+            </Button>
+            <AssignClientDialog
+              admin={user}
+              isOpen={dialogs.assignClient}
+              onClose={handleConfirmAssign}
+              onCancel={handleCancelAssign}
+              setOnConfirmMessage={setOnConfirmMessage}
+            />
+            <Button
+              onClick={handleRemoveClick}
+              variant='contained'
+              style={{
+                borderRadius: "20px",
+                border: "1px solid #A6A6A6",
+                backgroundColor: "white",
+                marginBottom: "30px",
+                height: "40px",
+              }}
+            >
+              <PersonRemoveOutlinedIcon
+                sx={{ color: "red", fontWeight: "normal" }}
+                fontWeight={"normal"}
+              />
+            </Button>
+            <DeleteConfirmationDialog
+              isOpen={dialogs.confirmation}
+              onConfirm={handleConfirmDelete}
+              onCancel={handleCancelDelete}
+            />
+          </Box>
           <Button
             variant='contained'
-            onClick={handleAssignClick}
+            onClick={() => handleSimulate(user.email)}
             style={{
               fontWeight: "normal",
               borderRadius: "20px",
+              height: "40px",
               backgroundColor: "#BFB5FF",
-              height: "40px",
-              marginRight: "20px",
-              marginBottom: "70px",
+              width: "250px",
+              marginBottom: "25px",
             }}
           >
-            <PersonAddAltOutlinedIcon
-              style={{ marginRight: "10px", fontWeight: "normal" }}
+            <DeveloperBoardRoundedIcon
+              style={{
+                marginRight: "10px",
+                fontWeight: "normal",
+              }}
             />
-            Manage {user.name}'s Clients
+            Start simulating {user.name}
           </Button>
-          <AssignClientDialog
-            admin={user}
-            isOpen={dialogs.assignClient}
-            onClose={handleConfirmAssign}
-            onCancel={handleCancelAssign}
-            setOnConfirmMessage={setOnConfirmMessage}
-          />
-          <Button
-            onClick={handleRemoveClick}
-            variant='contained'
-            style={{
-              borderRadius: "20px",
-              border: "1px solid #A6A6A6",
-              backgroundColor: "white",
-              marginBottom: "70px",
-              height: "40px",
-            }}
-          >
-            <PersonRemoveOutlinedIcon
-              sx={{ color: "red", fontWeight: "normal" }}
-              fontWeight={"normal"}
-            />
-          </Button>
-          <DeleteConfirmationDialog
-            isOpen={dialogs.confirmation}
-            onConfirm={handleConfirmDelete}
-            onCancel={handleCancelDelete}
-          />
         </Box>
       </Box>
 

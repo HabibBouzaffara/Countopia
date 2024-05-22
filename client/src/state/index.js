@@ -4,6 +4,7 @@ const initialState = {
   mode: "light",
   user: null,
   token: null,
+  simulation: false,
 };
 
 export const globalSlice = createSlice({
@@ -31,6 +32,9 @@ export const globalSlice = createSlice({
       state.token = null;
       localStorage.token = null;
     },
+    setSimulation: (state, action) => {
+      state.simulation = action.payload;
+    },
   },
 });
 
@@ -42,5 +46,6 @@ export const {
   setPosts,
   setPost,
   setUser,
+  setSimulation,
 } = globalSlice.actions;
 export default globalSlice.reducer;

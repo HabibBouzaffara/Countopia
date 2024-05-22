@@ -107,6 +107,7 @@ const Profile = ({ user }) => {
         setErrorMessage(true);
         setOpenAlert(true);
       } else {
+        setSelectedPicture(null);
         setAlertMessage(data.msg || "updated successfully");
         setErrorMessage(false);
         setOpenAlert(true);
@@ -334,7 +335,13 @@ const Profile = ({ user }) => {
                   justifyContent='center'
                   alignItems='center'
                   component='img'
-                  alt={user.name}
+                  alt={
+                    selectedPicture
+                      ? URL.createObjectURL(selectedPicture)
+                      : process.env.REACT_APP_BASE_URL +
+                        "/assets/" +
+                        user.picturePath
+                  }
                   border={"3px solid #BFB5FF"}
                   src={
                     selectedPicture

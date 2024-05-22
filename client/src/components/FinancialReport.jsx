@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Modal, Box, Typography, Button } from "@mui/material";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { format } from "date-fns";
 import {
   DataGrid,
   GridToolbarExportContainer,
@@ -25,11 +26,27 @@ const FinancialReport = ({
   setEndDate,
   clientName,
 }) => {
+  console.log(rowsFound);
   const [openAlert, setOpenAlert] = useState(false);
   const [alertMessage, setAlertMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState(false);
   const [rows, setRows] = useState(null);
   const [columns, setColumns] = useState(null);
+
+  const handleIncrement = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      await fetch(`${process.env.REACT_APP_BASE_URL}/incrementExportCount`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  };
   const handleExcelExport = () => {
     try {
       if (rowsFound.length > 0) {
@@ -51,10 +68,15 @@ const FinancialReport = ({
         a.href = url;
         a.download = fileName + fileExtension;
         a.click();
-        console.log("Financial Report exported successfully (.xslx)");
+
         setAlertMessage("Financial Report exported successfully (.xslx)");
         setOpenAlert(true);
         setErrorMessage(false);
+        try {
+          handleIncrement();
+        } catch (error) {
+          console.log(error);
+        }
       } else {
         console.log("No data found for Excel export");
         setAlertMessage("No data found for Excel export");
@@ -67,25 +89,39 @@ const FinancialReport = ({
     }
   };
 
-  if (rowsFound && rowsFound.length > 0 && !columns && !rows) {
-    const rowsWithDash = rowsFound.map((row, index) => ({
-      id: index + 1, // You can adjust the logic to generate unique ids based on your requirements
-      ...row,
-    }));
-    setRows(rowsWithDash);
-    const tableHead = Object.keys(rowsFound[0] || {}).filter(
-      (key) => key !== "assigned" && key !== "_id" && key !== "client_id"
-    );
-    const columns = tableHead.map((key) => ({
-      field: key,
-      headerName: key,
-      flex: 1,
-      editable: true,
-      align: "center",
-      headerAlign: "center",
-    }));
-    setColumns(columns);
-  }
+  useEffect(() => {
+    if (rowsFound) {
+      const rowsWithDash = rowsFound.map((row, index) => ({
+        id: index + 1, // You can adjust the logic to generate unique ids based on your requirements
+        ...row,
+      }));
+      setRows(rowsWithDash);
+      const tableHead = Object.keys(rowsFound[0] || {}).filter(
+        (key) => key !== "assigned" && key !== "_id" && key !== "client_id"
+      );
+      const columns = tableHead.map((key) => {
+        let column = {
+          field: key,
+          headerName: key,
+          flex: 1,
+          align: "center",
+          headerAlign: "center",
+        };
+
+        // Check if the column is named "date_facture"
+        if (key === "date_facture") {
+          column.type = "date";
+          column.valueFormatter = (params) => {
+            return format(new Date(params.value.split(" ")[0]), "MM/dd/yyyy");
+          };
+        }
+
+        return column;
+      });
+
+      setColumns(columns);
+    }
+  }, [rowsFound]);
 
   const customExportButton = () => {
     return (
@@ -233,7 +269,6 @@ const FinancialReport = ({
               justifyContent: "end",
             }}
           >
-            {" "}
             {rowsFound && rows && columns && (
               <DataGrid
                 slots={{

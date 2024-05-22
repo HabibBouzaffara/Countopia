@@ -1,7 +1,7 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import User from "../models/user.js";
-import Client from "../models/client.js";
+// import Client from "../models/client.js";
 import verificationToken from "../models/verificationToken.js";
 import {
   generateOTP,
@@ -77,12 +77,12 @@ export const register = async (req, res) => {
 
     // Add OTP generation and email verification here
     if (savedUser.role === "client") {
-      const newClient = new Client({
-        clientId: savedUser._id, // Reference to the newly saved user
-        companyName,
-        codeFiscale,
-        factures,
-      });
+      // const newClient = new Client({
+      //   clientId: savedUser._id, // Reference to the newly saved user
+      //   companyName,
+      //   codeFiscale,
+      //   factures,
+      // });
       const OTP = generateOTP();
       const newVerificationToken = new verificationToken({
         owner: savedUser._id, // Assuming you have a field to store user's ID in verificationToken
@@ -97,7 +97,7 @@ export const register = async (req, res) => {
         subject: "Account Verification",
         html: generateVerificationEmailHTML(savedUser.name, OTP),
       });
-      await newClient.save();
+      // await newClient.save();
     }
     // else if (savedUser.role === "admin") {
     //   const newAdmin = new Admin({
@@ -204,6 +204,55 @@ export const verifyEmail = async (req, res) => {
         "Account Verification",
         "Your email has been verified successfully. Now you can log in."
       ),
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+export const simulate = async (req, res) => {
+  try {
+    const userRole = req.user.role;
+    if (userRole !== "superadmin") {
+      return res.status(403).json({ message: "Unauthorized" });
+    }
+    const { email } = req.body;
+    const user = await User.findOne({ email });
+    if (!user)
+      return res.status(400).json({
+        msg: "User not found!",
+      });
+    const token = jwt.sign(
+      { id: user._id, role: user.role },
+      process.env.JWT_SECRET
+    );
+    delete user.password;
+
+    res.status(200).json({
+      token,
+      user,
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+export const endSimulate = async (req, res) => {
+  try {
+    const userRole = req.user.role;
+    if (userRole !== "admin") {
+      return res.status(403).json({ message: "Unauthorized" });
+    }
+    const user = await User.findOne({ role: "superadmin" });
+    const token = jwt.sign(
+      { id: user._id, role: user.role },
+      process.env.JWT_SECRET
+    );
+    delete user.password;
+
+    res.status(200).json({
+      token,
+      user,
     });
   } catch (err) {
     res.status(500).json({ error: err.message });

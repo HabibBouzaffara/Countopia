@@ -192,7 +192,6 @@ const Form = ({ action }) => {
         navigate("/profile");
       }
     } catch (error) {
-      // Handle other errors (e.g., network error)
       setAlertMessage("An error occurred. Please try again later.");
       setOpenAlert(true);
     }

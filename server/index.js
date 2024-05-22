@@ -22,6 +22,7 @@ import journalRoutes from "./routes/invoices.js";
 import adminsRoutes from "./routes/admins.js";
 import authRoutes from "./routes/auth.js";
 import User from "./models/user.js";
+import Invoices from "./models/invoice.js";
 
 /* Config */
 const __filename = fileURLToPath(import.meta.url);
@@ -71,6 +72,7 @@ app.get("/getJournal", journalRoutes);
 app.delete("/deleteJournal", journalRoutes);
 app.patch("/clients-assign-invoices", journalRoutes);
 app.get("/clientsToAssign", journalRoutes);
+app.patch("/unAssignInvoices", journalRoutes);
 
 //clients management
 app.get("/clients", clientsRoutes);
@@ -84,6 +86,8 @@ app.post("/auth/register", storeImage.single("picture"), register);
 app.post("/auth/login", authRoutes);
 app.post("/auth/verify-email", authRoutes);
 app.post("/setLogout", authRoutes);
+app.post("/simulate", authRoutes);
+app.post("/endSimulate", authRoutes);
 
 //profile management
 app.patch("/profile", storeImage.single("picture"), modifyProfile);
@@ -95,6 +99,7 @@ app.delete("/admin", adminsRoutes);
 app.get("/admin-clients-stats", adminsRoutes);
 app.patch("/clients-assign", adminsRoutes);
 app.get("/clients-assign", adminsRoutes);
+app.patch("/incrementExportCount", adminsRoutes);
 
 app.use("/users", userRoutes);
 app.use("/admin", adminsRoutes);
@@ -110,6 +115,21 @@ mongoose
     useUnifiedTopology: true,
   })
   .then(async () => {
+    // const Invoices = mongoose.model("Invoices", {
+    //   adminName: String,
+    //   adminId: mongoose.Schema.Types.ObjectId,
+    // });
+
+    // await Invoices.updateMany(
+    //   {},
+    //   {
+    //     $set: {
+    //       adminName: "Habib",
+    //       adminId: new mongoose.Types.ObjectId("6624f7e4f899e6343deb5a2a"),
+    //     },
+    //   }
+    // );
+
     app.listen(PORT, () => console.log(`Server Port: ${PORT}`));
 
     // ADD DATA ONE TIME

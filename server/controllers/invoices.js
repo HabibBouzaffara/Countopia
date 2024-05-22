@@ -49,7 +49,7 @@ const sendToPythonScript = (pythonFilePath, filePath, selectedCells) => {
     ]);
 
     let jsonResult = "";
-    let stderr = ""; // Variable to capture stderr output
+    let stderr = ""; // Variable to capture the output
 
     pythonProcess.stdout.on("data", (data) => {
       jsonResult += data.toString();
@@ -64,7 +64,7 @@ const sendToPythonScript = (pythonFilePath, filePath, selectedCells) => {
       if (code === 0) {
         resolve(jsonResult);
       } else {
-        reject({ message: "Error executing Python script", stderr: stderr }); // Pass stderr as part of rejection
+        reject({ message: "Error executing Python script", stderr: stderr });
       }
     });
   });
@@ -85,7 +85,6 @@ export const convertToCsv = async (req, res) => {
       }
     };
     const responseData = await convertCsvToJson();
-    // console.log(responseData);
     res.status(200).json({ responseData });
   } catch (err) {
     res.status(404).json({ message: err.message });
@@ -95,23 +94,24 @@ export const convertToCsv = async (req, res) => {
 export const uploadJournal = async (req, res) => {
   try {
     const { adminId, adminName } = req.query; // Access adminId from req.query
-    const { journal } = req.body; // Access journal from req.body
+    const { journal, fileName } = req.body; // Access journal from req.body
     const invoice = new Invoice();
 
     // Function to add '_id' and 'assigned' field with default value to each item
-    const addIdAndAssignedField = (itemData) => {
-      const newItemData = { ...itemData, assigned: false };
-      newItemData._id = new mongoose.Types.ObjectId(); // Generate a new ObjectId
-      return newItemData;
-    };
+    // const addIdAndAssignedField = (itemData) => {
+    //   const newItemData = { ...itemData, assigned: false };
+    //   newItemData._id = new mongoose.Types.ObjectId(); // Generate a new ObjectId
+    //   return newItemData;
+    // };
 
     for (const itemData of journal) {
-      const itemWithIdAndAssigned = addIdAndAssignedField(itemData); // Add '_id' and 'assigned' field to item
-      invoice.items.push(itemWithIdAndAssigned); // Push modified item to items array
+      // const itemWithIdAndAssigned = addIdAndAssignedField(itemData);  Add '_id' and 'assigned' field to item
+      invoice.items.push(itemData); // Push modified item to items array
     }
 
     invoice.adminId = adminId;
     invoice.adminName = adminName;
+    invoice.fileName = fileName;
 
     await invoice.save(); // Don't forget to save the invoice to the database
 
@@ -222,5 +222,31 @@ export const getAllJournal = async (req, res) => {
     }
   } catch (err) {
     res.status(404).json({ msg: err.message });
+  }
+};
+
+export const unAssignInvoices = async (req, res) => {
+  try {
+    const { idsArray } = req.body;
+
+    if (!Array.isArray(idsArray)) {
+      return res.status(400).json({
+        message: "Invalid input. idsArray should be an array of item IDs.",
+      });
+    }
+
+    await Invoice.updateMany(
+      { "items._id": { $in: idsArray } }, // Find invoices containing items with _id in idsArray
+      { $set: { "items.$[elem].assigned": false } }, // Set assigned to false for matching items
+      { arrayFilters: [{ "elem._id": { $in: idsArray } }] } // Filter to apply the update only to matching items
+    );
+
+    await User.updateOne(
+      { name: "Rania" }, // Find users containing items with _id in idsArray
+      { $pull: { factures: { _id: { $in: idsArray } } } } // Set assigned to false for matching items
+    );
+    res.status(200).json({ message: "Invoices unassigned successfully" });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
   }
 };

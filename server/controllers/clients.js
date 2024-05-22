@@ -54,6 +54,7 @@ export const getClients = async (req, res) => {
           updatedAt: 0,
         }
       );
+      console.log(clients);
       res.status(200).json(clients);
     } else {
       res.status(400).json({ message: "Invalid role provided" });

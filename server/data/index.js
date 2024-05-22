@@ -239,46 +239,42 @@ export const users = [
   // }
 ];
 
-// export const clients = [
-//   {
-//     clientId: userIds[0],
-//     companyName: "ZoomInformatique",
-//     codeFiscale: "1234567890",
-//     factures: [],
-//   },
-//   {
-//     clientId: userIds[2],
-//     companyName: "Myspace",
-//     codeFiscale: "987654321",
-//     factures: [],
-//   },
-//   {
-//     clientId: userIds[5],
-//     companyName: "Mytek",
-//     codeFiscale: "321165595",
-//     factures: [],
-//   },
-//   {
-//     clientId: userIds[6],
-//     companyName: "Sbsinformatique",
-//     codeFiscale: "879798798",
-//     factures: [],
-//   },
-//   {
-//     clientId: userIds[7],
-//     companyName: "Tunisianet",
-//     codeFiscale: "572178511",
-//     factures: [],
-//   },
-// ];
+export const clients = [
+  //   {
+  //     clientId: userIds[0],
+  //     companyName: "ZoomInformatique",
+  //     codeFiscale: "1234567890",
+  //     factures: [],
+  //   },
+  //   {
+  //     clientId: userIds[2],
+  //     companyName: "Myspace",
+  //     codeFiscale: "987654321",
+  //     factures: [],
+  //   },
+  //   {
+  //     clientId: userIds[5],
+  //     companyName: "Mytek",
+  //     codeFiscale: "321165595",
+  //     factures: [],
+  //   },
+  //   {
+  //     clientId: userIds[6],
+  //     companyName: "Sbsinformatique",
+  //     codeFiscale: "879798798",
+  //     factures: [],
+  //   },
+  {
+    clientId: userIds[7],
+    companyName: "Tunisianet",
+    codeFiscale: "572178511",
+    factures: [],
+  },
+];
 
-// export const admins = [
-//   {
-//     adminId: userIds[3],
-//     clients: [],
-//   },
-//   {
-//     adminId: userIds[4],
-//     clients: [],
-//   },
-// ];
+export const admins = [
+  {
+    adminId: userIds[4],
+    clients: [],
+  },
+];

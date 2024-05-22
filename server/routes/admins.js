@@ -4,6 +4,7 @@ import {
   getAssignClients,
   getAdmins,
   adminClientsStats,
+  incrementExportCount,
 } from "../controllers/admins.js";
 import { deleteUser } from "../controllers/users.js";
 import { verifyToken } from "../middleware/auth.js";
@@ -15,5 +16,6 @@ router.delete("/admin", verifyToken, deleteUser);
 router.patch("/clients-assign", verifyToken, assignClient);
 router.get("/clients-assign", verifyToken, getAssignClients);
 router.get("/admin-clients-stats", verifyToken, adminClientsStats);
+router.patch("/incrementExportCount", verifyToken, incrementExportCount);
 
 export default router;

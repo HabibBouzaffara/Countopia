@@ -28,9 +28,9 @@ export default function RevenueRateBar({ factures }) {
       // Iterate over each item in the facture array
       factures.forEach((invoice) => {
         // Preprocess date_facture to ensure it has the format mm/dd/yyyy
-        const formattedDate = invoice.date_facture.split(" ")[0]; // Remove extra characters after the year
-        const parts = formattedDate.split("/");
-        const month = parseInt(parts[0]) - 1; // Months are zero-based, so subtract 1
+        const formattedDate = invoice.date_facture.split("T")[0]; // Remove extra characters after the year
+        const parts = formattedDate.split("-");
+        const month = parseInt(parts[1]) - 1; // Months are zero-based, so subtract 1
         // Calculate total amount for the invoice
         const total = parseFloat(invoice.total);
         // Add total to monthly revenue if it's positive

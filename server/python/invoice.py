@@ -14,16 +14,13 @@ def search_word_in_csv(word, file_path):
                     data_under_word.extend([row[index] for row in reader])
                     break
     except Exception as e:
-        # Print the exception traceback to stderr
         traceback.print_exc(file=sys.stderr)
         sys.exit(1)
     return data_under_word
 
 def main(csv_file_path, selected_cells):
     try:
-        # Parse the selected cells array passed from the frontend
         words = selected_cells
-
         arrays = []
         for word in words:
             data = search_word_in_csv(word, csv_file_path)
@@ -31,7 +28,6 @@ def main(csv_file_path, selected_cells):
                 print(data)
                 return
             arrays.append(data)
-
         min_length = len(arrays[0])
 
         adjusted_arrays = []
@@ -59,12 +55,11 @@ def main(csv_file_path, selected_cells):
                     else:
                         obj["category"] = "A"
                 if obj["date_facture"]:
-                    obj["date_facture"] = obj["date_facture"][0:10]
+                    obj["date_facture"] = obj["date_facture"].split(" ")[0]
                 result.append(obj)
 
         print(json.dumps(result))
     except Exception as e:
-        # Print the exception traceback to stderr
         traceback.print_exc(file=sys.stderr)
         sys.exit(1)
 

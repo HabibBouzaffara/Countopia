@@ -57,8 +57,8 @@ function App() {
             <Route path='/verify' element={<LoginPage action='verify' />} />
             {isAuth && user ? (
               <Route element={<Layout user={user} />}>
-                <Route path='/profile' element={<Profile user={user} />} />
                 <Route path='/dashboard' element={<Dashboard user={user} />} />
+                <Route path='/profile' element={<Profile user={user} />} />
                 {user.role === "superadmin" && (
                   <Route
                     path='/admins'
@@ -72,7 +72,6 @@ function App() {
                     {/* <Route path='/journal' element={<Journal user={user} />} /> */}
                   </>
                 )}
-
                 <Route path='/overview' element={<Overview user={user} />} />
                 <Route
                   path='/journal'

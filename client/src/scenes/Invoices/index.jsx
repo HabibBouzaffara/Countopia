@@ -6,14 +6,12 @@ import OriginalInvoice from "./OriginalInvoice";
 import CustomSnackbar from "scenes/CustomSnackBar";
 
 const UploadInvoice = ({ user }) => {
-  console.log(user);
   const [fileData, setFileData] = useState(null);
   const [cleanedVersion, setCleanedVersion] = useState(null);
   const [successMessage, setSuccessMessage] = useState("");
   const [openAlert, setOpenAlert] = useState(false);
   const [alertMessage, setAlertMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState(false);
-  // console.log(cleanedVersion);
 
   if (successMessage !== "" && !openAlert) {
     setOpenAlert(true);
@@ -51,6 +49,7 @@ const UploadInvoice = ({ user }) => {
             setCleanedVersion={setCleanedVersion}
             setFileData={setFileData}
             setSuccessMessage={setSuccessMessage}
+            fileName={fileData.name}
           />
         )}
       </Box>

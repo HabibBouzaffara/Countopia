@@ -7,18 +7,22 @@ const invoiceItemSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  date_facture: {
+  num_facture: {
     type: String,
     required: true,
   },
+  date_facture: {
+    type: Date,
+    required: true,
+  },
+  nom_unit: String,
   description: {
     type: String,
     required: true,
   },
-  nom_unite: String,
+
   nombre_unit: String,
   prix_unit: String,
-  total_unit: String,
   total_net: {
     type: String, // Update type to String or whatever is appropriate
     default: "", // Use a default value if needed
@@ -28,10 +32,6 @@ const invoiceItemSchema = new mongoose.Schema({
     default: "0", // Use a default value if needed
   },
   total: {
-    type: String,
-    required: true,
-  },
-  num_facture: {
     type: String,
     required: true,
   },
@@ -95,7 +95,11 @@ const UserSchema = new mongoose.Schema(
       type: Array,
       default: [],
     },
-    factures: [Object],
+    exports: {
+      type: Number,
+      default: 0,
+    },
+    factures: [invoiceItemSchema],
     clients: Array,
     role: {
       type: String,

@@ -2,36 +2,39 @@ import React, { useState } from "react";
 import {
   Menu as MenuIcon,
   Search,
-  SettingsOutlined,
-  ArrowDropDownOutlined,
+  // SettingsOutlined,
+  // ArrowDropDownOutlined,
+  HomeOutlined,
 } from "@mui/icons-material";
 import FlexBetween from "components/FlexBetween";
-import { useDispatch } from "react-redux";
-import { setLogout } from "state";
+import { useDispatch, useSelector } from "react-redux";
+import { setLogin, setLogout, setSimulation, setUser } from "state";
 import {
   AppBar,
   Box,
-  Button,
   IconButton,
   InputBase,
-  Menu,
-  MenuItem,
   Toolbar,
   Typography,
   CircularProgress,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import UserPicture from "./UserPicture";
+import ExitToAppRoundedIcon from "@mui/icons-material/ExitToAppRounded";
+import MeetingRoomRoundedIcon from "@mui/icons-material/MeetingRoomRounded";
+import TocOutlinedIcon from "@mui/icons-material/TocOutlined";
 
 const Navbar = ({ user, isSidebarOpen, setIsSidebarOpen }) => {
+  const simulation = useSelector((state) => state.simulation);
+  console.log(simulation);
   const dispatch = useDispatch();
-  const [anchorEl, setAnchorEl] = useState(null);
-  const isOpen = Boolean(anchorEl);
-  const handleClick = (event) => setAnchorEl(event.currentTarget);
-  const handleClose = () => setAnchorEl(null);
+  // const [anchorEl, setAnchorEl] = useState(null);
+  // const isOpen = Boolean(anchorEl);
+  // const handleClick = (event) => setAnchorEl(event.currentTarget);
+  // const handleClose = () => setAnchorEl(null);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-
+  user.role === "client" && setIsSidebarOpen(false);
   const handleLogout = async () => {
     try {
       setLoading(true);
@@ -40,13 +43,46 @@ const Navbar = ({ user, isSidebarOpen, setIsSidebarOpen }) => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ _id: user._id }),
       });
+      dispatch(setSimulation({ simulation: false }));
       dispatch(setLogout());
+
       navigate("/");
     } catch (err) {
       console.log(err);
     } finally {
       setLoading(false);
     }
+  };
+  const handleEndSimulation = async () => {
+    try {
+      setLoading(true);
+      const token = localStorage.getItem("token");
+      const endSimulate = await fetch(
+        `${process.env.REACT_APP_BASE_URL}/endSimulate`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      const response = await endSimulate.json();
+      if (!endSimulate.ok) throw new Error(response.msg);
+      if (response) {
+        console.log(response);
+        dispatch(setSimulation({ simulation: false }));
+        dispatch(setLogin({ user: response.user, token: response.token }));
+        dispatch(setUser({ user: response.user, token: response.token }));
+        localStorage.setItem("token", response.token);
+        navigate("/admins");
+      }
+    } catch (err) {
+      console.log(err);
+    } finally {
+      setLoading(false);
+    }
+    //
   };
 
   if (!user) return null;
@@ -63,12 +99,24 @@ const Navbar = ({ user, isSidebarOpen, setIsSidebarOpen }) => {
       <Toolbar sx={{ justifyContent: "space-between" }}>
         {/* LEFT SIDE */}
         <FlexBetween>
-          <IconButton
-            sx={{ color: "#3F4BC9" }}
-            onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-          >
-            <MenuIcon />
-          </IconButton>
+          {user.role !== "client" && (
+            <IconButton
+              sx={{ color: "#3F4BC9" }}
+              onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+            >
+              <MenuIcon />
+            </IconButton>
+          )}
+          {user.role === "client" && (
+            <Typography
+              sx={{ marginRight: "5rem" }}
+              variant='h3'
+              fontWeight='bold'
+              color='#9D8DFE'
+            >
+              Countopia
+            </Typography>
+          )}
           <FlexBetween
             backgroundColor='#EEF2F6'
             borderRadius='9px'
@@ -80,6 +128,67 @@ const Navbar = ({ user, isSidebarOpen, setIsSidebarOpen }) => {
               <Search sx={{ color: "#3F4BC9" }} />
             </IconButton>
           </FlexBetween>
+          {simulation.simulation && (
+            <Typography
+              fontWeight='bold'
+              color='rgba(255, 0, 0, 0.9)'
+              sx={{
+                display: { xs: "none", sm: "block" },
+                marginLeft: "9rem",
+                fontSize: "20px",
+              }}
+            >
+              You are on simulation Mode!
+            </Typography>
+          )}
+          {user.role === "client" && (
+            <>
+              <IconButton
+                sx={{ marginLeft: "6rem" }}
+                onClick={() => navigate("/dashboard")}
+              >
+                <HomeOutlined
+                  sx={{
+                    color: "#3F4BC9",
+                    fontSize: "30px",
+                  }}
+                />
+                <Typography
+                  fontWeight='bold'
+                  color='#3F4BC9'
+                  sx={{
+                    display: { xs: "none", sm: "block" },
+
+                    fontSize: "20px",
+                  }}
+                >
+                  Dashboard
+                </Typography>
+              </IconButton>
+              <IconButton
+                sx={{ marginLeft: "9rem" }}
+                onClick={() => navigate("/journal")}
+              >
+                <TocOutlinedIcon
+                  sx={{
+                    color: "#3F4BC9",
+                    fontSize: "30px",
+                  }}
+                />
+                <Typography
+                  fontWeight='bold'
+                  color='#3F4BC9'
+                  sx={{
+                    display: { xs: "none", sm: "block" },
+
+                    fontSize: "20px",
+                  }}
+                >
+                  Journal
+                </Typography>
+              </IconButton>
+            </>
+          )}
         </FlexBetween>
         {/* RIGHT SIDE */}
         <FlexBetween gap='1.5rem'>
@@ -90,21 +199,23 @@ const Navbar = ({ user, isSidebarOpen, setIsSidebarOpen }) => {
               <LightModeOutlined sx={{ fontSize: "25px" }} />
             )}
           </IconButton>   */}
-          <IconButton>
+          {/* <IconButton>
             <SettingsOutlined sx={{ fontSize: "25px", color: "#3F4BC9" }} />
-          </IconButton>
+          </IconButton> */}
           {loading ? ( // Display CircularProgress when loading is true
             <CircularProgress size={24} />
           ) : (
             <FlexBetween>
-              <Button
-                onClick={handleClick}
+              <Box
+                onClick={() => navigate("/profile")}
                 sx={{
                   display: "flex",
                   justifyContent: "space-between",
                   alignItems: "center",
                   textTransform: "none",
                   gap: "1rem",
+                  marginRight: "2rem",
+                  cursor: "pointer",
                 }}
               >
                 <UserPicture name={user.name} picturePath={user.picturePath} />
@@ -124,30 +235,47 @@ const Navbar = ({ user, isSidebarOpen, setIsSidebarOpen }) => {
                       : "Client"}
                   </Typography>
                 </Box>
-                <ArrowDropDownOutlined
-                  sx={{ color: "#3F4BC9", fontSize: "25px" }}
-                />
-              </Button>
-              <Menu
-                anchorEl={anchorEl}
-                open={isOpen}
-                onClose={handleClose}
-                anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-              >
-                <MenuItem
-                  sx={{
-                    width: "80px",
-                    height: "30px",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                  onClick={handleClose}
-                >
-                  <Button sx={{ color: "black" }} onClick={handleLogout}>
-                    Log out
-                  </Button>
-                </MenuItem>
-              </Menu>
+              </Box>
+              {!simulation.simulation && (
+                <IconButton>
+                  <Box
+                    onClick={handleLogout}
+                    sx={{
+                      color: "#3F4BC9",
+                      display: "flex",
+                      flexDirection: "column",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      textTransform: "none",
+                    }}
+                  >
+                    <ExitToAppRoundedIcon />
+                    <Typography fontSize='0.85rem'>Logout</Typography>
+                  </Box>
+                </IconButton>
+              )}
+              {simulation.simulation && (
+                <IconButton>
+                  <Box
+                    onClick={handleEndSimulation}
+                    sx={{
+                      color: "#3F4BC9",
+                      display: "flex",
+                      flexDirection: "column",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      textTransform: "none",
+                    }}
+                  >
+                    <Box sx={{ display: "flex", flexDirection: "row" }}>
+                      <MeetingRoomRoundedIcon sx={{ marginRight: "5px" }} />
+                      <Typography fontSize='0.85rem'>Exit</Typography>
+                    </Box>
+
+                    <Typography fontSize='0.85rem'>Simulation</Typography>
+                  </Box>
+                </IconButton>
+              )}
             </FlexBetween>
           )}
         </FlexBetween>

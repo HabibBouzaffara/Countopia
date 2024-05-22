@@ -83,7 +83,7 @@ const navItems = [
   {
     text: "Invoices",
     icon: <DescriptionOutlinedIcon />,
-    role: ["superadmin", "admin"],
+    role: ["admin"],
   },
 
   {
@@ -206,7 +206,15 @@ const Sidebar = ({
 
           <Box position='absolute' bottom='2rem' width='100%'>
             <Divider />
-            <FlexBetween textTransform='none' gap='1rem' m='1.5rem 2rem 0 3rem'>
+            <FlexBetween
+              textTransform='none'
+              gap='1rem'
+              m='1.5rem 2rem 0 3rem'
+              onClick={() => navigate("/profile")}
+              sx={{
+                cursor: "pointer",
+              }}
+            >
               <UserPicture name={user.name} picturePath={user.picturePath} />
 
               <Box textAlign='left'>
@@ -229,6 +237,7 @@ const Sidebar = ({
                 sx={{
                   color: "#3F4BC9",
                   fontSize: "25px ",
+                  cursor: "pointer",
                 }}
               />
             </FlexBetween>

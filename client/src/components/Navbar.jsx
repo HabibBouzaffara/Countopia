@@ -34,7 +34,6 @@ const Navbar = ({ user, isSidebarOpen, setIsSidebarOpen }) => {
   // const handleClose = () => setAnchorEl(null);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  user.role === "client" && setIsSidebarOpen(false);
   const handleLogout = async () => {
     try {
       setLoading(true);
@@ -70,7 +69,6 @@ const Navbar = ({ user, isSidebarOpen, setIsSidebarOpen }) => {
       const response = await endSimulate.json();
       if (!endSimulate.ok) throw new Error(response.msg);
       if (response) {
-        console.log(response);
         dispatch(setSimulation({ simulation: false }));
         dispatch(setLogin({ user: response.user, token: response.token }));
         dispatch(setUser({ user: response.user, token: response.token }));
@@ -99,24 +97,13 @@ const Navbar = ({ user, isSidebarOpen, setIsSidebarOpen }) => {
       <Toolbar sx={{ justifyContent: "space-between" }}>
         {/* LEFT SIDE */}
         <FlexBetween>
-          {user.role !== "client" && (
-            <IconButton
-              sx={{ color: "#3F4BC9" }}
-              onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-            >
-              <MenuIcon />
-            </IconButton>
-          )}
-          {user.role === "client" && (
-            <Typography
-              sx={{ marginRight: "5rem" }}
-              variant='h3'
-              fontWeight='bold'
-              color='#9D8DFE'
-            >
-              Countopia
-            </Typography>
-          )}
+          <IconButton
+            sx={{ color: "#3F4BC9" }}
+            onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+          >
+            <MenuIcon />
+          </IconButton>
+
           <FlexBetween
             backgroundColor='#EEF2F6'
             borderRadius='9px'
@@ -140,54 +127,6 @@ const Navbar = ({ user, isSidebarOpen, setIsSidebarOpen }) => {
             >
               You are on simulation Mode!
             </Typography>
-          )}
-          {user.role === "client" && (
-            <>
-              <IconButton
-                sx={{ marginLeft: "6rem" }}
-                onClick={() => navigate("/dashboard")}
-              >
-                <HomeOutlined
-                  sx={{
-                    color: "#3F4BC9",
-                    fontSize: "30px",
-                  }}
-                />
-                <Typography
-                  fontWeight='bold'
-                  color='#3F4BC9'
-                  sx={{
-                    display: { xs: "none", sm: "block" },
-
-                    fontSize: "20px",
-                  }}
-                >
-                  Dashboard
-                </Typography>
-              </IconButton>
-              <IconButton
-                sx={{ marginLeft: "9rem" }}
-                onClick={() => navigate("/journal")}
-              >
-                <TocOutlinedIcon
-                  sx={{
-                    color: "#3F4BC9",
-                    fontSize: "30px",
-                  }}
-                />
-                <Typography
-                  fontWeight='bold'
-                  color='#3F4BC9'
-                  sx={{
-                    display: { xs: "none", sm: "block" },
-
-                    fontSize: "20px",
-                  }}
-                >
-                  Journal
-                </Typography>
-              </IconButton>
-            </>
           )}
         </FlexBetween>
         {/* RIGHT SIDE */}

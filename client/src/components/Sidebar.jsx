@@ -92,14 +92,14 @@ const navItems = [
     role: ["client", "admin", "superadmin"],
   },
   {
-    text: "Next Feature",
+    text: "Assistance & Chat",
     icon: null,
     role: ["client", "admin", "superadmin"],
   },
   {
-    text: "Ask Your DB",
+    text: "Assistance",
     icon: <QueryStatsOutlinedIcon />,
-    role: ["superadmin", "admin", "client"],
+    role: ["admin", "client"],
   },
 ];
 

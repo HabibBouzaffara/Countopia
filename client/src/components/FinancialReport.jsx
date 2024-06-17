@@ -54,13 +54,9 @@ const FinancialReport = ({
           "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
         const fileExtension = ".xlsx";
         const fileName = `Financial_Report_${clientName}_`;
-
         const ws = XLSX.utils.json_to_sheet(rowsFound); // Use invoices directly
         const wb = { Sheets: { data: ws }, SheetNames: ["data"] };
-        const excelBuffer = XLSX.write(wb, {
-          bookType: "xlsx",
-          type: "array",
-        });
+        const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
 
         const data = new Blob([excelBuffer], { type: fileType });
         const url = window.URL.createObjectURL(data);
@@ -68,17 +64,15 @@ const FinancialReport = ({
         a.href = url;
         a.download = fileName + fileExtension;
         a.click();
-
         setAlertMessage("Financial Report exported successfully (.xslx)");
         setOpenAlert(true);
         setErrorMessage(false);
         try {
-          handleIncrement();
+          handleIncrement(); //calling increment export count function
         } catch (error) {
           console.log(error);
         }
       } else {
-        console.log("No data found for Excel export");
         setAlertMessage("No data found for Excel export");
         setOpenAlert(true);
         setErrorMessage(true);

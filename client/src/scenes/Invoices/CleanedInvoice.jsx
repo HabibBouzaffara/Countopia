@@ -190,9 +190,10 @@ const CleanedInvoice = ({
         </Box>
       </Box>
 
-      <Box mt='10px' marginBottom='20px' width='98%' mx='auto'>
+      <Box mt='5px' marginBottom='10px' width='98%' mx='auto'>
         <div style={{ width: "100%" }}>
           <DataGrid
+            rowHeight={50}
             rows={rowsWithDash}
             columns={columns}
             editMode='row'

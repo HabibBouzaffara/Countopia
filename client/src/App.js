@@ -4,10 +4,10 @@ import { useSelector } from "react-redux";
 import { themeSettings } from "theme";
 import { useMemo } from "react";
 import {
-  Navigate,
   BrowserRouter,
   Route,
   Routes,
+  Navigate,
   useLocation,
 } from "react-router-dom";
 import Layout from "scenes/layout";
@@ -20,20 +20,24 @@ import Clients from "scenes/clientsManagement";
 import UploadInvoice from "scenes/Invoices";
 import Overview from "scenes/Overview";
 import InvoicesJournal from "scenes/journal/InvoicesJournal";
+import Assistance from "scenes/assistance";
+import ProtectedRoute from "./ProtectedRoute.js"; // Import the ProtectedRoute component
+
+function InvoicePage({ user }) {
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const userId = searchParams.get("userId");
+  return <UploadInvoice clientId={userId} user={user} />;
+}
 
 function App() {
-  const mode = useSelector((state) => state.mode);
+  const { mode, token, user } = useSelector((state) => ({
+    mode: state.mode,
+    token: state.token,
+    user: state.user,
+  }));
   const theme = useMemo(() => createTheme(themeSettings(mode)), [mode]);
-  const isAuth = Boolean(useSelector((state) => state.token));
-  const user = useSelector((state) => state.user);
-
-  const InvoicePage = () => {
-    const location = useLocation();
-    const searchParams = new URLSearchParams(location.search);
-    const userId = searchParams.get("userId");
-
-    return <UploadInvoice clientId={userId} user={user} />;
-  };
+  const isAuth = Boolean(token);
 
   return (
     <div className='app'>
@@ -55,32 +59,34 @@ function App() {
             <Route path='/register' element={<LoginPage action='register' />} />
             <Route path='/login' element={<LoginPage action='login' />} />
             <Route path='/verify' element={<LoginPage action='verify' />} />
-            {isAuth && user ? (
-              <Route element={<Layout user={user} />}>
-                <Route path='/dashboard' element={<Dashboard user={user} />} />
-                <Route path='/profile' element={<Profile user={user} />} />
-                {user.role === "superadmin" && (
-                  <Route
-                    path='/admins'
-                    element={<Admins superadmin={user} />}
-                  />
-                )}
-                {(user.role === "superadmin" || user.role === "admin") && (
+
+            <Route
+              path='/*'
+              element={
+                <ProtectedRoute>
+                  <Layout user={user} />
+                </ProtectedRoute>
+              }
+            >
+              <Route path='dashboard' element={<Dashboard user={user} />} />
+              <Route path='profile' element={<Profile user={user} />} />
+              {user && user.role === "superadmin" && (
+                <Route path='admins' element={<Admins superadmin={user} />} />
+              )}
+              {user &&
+                (user.role === "superadmin" || user.role === "admin") && (
                   <>
-                    <Route path='/clients' element={<Clients user={user} />} />
-                    <Route path='/invoices' element={<InvoicePage />} />
-                    {/* <Route path='/journal' element={<Journal user={user} />} /> */}
+                    <Route path='clients' element={<Clients user={user} />} />
+                    <Route
+                      path='invoices'
+                      element={<InvoicePage user={user} />}
+                    />
                   </>
                 )}
-                <Route path='/overview' element={<Overview user={user} />} />
-                <Route
-                  path='/journal'
-                  element={<InvoicesJournal user={user} />}
-                />
-              </Route>
-            ) : (
-              <Route path='/auth' element={<LoginPage />} />
-            )}
+              <Route path='overview' element={<Overview user={user} />} />
+              <Route path='journal' element={<InvoicesJournal user={user} />} />
+              <Route path='assistance' element={<Assistance user={user} />} />
+            </Route>
           </Routes>
         </ThemeProvider>
       </BrowserRouter>

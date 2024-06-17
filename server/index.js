@@ -6,6 +6,7 @@ import dotenv from "dotenv";
 import helmet from "helmet";
 import morgan from "morgan";
 import multer from "multer";
+import axios from "axios";
 import path from "path";
 import { fileURLToPath } from "url";
 import userRoutes from "./routes/users.js";
@@ -21,14 +22,24 @@ import {
 import journalRoutes from "./routes/invoices.js";
 import adminsRoutes from "./routes/admins.js";
 import authRoutes from "./routes/auth.js";
-import User from "./models/user.js";
-import Invoices from "./models/invoice.js";
+import http from "http";
+import { Server } from "socket.io";
+import Conversation from "./models/conversation.js";
+import { getConversation } from "./controllers/conversation.js";
 
 /* Config */
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 dotenv.config();
 const app = express();
+const server = http.createServer(app);
+const io = new Server(server, {
+  cors: {
+    origin: "*", // Allow any origin, adjust this for production
+    methods: ["GET", "POST"],
+  },
+});
+
 app.use(express.json());
 app.use(helmet());
 app.use(helmet.crossOriginResourcePolicy({ policy: "cross-origin" }));
@@ -106,6 +117,58 @@ app.use("/admin", adminsRoutes);
 
 app.get("/getAllJournal", journalRoutes);
 
+// New endpoint to communicate with Flask service
+app.post("/processCsv", storeInvoice.single("file"), async (req, res) => {
+  try {
+    const response = await axios.post(`${process.env.FLASK_URL}/processCsv`, {
+      csv_file_name: req.file.filename,
+      selected_cells: JSON.parse(req.body.selectedCells),
+    });
+    const fixing = response.data[0];
+    const fixed = fixing["category"];
+    delete fixing["category"];
+    fixing["category"] = fixed;
+    console.log(fixing);
+    res.json(response.data);
+  } catch (error) {
+    res.status(500).send("Error processing CSV file");
+  }
+});
+
+// New endpoint to communicate with socket io service
+app.get("/getConversation", getConversation);
+app.post("/send-message", async (req, res) => {
+  const { client_id, admin_id, sender_id, message } = req.body;
+  try {
+    let conversation = await Conversation.findOne({ client_id, admin_id });
+
+    if (!conversation) {
+      conversation = new Conversation({ client_id, admin_id, messages: [] });
+    }
+    const newMessage = { sender_id, message, time_sent: new Date() };
+    conversation.messages.push(newMessage);
+    await conversation.save();
+    // Emit the new message to the involved users
+    io.to(client_id).to(admin_id).emit("newMessage", newMessage);
+
+    res.status(200).json({ success: true, conversation });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// Socket.io connection handling
+io.on("connection", (socket) => {
+  // Join rooms based on client_id and admin_id
+  socket.on("joinRoom", ({ client_id, admin_id }) => {
+    socket.join(client_id);
+    socket.join(admin_id);
+  });
+  socket.on("disconnect", () => {
+    console.log("Client disconnected");
+  });
+});
+
 /* Mongoose setup */
 const PORT = process.env.PORT || 9000;
 mongoose.set("strictQuery", true);
@@ -114,57 +177,8 @@ mongoose
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
-  .then(async () => {
-    // const Invoices = mongoose.model("Invoices", {
-    //   adminName: String,
-    //   adminId: mongoose.Schema.Types.ObjectId,
-    // });
-
-    // await Invoices.updateMany(
-    //   {},
-    //   {
-    //     $set: {
-    //       adminName: "Habib",
-    //       adminId: new mongoose.Types.ObjectId("6624f7e4f899e6343deb5a2a"),
-    //     },
-    //   }
-    // );
-
-    app.listen(PORT, () => console.log(`Server Port: ${PORT}`));
-
-    // ADD DATA ONE TIME
-    // User.insertMany(users);
-    //Client.insertMany(clients);
-    //Admin.insertMany(admins);
-    // users.updateMany({ role: 'user' }, { role: 'client' });
-    // await User.updateMany({ role: 'client' }, { approved: false });
-    // User.update(
-    //   { userId: "663bcca8c4266d281e97f86b" }, // Filter for the specific user
-    //   {
-    //     $set: {
-    //       "factures.$[].date_facture": {
-    //         $function: {
-    //           body: function (date) {
-    //             var parts = date.split("/");
-    //             var month = parseInt(parts[0]);
-    //             var day = parseInt(parts[1]);
-    //             var year = parseInt(parts[2]);
-    //             return (
-    //               (month < 10 ? "0" + month : month) +
-    //               "/" +
-    //               (day < 10 ? "0" + day : day) +
-    //               "/" +
-    //               year
-    //             );
-    //           },
-    //           args: ["$date_facture"],
-    //           lang: "js",
-    //         },
-    //       },
-    //     },
-    //   },
-    //   { multi: true } // To update all documents in the array
-    // );
+  .then(() => {
+    server.listen(PORT, () => console.log(`Server Port: ${PORT}`)); // Change app.listen to server.listen
   })
   .catch((error) => {
     console.log(`${error} did not connect`);

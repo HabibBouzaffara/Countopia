@@ -81,9 +81,9 @@ const Overview = ({ user }) => {
   useEffect(() => {
     const getAllClients = async () => {
       try {
+        //fetching all clients:
         const token = localStorage.getItem("token");
         const url = new URL(process.env.REACT_APP_BASE_URL + "/clients");
-
         const clientsResponse = await fetch(url, {
           method: "GET",
           headers: {
@@ -97,7 +97,6 @@ const Overview = ({ user }) => {
         }
         setClients(data);
         const totalClients = data ? data.length : 0;
-
         const ongoingCount = data.filter(
           (client) => client.service === "ongoing"
         ).length;
@@ -107,7 +106,6 @@ const Overview = ({ user }) => {
         const doneCount = data.filter(
           (client) => client.service === "done"
         ).length;
-
         setServiceStatusData([
           {
             name: "Ongoing",
@@ -125,7 +123,6 @@ const Overview = ({ user }) => {
             color: "#81D9ED",
           },
         ]);
-
         setInvoiceStatusData([
           {
             name: "Ongoing",

@@ -115,7 +115,6 @@ export const register = async (req, res) => {
   }
 };
 
-/* LOGGING IN */
 export const login = async (req, res) => {
   try {
     const { email, password } = req.body;

@@ -79,6 +79,7 @@ export const convertToCsv = async (req, res) => {
     const convertCsvToJson = async () => {
       try {
         const response = await csvtojson().fromFile(req.file.path);
+
         return response;
       } catch (error) {
         console.error("Error:", error);
@@ -149,16 +150,15 @@ export const deleteJournal = async (req, res) => {
 export const assignInvoices = async (req, res) => {
   try {
     const { invoices, clientId, invoiceId } = req.body;
-
+    //invoiceId : id journal,
+    //invoices: list of invoices to assign,
+    //clientId: client to assign invoices to
     for (const invoice of invoices) {
       await User.findByIdAndUpdate(clientId, { $push: { factures: invoice } });
     }
-
-    // Find the invoice with the given invoiceId
+    //update the status of the invoices in the journal (assigned/unassigned)
     const invoice = await Invoice.findById(invoiceId);
-    // If invoice is found
     if (invoice) {
-      // Collect IDs of matching items
       const matchingItemIds = [];
       for (const invoiceItem of invoice.items) {
         const matchingInvoice = invoices.find(
@@ -169,8 +169,6 @@ export const assignInvoices = async (req, res) => {
           matchingItemIds.push(invoiceItem._id);
         }
       }
-
-      // Update the 'assigned' field of matching items
       for (const matchingItemId of matchingItemIds) {
         await Invoice.updateOne(
           { _id: invoiceId, "items._id": matchingItemId },
@@ -201,6 +199,7 @@ export const getAllJournal = async (req, res) => {
     const userRole = req.user.role; // Get the role from the token
     const userId = req.user.id; // Get the user ID from the token
     const allInvoices = [];
+
     if (userRole === "superadmin") {
       const journals = await Invoice.find();
       for (const journal of journals) {
@@ -210,15 +209,17 @@ export const getAllJournal = async (req, res) => {
       }
       res.status(200).json({ allInvoices });
     } else if (userRole === "admin") {
-      // const journals = await Invoice.find({ adminId: userId });
-      // console.log(journals);
-      const journals = await Invoice.find();
+      const journals = await Invoice.find({ adminId: userId });
       for (const journal of journals) {
         for (const item of journal.items) {
           allInvoices.push(item);
         }
       }
       res.status(200).json({ allInvoices });
+    } else if (userRole === "client") {
+      const client = await User.findOne({ _id: userId });
+      const journal = client.factures;
+      res.status(200).json({ journal });
     }
   } catch (err) {
     res.status(404).json({ msg: err.message });

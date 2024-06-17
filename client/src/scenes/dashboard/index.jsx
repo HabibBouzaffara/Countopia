@@ -11,7 +11,7 @@ import ClientCard from "./ClientCard";
 import TrendingUpIcon from "@mui/icons-material/TrendingUp";
 import TrendingDownIcon from "@mui/icons-material/TrendingDown";
 import MonetizationOnIcon from "@mui/icons-material/MonetizationOn";
-import CompositionExample from "./GaugePointer";
+import CompositionExample from "../assistance/GaugePointer";
 import wait from "../../assets/stats.png";
 // import ProgressCircle from "scenes/ProgressCircle";
 import { helix } from "ldrs";
@@ -43,7 +43,7 @@ const Dashboard = ({ user }) => {
           if (!clientsResponse.ok) {
             throw new Error(data.msg);
           }
-          setSelectedClient(data[data.length - 2]);
+          setSelectedClient(data[data.length - 1]);
           console.log(data);
           setAllClients(data);
         } catch (err) {
@@ -55,51 +55,46 @@ const Dashboard = ({ user }) => {
       setSelectedClient(user);
     }
   }, [user]);
-  const calculateBestSeller = () => {
-    const bestSeller = {};
+  useEffect(() => {
+    if (selectedClient && selectedClient.factures) {
+      const calculateBestSeller = () => {
+        const bestSeller = {};
+        selectedClient.factures.forEach((invoice) => {
+          if (!invoice.nom_unit || invoice.nom_unit.trim() === "") {
+            return;
+          }
+          const formattedDate = invoice.date_facture.split("T")[0];
+          const parts = formattedDate.split("-");
+          const month = parseInt(parts[1] - 1);
+          const { nom_unit, nombre_unit, prix_unit } = invoice;
+          const parsedNombreUnit = parseFloat(nombre_unit);
+          const parsedPrixUnit = parseFloat(prix_unit);
+          if (!bestSeller[nom_unit]) {
+            bestSeller[nom_unit] = {
+              totalNombreUnit: parsedNombreUnit,
+              prix_unit: parsedPrixUnit,
+              monthlyUnits: new Array(12).fill(0),
+            };
+          } else {
+            bestSeller[nom_unit].totalNombreUnit += parsedNombreUnit;
+          }
+          bestSeller[nom_unit].monthlyUnits[month] += parsedNombreUnit;
+        });
+        const bestSellerArray = Object.entries(bestSeller).map(
+          ([nom_unit, data]) => ({ nom_unit, ...data })
+        );
 
-    // Iterate over each item in the facture array
-    selectedClient.factures.forEach((invoice) => {
-      // Check if nom_unit is empty or undefined
-      if (!invoice.nom_unit || invoice.nom_unit.trim() === "") {
-        return; // Skip this invoice if nom_unit is empty or undefined
-      }
-      // Preprocess date_facture to ensure it has the format mm/dd/yyyy
-      const formattedDate = invoice.date_facture.split("T")[0]; // Remove extra characters after the year
-      const parts = formattedDate.split("-");
-      const month = parseInt(parts[1] - 1); // Months are zero-based, so subtract 1
-      // Accumulate nombre_unit for each nom_unit
-      const { nom_unit, nombre_unit, prix_unit } = invoice;
-      const parsedNombreUnit = parseFloat(nombre_unit);
-      const parsedPrixUnit = parseFloat(prix_unit);
-      if (!bestSeller[nom_unit]) {
-        bestSeller[nom_unit] = {
-          totalNombreUnit: parsedNombreUnit,
-          prix_unit: parsedPrixUnit,
-          monthlyUnits: new Array(12).fill(0), // Initialize an array to hold monthly units
-        };
-      } else {
-        bestSeller[nom_unit].totalNombreUnit += parsedNombreUnit;
-      }
-      // Add nombre_unit to the corresponding month
-      bestSeller[nom_unit].monthlyUnits[month] += parsedNombreUnit;
-    });
+        // Sort the array by totalNombreUnit in descending order
+        bestSellerArray.sort((a, b) => b.totalNombreUnit - a.totalNombreUnit);
 
-    // Convert object to array of objects for sorting
-    const bestSellerArray = Object.entries(bestSeller).map(
-      ([nom_unit, data]) => ({ nom_unit, ...data })
-    );
+        // Get the top 3 best sellers
+        const top3BestSellers = bestSellerArray.slice(0, 3);
+        setBestSeller(top3BestSellers);
+      };
+      calculateBestSeller();
+    }
+  }, [selectedClient]);
 
-    // Sort the array by totalNombreUnit in descending order
-    bestSellerArray.sort((a, b) => b.totalNombreUnit - a.totalNombreUnit);
-
-    // Get the top 3 best sellers
-    const top3BestSellers = bestSellerArray.slice(0, 3);
-    setBestSeller(top3BestSellers);
-  };
-  if (selectedClient && !bestSeller) {
-    calculateBestSeller();
-  }
   const handleClientChange = (event) => {
     const clientId = event.target.value;
     const selectedClient = allClients.find((client) => client._id === clientId);
@@ -177,7 +172,7 @@ const Dashboard = ({ user }) => {
             height: "80vh",
           }}
         >
-          <l-helix size='130' speed='2.5' color='#323DB3'></l-helix>
+          <l-helix size='130' speed='2.5' color='#323DB3' />
           <Typography
             variant='body1'
             sx={{ marginTop: "20px", fontSize: "25px", color: "#BFB5FF" }}
@@ -239,17 +234,12 @@ const Dashboard = ({ user }) => {
                   }}
                 >
                   {selectedClient.factures
-                    .reduce(
-                      (total, invoice) => {
-                        // Check if the total value of the invoice is positive
-                        if (parseFloat(invoice.total) > 0) {
-                          return total + parseFloat(invoice.total);
-                        }
-                        // If not positive, return the current total without adding the invoice total
-                        return total;
-                      },
-                      0 // Initial total value
-                    )
+                    .reduce((total, invoice) => {
+                      if (parseFloat(invoice.total) > 0) {
+                        return total + parseFloat(invoice.total);
+                      }
+                      return total;
+                    }, 0)
                     .toLocaleString("en-US") + " TND"}
                 </Typography>
                 {/* White quarter box */}

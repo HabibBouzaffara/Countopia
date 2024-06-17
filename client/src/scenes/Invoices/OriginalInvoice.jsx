@@ -21,13 +21,12 @@ const OriginalInvoice = ({ file, setCleanedVersion, setFileData }) => {
 
   const handleUpload = async () => {
     try {
-      console.log("el selected:" + selectedCells);
       const formData = new FormData();
       formData.append("file", file);
       formData.append("selectedCells", JSON.stringify(selectedCells)); // Append selectedCells array
 
       const response = await fetch(
-        `${process.env.REACT_APP_BASE_URL}/uploadInvoices`,
+        `${process.env.REACT_APP_BASE_URL}/processCsv`,
         {
           method: "POST",
           body: formData,
@@ -38,7 +37,7 @@ const OriginalInvoice = ({ file, setCleanedVersion, setFileData }) => {
         throw new Error("Failed to upload file.");
       }
 
-      const { responseData } = await response.json();
+      const responseData = await response.json();
       setCleanedVersion(responseData);
     } catch (error) {
       console.error("Error uploading file:", error);
@@ -129,11 +128,12 @@ const OriginalInvoice = ({ file, setCleanedVersion, setFileData }) => {
         </Box>
       </Box>
 
-      <Box mt="20px" marginBottom="20px">
+      <Box mt='5px' marginBottom='10px'>
         <DataGrid
           disableColumnFilter
           disableColumnMenu
           enableColumnSelect
+          rowHeight={25}
           rows={convertedVersion}
           columns={tableHead.map((header) => ({
             field: header,
@@ -156,7 +156,7 @@ const OriginalInvoice = ({ file, setCleanedVersion, setFileData }) => {
           onCellClick={(cell) => toggleCellSelection(cell.value)}
           onColumnHeaderClick={(cell) => toggleCellSelection(cell.field)}
           initialState={{ pagination: { paginationModel: { pageSize: 10 } } }}
-          pageSizeOptions={[5, 10, 25, 50]}
+          pageSizeOptions={[5, 10, 20, 50]}
           sx={{}}
         />
         <style jsx>{`
@@ -177,7 +177,7 @@ const OriginalInvoice = ({ file, setCleanedVersion, setFileData }) => {
         }}
       >
         <Button
-          variant="contained"
+          variant='contained'
           endIcon={<CloseOutlinedIcon />}
           sx={{
             backgroundColor: "#BFB5FF",
@@ -193,7 +193,7 @@ const OriginalInvoice = ({ file, setCleanedVersion, setFileData }) => {
           Change File
         </Button>
         <Button
-          variant="contained"
+          variant='contained'
           endIcon={<ArrowForwardOutlinedIcon />}
           sx={{
             marginLeft: "20px",

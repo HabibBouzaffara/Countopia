@@ -23,10 +23,10 @@ export const deleteUser = async (req, res) => {
     }
     const { _id } = req.body;
     const user = await User.findById(_id);
-    console.log(user);
+    // console.log(user);
     if (!user) return res.status(404).json({ msg: "User not found" });
     if (user.role == "admin") {
-      console.log("test1" + user.clients.length);
+      // console.log("test1" + user.clients.length);
       if (user.clients.length > 0) {
         await User.updateMany(
           { _id: { $in: user.clients } }, // Find clients with IDs in the admin's clients list

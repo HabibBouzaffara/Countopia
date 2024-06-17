@@ -60,7 +60,6 @@ export const getAssignClients = async (req, res) => {
 };
 
 export const assignClient = async (req, res) => {
-  // console.log(req.body);
   try {
     const userRole = req.user.role; // Get the role from the token
     if (userRole !== "superadmin") {

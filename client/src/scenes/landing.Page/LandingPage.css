@@ -61,11 +61,18 @@
 .landing-page-navbar-logo {
   font-family: "Poppins";
   font-style: normal;
-  font-weight: 900;
-  font-size: 40px;
+  font-weight: 700;
+  font-size: 37px;
   text-align: center;
   margin-left: 60px;
-  color: #ffffff;
+  margin-top: 10px;
+  display: flex;
+  flex-direction: row;
+  color: #9d8dfe;
+}
+.landing-page-navbar-logo-text {
+  -webkit-text-stroke-width: 0.5px;
+  -webkit-text-stroke-color: #ffffff;
 }
 
 /* buttons [expert , assistant] */
